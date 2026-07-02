@@ -7,3 +7,5 @@ window.Alpine = Alpine;
 Alpine.start();
 
 import './auth/login';
+
+const images = import.meta.glob('../images/**/*', { eager: true });
