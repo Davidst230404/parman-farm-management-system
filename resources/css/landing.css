@@ -28,7 +28,7 @@ html {
 body {
     font-family: var(--font-manrope);
     color: var(--text-color);
-    background-color: #FFFFFF;
+    background-color: #D9D9D9;
     line-height: 1.5;
     overflow-x: hidden;
 }
@@ -41,11 +41,13 @@ body {
     justify-content: space-between;
     align-items: center;
     padding: 20px 8%;
-    background-color: #FFFFFF;
-    position: sticky;
+    background-color: transparent;
+    position: absolute;
     top: 0;
+    left: 0;
+    width: 100%;
     z-index: 1000;
-    box-shadow: 0 2px 15px rgba(0, 0, 0, 0.04);
+    box-shadow: none;
 }
 
 .l-brand {
@@ -139,11 +141,11 @@ body {
     background-image: linear-gradient(rgba(18, 72, 39, 0.4), rgba(18, 72, 39, 0.2)), url('/images/landingpage/bglandingpage.png');
     background-size: cover;
     background-position: center;
-    min-height: 85vh;
+    min-height: 90vh;
     display: flex;
     flex-direction: column;
     justify-content: center;
-    padding: 80px 8% 120px 8%;
+    padding: 160px 8% 120px 8%;
     position: relative;
 }
 
@@ -238,27 +240,32 @@ body {
 .l-hero-cards {
     display: grid;
     grid-template-columns: repeat(4, 1fr);
-    gap: 20px;
+    gap: 0;
     margin: -70px 8% 0 8%;
     position: relative;
     z-index: 20;
+    background: rgba(229, 235, 232, 0.95);
+    backdrop-filter: blur(12px);
+    border: 1px solid rgba(255, 255, 255, 0.5);
+    border-radius: 28px;
+    padding: 24px 32px;
+    box-shadow: 0 12px 35px rgba(0, 0, 0, 0.08);
 }
 
 .l-float-card {
-    background: rgba(235, 242, 238, 0.85);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.4);
-    border-radius: 20px;
-    padding: 24px;
     display: flex;
-    align-items: flex-start;
+    align-items: center;
     gap: 16px;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.05);
-    transition: transform 0.3s ease;
+    padding: 0 20px;
+    transition: transform 0.2s ease;
 }
 
 .l-float-card:hover {
-    transform: translateY(-5px);
+    transform: translateY(-2px);
+}
+
+.l-float-card:not(:last-child) {
+    border-right: 1.5px solid rgba(18, 72, 39, 0.15);
 }
 
 .l-float-card__icon {
@@ -269,17 +276,18 @@ body {
 }
 
 .l-float-card__title {
-    font-size: 16px;
+    font-size: 15px;
     font-weight: 800;
-    color: var(--primary-color);
-    margin-bottom: 6px;
+    color: #124827;
+    margin-bottom: 4px;
 }
 
 .l-float-card__text {
-    font-size: 13px;
-    color: var(--text-muted);
-    font-weight: 500;
-    line-height: 1.4;
+    font-size: 12px;
+    color: #124827;
+    opacity: 0.85;
+    font-weight: 600;
+    line-height: 1.3;
 }
 
 /* ==========================================

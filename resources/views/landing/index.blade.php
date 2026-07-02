@@ -66,21 +66,21 @@
          ========================================== -->
     <section class="l-hero-cards">
         <div class="l-float-card">
-            <img src="{{ asset('images/landingpage/icondaun.svg') }}" alt="" class="l-float-card__icon">
+            <img src="{{ asset('images/landingpage/iconleaf.svg') }}" alt="" class="l-float-card__icon">
             <div>
                 <h4 class="l-float-card__title">Pakan Berkualitas</h4>
                 <p class="l-float-card__text">Pakan terbaik untuk sapi yang sehat</p>
             </div>
         </div>
         <div class="l-float-card">
-            <img src="{{ asset('images/landingpage/sapilanding.svg') }}" alt="" class="l-float-card__icon">
+            <img src="{{ asset('images/landingpage/icontamenghealth.svg') }}" alt="" class="l-float-card__icon">
             <div>
                 <h4 class="l-float-card__title">Sapi Sehat</h4>
                 <p class="l-float-card__text">Perawatan rutin dan monitoring kesehatan</p>
             </div>
         </div>
         <div class="l-float-card">
-            <img src="{{ asset('images/landingpage/iconbotolsusu.svg') }}" alt="" class="l-float-card__icon">
+            <img src="{{ asset('images/landingpage/icontetesanair.svg') }}" alt="" class="l-float-card__icon">
             <div>
                 <h4 class="l-float-card__title">Susu Berkualitas</h4>
                 <p class="l-float-card__text">Produksi susu segar setiap hari</p>
