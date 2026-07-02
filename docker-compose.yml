@@ -1,0 +1,21 @@
+version: '3.8'
+
+services:
+  web:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:80"
+    environment:
+      - APP_ENV=local
+      - APP_DEBUG=true
+      - APP_KEY=base64:7B5L5+V0k2vXwL7zN/W3ZzXjX5zX2vX6zX5zX2vX6zX= # Replace with actual key
+    volumes:
+      - .:/var/www/html
+    networks:
+      - laravel
+
+networks:
+  laravel:
+    driver: bridge
