@@ -1,0 +1,554 @@
+/* ============================================================
+   Produksi Susu | Owner — compact layout, 100% zoom
+   ============================================================ */
+
+/* ── Stat cards — produksi compact version ────────────────── */
+.ps-stats {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 8px;
+    margin-bottom: 8px;
+}
+
+.ps-stat-card {
+    background: #FFFFFF;
+    border: 1px solid #E2E8F0;
+    border-radius: 12px;
+    padding: 10px 14px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-height: 64px;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+    transition: box-shadow 0.2s, transform 0.15s;
+}
+
+.ps-stat-card:hover {
+    box-shadow: 0 4px 14px rgba(0, 0, 0, 0.08);
+    transform: translateY(-1px);
+}
+
+.ps-stat-icon-wrap {
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.ps-stat-icon-wrap img {
+    width: 18px;
+    height: 18px;
+}
+
+.ps-stat-card--dark .ps-stat-icon-wrap {
+    background: rgba(18, 72, 39, 0.10);
+}
+
+.ps-stat-card--green .ps-stat-icon-wrap {
+    background: rgba(22, 163, 74, 0.10);
+}
+
+.ps-stat-card--blue .ps-stat-icon-wrap {
+    background: rgba(37, 99, 235, 0.10);
+}
+
+.ps-stat-card--purple .ps-stat-icon-wrap {
+    background: rgba(128, 39, 186, 0.10);
+}
+
+.ps-stat-content {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.ps-stat-value {
+    font-size: 20px;
+    font-weight: 800;
+    line-height: 1;
+    letter-spacing: -0.5px;
+    margin-bottom: 2px;
+}
+
+.ps-stat-unit {
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: 0;
+}
+
+.ps-stat-card--dark .ps-stat-value {
+    color: #124827;
+}
+
+.ps-stat-card--green .ps-stat-value {
+    color: #16A34A;
+}
+
+.ps-stat-card--blue .ps-stat-value {
+    color: #2563EB;
+}
+
+.ps-stat-card--purple .ps-stat-value {
+    color: #8027BA;
+}
+
+.ps-stat-label {
+    font-size: 12px;
+    font-weight: 700;
+    color: #374151;
+    margin-bottom: 4px;
+    line-height: 1.3;
+    display: block;
+}
+
+.ps-stat-sub {
+    font-size: 11.5px;
+    font-weight: 600;
+    color: #6B7280;
+    display: block;
+    line-height: 1.3;
+}
+
+/* ── Main card ────────────────────────────────────────────── */
+.ps-card {
+    background: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    border: 1px solid #E2E8F0;
+    overflow: hidden;
+    margin-bottom: 8px;
+}
+
+/* Card header (title + date) */
+.ps-card__header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 8px 16px 5px;
+    gap: 12px;
+}
+
+.ps-card__title {
+    font-size: 15px;
+    font-weight: 800;
+    color: #111827;
+    margin: 0;
+}
+
+.ps-date-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #111827;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
+    padding: 0;
+    transition: color 0.15s;
+}
+
+.ps-date-btn:hover {
+    color: #124827;
+}
+
+.ps-date-btn__arrow {
+    color: #124827;
+    font-weight: 900;
+}
+
+/* Session tabs */
+.ps-tabs-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 16px 5px;
+    gap: 12px;
+}
+
+.ps-tabs {
+    display: flex;
+    gap: 6px;
+}
+
+.ps-tab {
+    padding: 6px 20px;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
+    transition: all 0.15s;
+}
+
+.ps-tab--active {
+    background: #124827;
+    color: #FFFFFF;
+}
+
+.ps-tab--inactive {
+    background: transparent;
+    color: #374151;
+    border: 1.5px solid #E5E7EB;
+}
+
+.ps-tab--inactive:hover {
+    background: #F9FAFB;
+}
+
+.ps-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 5px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 700;
+    color: #374151;
+    font-family: 'Manrope', sans-serif;
+    padding: 4px 8px;
+    border-radius: 7px;
+    transition: background 0.15s;
+}
+
+.ps-filter-btn:hover {
+    background: #F3F4F6;
+}
+
+.ps-filter-btn img {
+    width: 14px;
+    height: 14px;
+}
+
+/* Table */
+.ps-divider {
+    border: none;
+    border-top: 1px solid #F3F4F6;
+    margin: 0;
+}
+
+.ps-table-wrap {
+    overflow-x: auto;
+}
+
+.ps-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Manrope', sans-serif;
+}
+
+.ps-table thead th {
+    padding: 7px 14px;
+    font-size: 11.5px;
+    font-weight: 700;
+    color: #374151;
+    text-align: left;
+    background: #FAFAFA;
+    border-bottom: 1px solid #F3F4F6;
+    white-space: nowrap;
+}
+
+.ps-table thead th:first-child {
+    padding-left: 20px;
+}
+
+.ps-table thead th:last-child {
+    padding-right: 20px;
+}
+
+.ps-table tbody tr {
+    border-bottom: 1px solid #F9FAFB;
+    transition: background 0.12s;
+}
+
+.ps-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.ps-table tbody tr:hover {
+    background: #F9FAFB;
+}
+
+.ps-table tbody td {
+    padding: 7px 14px;
+    font-size: 12.5px;
+    color: #111827;
+    vertical-align: middle;
+}
+
+.ps-table tbody td:first-child {
+    padding-left: 16px;
+}
+
+.ps-table tbody td:last-child {
+    padding-right: 16px;
+}
+
+/* Cow cell */
+.ps-cow-cell {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.ps-cow-thumb {
+    width: 38px;
+    height: 38px;
+    border-radius: 8px;
+    background: #124827;
+    flex-shrink: 0;
+}
+
+.ps-cow-thumb--alt1 {
+    background: #1B4332;
+}
+
+.ps-cow-thumb--alt2 {
+    background: #2D6A4F;
+}
+
+.ps-cow-thumb--brown {
+    background: #8B5E3C;
+}
+
+.ps-cow-name {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 1px;
+    line-height: 1.2;
+}
+
+.ps-cow-id {
+    font-size: 11.5px;
+    font-weight: 400;
+    color: #9CA3AF;
+    margin: 0;
+    line-height: 1.2;
+}
+
+.ps-liter {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #111827;
+}
+
+.ps-liter--empty {
+    color: #D1D5DB;
+}
+
+.ps-status--done {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #124827;
+}
+
+.ps-status--belum {
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #DC2626;
+}
+
+/* Edit action button */
+.ps-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 30px;
+    height: 30px;
+    border-radius: 7px;
+    background: none;
+    border: 1.5px solid #E5E7EB;
+    cursor: pointer;
+    transition: background 0.15s, border-color 0.15s;
+    padding: 0;
+}
+
+.ps-edit-btn:hover {
+    background: #F0FDF4;
+    border-color: #124827;
+}
+
+.ps-edit-btn img {
+    width: 14px;
+    height: 14px;
+}
+
+/* ── Pagination ───────────────────────────────────────────── */
+.ps-pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 14px 7px;
+    border-top: 1px solid #F3F4F6;
+    gap: 8px;
+    flex-wrap: wrap;
+}
+
+.ps-pagination-info {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #6B7280;
+    white-space: nowrap;
+}
+
+.ps-pagination-nav {
+    display: flex;
+    align-items: center;
+    gap: 3px;
+}
+
+.ps-page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 30px;
+    height: 30px;
+    padding: 0 5px;
+    border-radius: 7px;
+    border: 1.5px solid #E5E7EB;
+    background: #FFFFFF;
+    font-size: 12.5px;
+    font-weight: 700;
+    color: #374151;
+    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
+    transition: all 0.15s;
+    line-height: 1;
+}
+
+.ps-page-btn:hover:not(:disabled):not(.ps-page-btn--active) {
+    background: #F3F4F6;
+    border-color: #D1D5DB;
+    transform: translateY(-1px);
+}
+
+.ps-page-btn--active {
+    background: #124827;
+    border-color: #124827;
+    color: #FFFFFF;
+    cursor: default;
+}
+
+.ps-page-btn--arrow {
+    font-size: 14px;
+    font-weight: 900;
+}
+
+.ps-page-btn--arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+}
+
+.ps-page-btn--ellipsis {
+    border-color: transparent;
+    background: transparent;
+    cursor: default;
+    color: #9CA3AF;
+}
+
+.ps-page-btn--ellipsis:hover {
+    background: transparent;
+    transform: none;
+}
+
+/* ── Bottom row ────────────────────────────────── */
+.ps-bottom {
+    display: grid;
+    grid-template-columns: 1fr 240px;
+    gap: 8px;
+    margin-top: 8px;
+}
+
+/* Chart card */
+.ps-chart-card {
+    background: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    border: 1px solid #E2E8F0;
+    padding: 10px 12px 8px;
+    display: flex;
+    flex-direction: column;
+}
+
+.ps-chart-card__title {
+    font-size: 12.5px;
+    font-weight: 800;
+    color: #111827;
+    margin: 0 0 8px;
+}
+
+.ps-chart-card__title span {
+    font-weight: 500;
+    color: #6B7280;
+    font-size: 11.5px;
+}
+
+.ps-chart-wrap {
+    position: relative;
+    flex: 1;
+    min-height: 105px;
+    height: 105px;
+}
+
+/* Ringkasan */
+.ps-ringkasan-card {
+    background: #FFFFFF;
+    border-radius: 12px;
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    border: 1px solid #E2E8F0;
+    padding: 10px 12px 8px;
+}
+
+.ps-ringkasan-card__title {
+    font-size: 12px;
+    font-weight: 800;
+    color: #111827;
+    margin: 0 0 6px;
+}
+
+.ps-ringkasan-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 5px 0;
+    border-bottom: 1px solid #F3F4F6;
+    gap: 8px;
+}
+
+.ps-ringkasan-row:last-child {
+    border-bottom: none;
+}
+
+.ps-ringkasan-row__label {
+    font-size: 11.5px;
+    font-weight: 500;
+    color: #6B7280;
+}
+
+.ps-ringkasan-row__value {
+    font-size: 12px;
+    font-weight: 800;
+    color: #111827;
+    white-space: nowrap;
+}
+
+/* Responsive */
+@media (max-width: 1100px) {
+    .ps-bottom {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 900px) {
+    .ps-stats {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}

@@ -1,0 +1,779 @@
+/* ==========================================================
+   Parman Farm — Login Page
+   SEMUA STYLE DIBUNGKUS DALAM .login-page AGAR TIDAK BOCOR
+   ========================================================== */
+
+/* ===========================
+   SCOPED RESET (hanya di dalam .login-page)
+=========================== */
+
+.login-page *{
+    margin:0;
+    padding:0;
+    box-sizing:border-box;
+}
+
+.login-page img{
+    display:block;
+    max-width:100%;
+}
+
+.login-page button,
+.login-page input{
+    border:none;
+    outline:none;
+    font-family:inherit;
+}
+
+.login-page button{
+    cursor:pointer;
+}
+
+.login-page a{
+    text-decoration:none;
+    color:inherit;
+}
+
+/* ===========================
+   PAGE WRAPPER
+=========================== */
+
+.login-page{
+    position:relative;
+    width:100vw;
+    height:100vh;
+    overflow:hidden;
+    font-family:"Manrope",sans-serif;
+    background:#0B4A25;
+}
+
+/* ===========================
+   BACKGROUND
+=========================== */
+
+.login-background{
+    position:absolute;
+    inset:0;
+    background-repeat:no-repeat;
+    background-size:cover;
+    background-position:center;
+    z-index:1;
+}
+
+/* ===========================
+   OVERLAY
+=========================== */
+
+.login-overlay{
+    position:absolute;
+    inset:0;
+    background:
+    linear-gradient(
+        90deg,
+        rgba(9,58,33,.97) 0%,
+        rgba(9,58,33,.95) 22%,
+        rgba(9,58,33,.82) 42%,
+        rgba(9,58,33,.45) 68%,
+        rgba(9,58,33,0) 100%
+    );
+    z-index:2;
+}
+
+/* ===========================
+   CONTAINER
+=========================== */
+
+.login-container{
+    position:relative;
+    z-index:5;
+    width:100%;
+    max-width:1600px;
+    height:100vh;
+    margin:0 auto;
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+}
+
+/* ===========================
+   HERO (LEFT SIDE)
+=========================== */
+
+.login-hero{
+    width:55%;
+    padding-left:70px;
+    padding-right:40px;
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+/* ===========================
+   LOGIN PANEL (RIGHT SIDE)
+=========================== */
+
+.login-panel{
+    width:45%;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    padding:32px;
+}
+
+/* ==========================================================
+   HERO BRAND
+   ========================================================== */
+
+.hero-brand{
+    display:flex;
+    align-items:center;
+    gap:24px;
+}
+
+.hero-brand__logo{
+    width:120px;
+    height:auto;
+    object-fit:contain;
+    flex-shrink:0;
+}
+
+.hero-brand__content{
+    display:flex;
+    flex-direction:column;
+    justify-content:center;
+}
+
+.hero-brand__title{
+    color:#FFFFFF;
+    font-size:32px;
+    font-weight:800;
+    line-height:1.2;
+    letter-spacing:-0.5px;
+}
+
+.hero-brand__subtitle{
+    margin-top:6px;
+    color:rgba(255,255,255,0.85);
+    font-size:20px;
+    font-weight:500;
+    line-height:1.4;
+}
+
+/* ==========================================================
+   HERO CONTENT
+   ========================================================== */
+
+.hero-content{
+    margin-top:56px;
+}
+
+.hero-content__title{
+    color:#FFFFFF;
+    font-size:64px;
+    font-weight:800;
+    line-height:1.1;
+    letter-spacing:-2px;
+}
+
+.hero-content__description{
+    margin-top:24px;
+    max-width:480px;
+    color:rgba(255,255,255,0.90);
+    font-size:20px;
+    font-weight:400;
+    line-height:1.7;
+}
+
+/* ==========================================================
+   HERO FEATURES
+   ========================================================== */
+
+.hero-features{
+    margin-top:56px;
+    display:flex;
+    flex-direction:column;
+    gap:32px;
+}
+
+/* ==========================================================
+   FEATURE ITEM
+   ========================================================== */
+
+.feature-item{
+    display:flex;
+    align-items:flex-start;
+    gap:20px;
+}
+
+.feature-item__icon{
+    width:52px;
+    height:52px;
+    flex-shrink:0;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+}
+
+.feature-item__icon img{
+    width:100%;
+    height:100%;
+    object-fit:contain;
+}
+
+.feature-item__content{
+    display:flex;
+    flex-direction:column;
+    padding-top:4px;
+}
+
+.feature-item__title{
+    color:#FFFFFF;
+    font-size:22px;
+    font-weight:700;
+    line-height:1;
+    margin-bottom:6px;
+}
+
+.feature-item__description{
+    color:rgba(255,255,255,0.80);
+    font-size:16px;
+    font-weight:400;
+    line-height:1.6;
+}
+
+/* ==========================================================
+   LOGIN CARD
+   ========================================================== */
+
+.login-card{
+    width:100%;
+    max-width:520px;
+    background:#F5F5F5;
+    border-radius:28px;
+    padding:48px 44px;
+    box-shadow:
+        0 24px 80px rgba(0,0,0,.22),
+        0 4px 16px rgba(0,0,0,.10);
+}
+
+.login-card__header{
+    text-align:center;
+    margin-bottom:36px;
+}
+
+.login-card__title{
+    color:#0B4A25;
+    font-size:38px;
+    font-weight:800;
+    line-height:1;
+}
+
+.login-card__subtitle{
+    margin-top:10px;
+    color:#5B5B5B;
+    font-size:16px;
+    font-weight:500;
+    line-height:1.5;
+}
+
+/* ==========================================================
+   ALERT
+   ========================================================== */
+
+.login-alert{
+    width:100%;
+    border-radius:12px;
+    padding:12px 16px;
+    margin-bottom:20px;
+    font-size:14px;
+    line-height:1.6;
+}
+
+.login-alert ul{
+    padding-left:18px;
+}
+
+.login-alert--success{
+    background:#DDF8E6;
+    color:#17683B;
+    border:1px solid #B2F0CA;
+}
+
+.login-alert--danger{
+    background:#FFE7E7;
+    color:#B42318;
+    border:1px solid #FFC7C4;
+}
+
+/* ==========================================================
+   LOGIN FORM
+   ========================================================== */
+
+.login-form{
+    display:flex;
+    flex-direction:column;
+}
+
+/* ==========================================================
+   FORM GROUP
+   ========================================================== */
+
+.form-group{
+    margin-bottom:20px;
+}
+
+.form-label{
+    display:block;
+    margin-bottom:8px;
+    color:#1E1E1E;
+    font-size:15px;
+    font-weight:600;
+    line-height:1.4;
+}
+
+/* ==========================================================
+   INPUT
+   ========================================================== */
+
+.form-input{
+    width:100%;
+    height:52px;
+    padding:0 16px;
+    border:1.5px solid #DEDEDE;
+    border-radius:12px;
+    background:#FFFFFF;
+    color:#1E1E1E;
+    font-size:15px;
+    font-weight:400;
+    transition:border-color .2s ease, box-shadow .2s ease;
+}
+
+.form-input::placeholder{
+    color:#ABABAB;
+}
+
+.form-input:hover{
+    border-color:#0B4A25;
+}
+
+.form-input:focus{
+    border-color:#0B4A25;
+    box-shadow:0 0 0 3px rgba(11,74,37,.10);
+}
+
+/* ==========================================================
+   PASSWORD GROUP
+   ========================================================== */
+
+.password-group{
+    position:relative;
+}
+
+.password-group .form-input{
+    padding-right:52px;
+}
+
+.password-toggle{
+    position:absolute;
+    top:50%;
+    right:14px;
+    transform:translateY(-50%);
+    width:28px;
+    height:28px;
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    background:none;
+    cursor:pointer;
+    padding:0;
+    color:#888;
+    transition:color .2s;
+    border:none;
+}
+
+.password-toggle:hover{
+    color:#0B4A25;
+}
+
+.password-toggle svg{
+    width:20px;
+    height:20px;
+    stroke-width:2;
+}
+
+/* ==========================================================
+   LOGIN OPTIONS
+   ========================================================== */
+
+.login-options{
+    display:flex;
+    align-items:center;
+    justify-content:space-between;
+    margin-bottom:28px;
+}
+
+.remember-me{
+    display:flex;
+    align-items:center;
+    gap:8px;
+    cursor:pointer;
+    color:#5F5F5F;
+    font-size:14px;
+    font-weight:500;
+}
+
+.remember-me input[type="checkbox"]{
+    width:16px;
+    height:16px;
+    accent-color:#0B4A25;
+    cursor:pointer;
+}
+
+.forgot-password{
+    color:#0B4A25;
+    font-size:14px;
+    font-weight:600;
+    transition:opacity .2s;
+    text-decoration:none;
+}
+
+.forgot-password:hover{
+    text-decoration:underline;
+    opacity:.8;
+}
+
+/* ==========================================================
+   LOGIN BUTTON
+   ========================================================== */
+
+.login-button{
+    display:flex;
+    align-items:center;
+    justify-content:center;
+    width:100%;
+    height:52px;
+    background:#0B4A25;
+    color:#FFFFFF;
+    border:none;
+    border-radius:12px;
+    font-family:"Manrope",sans-serif;
+    font-size:18px;
+    font-weight:700;
+    letter-spacing:0.3px;
+    cursor:pointer;
+    transition:background .2s ease, transform .1s ease, box-shadow .2s ease;
+    box-shadow:0 4px 16px rgba(11,74,37,.35);
+}
+
+.login-button:hover{
+    background:#0d5c2f;
+    box-shadow:0 6px 20px rgba(11,74,37,.40);
+    transform:translateY(-1px);
+}
+
+.login-button:active{
+    transform:translateY(0);
+    box-shadow:0 2px 8px rgba(11,74,37,.30);
+}
+
+/* ==========================================================
+   LOGIN FOOTER
+   ========================================================== */
+
+.login-footer{
+    margin-top:20px;
+    text-align:center;
+    color:#888;
+    font-size:14px;
+    font-weight:400;
+}
+
+.contact-admin{
+    color:#0B4A25;
+    font-weight:600;
+    transition:opacity .2s;
+    text-decoration:none;
+}
+
+.contact-admin:hover{
+    text-decoration:underline;
+    opacity:.8;
+}
+
+/* ==========================================================
+   RESPONSIVE — 1280px
+   ========================================================== */
+
+@media screen and (max-width:1280px){
+    .login-hero{ padding-left:48px; padding-right:24px; }
+    .hero-brand__logo{ width:100px; }
+    .hero-brand__title{ font-size:26px; }
+    .hero-brand__subtitle{ font-size:17px; }
+    .hero-content{ margin-top:40px; }
+    .hero-content__title{ font-size:52px; }
+    .hero-content__description{ font-size:17px; }
+    .hero-features{ margin-top:40px; gap:24px; }
+    .feature-item__title{ font-size:19px; }
+    .feature-item__description{ font-size:14px; }
+    .login-card{ padding:40px 36px; max-width:480px; }
+}
+
+/* ==========================================================
+   TABLET (992px)
+   ========================================================== */
+
+@media screen and (max-width:992px){
+    .login-page{ height:auto; min-height:100vh; overflow:auto; }
+    .login-overlay{ background:rgba(9,58,33,.88); }
+    .login-container{ flex-direction:column; justify-content:center; padding:48px 32px; gap:48px; height:auto; min-height:100vh; }
+    .login-hero{ width:100%; padding:0; }
+    .login-panel{ width:100%; padding:0; }
+    .login-card{ max-width:100%; }
+}
+
+/* ==========================================================
+   MOBILE (640px)
+   ========================================================== */
+
+@media screen and (max-width:640px){
+    .hero-brand{ flex-direction:column; align-items:flex-start; }
+    .hero-brand__logo{ width:80px; }
+    .hero-brand__title{ font-size:22px; }
+    .hero-content__title{ font-size:38px; }
+    .hero-content__description{ font-size:15px; }
+    .hero-features{ margin-top:32px; gap:20px; }
+    .feature-item__icon{ width:40px; height:40px; }
+    .feature-item__title{ font-size:17px; }
+    .feature-item__description{ font-size:13px; }
+    .login-container{ padding:32px 20px; gap:36px; }
+    .login-card{ padding:32px 24px; border-radius:20px; }
+    .login-card__title{ font-size:30px; }
+    .login-button{ height:48px; font-size:16px; }
+}
+
+/* ==========================================================
+   ANIMATIONS
+   ========================================================== */
+
+.login-card{ animation:loginFadeUp .6s cubic-bezier(.16,1,.3,1); }
+.hero-brand, .hero-content, .hero-features{ animation:loginFadeLeft .7s cubic-bezier(.16,1,.3,1); }
+
+@keyframes loginFadeUp{
+    from{ opacity:0; transform:translateY(24px); }
+    to{ opacity:1; transform:translateY(0); }
+}
+
+@keyframes loginFadeLeft{
+    from{ opacity:0; transform:translateX(-32px); }
+    to{ opacity:1; transform:translateX(0); }
+}
+
+/* ==========================================================
+   MODAL DIALOG (Kontak Admin)
+   ========================================================== */
+
+.login-modal {
+    position: fixed;
+    inset: 0;
+    z-index: 100;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 20px;
+    animation: modalFadeIn 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.login-modal__overlay {
+    position: absolute;
+    inset: 0;
+    background: rgba(8, 38, 20, 0.45);
+    backdrop-filter: blur(12px);
+    transition: opacity 0.3s;
+}
+
+.login-modal__card {
+    position: relative;
+    z-index: 10;
+    background: rgba(255, 255, 255, 0.95);
+    border-radius: 28px;
+    width: 100%;
+    max-width: 440px;
+    padding: 36px;
+    box-shadow: 0 30px 60px -15px rgba(9, 58, 33, 0.3), 
+                0 0 0 1px rgba(18, 72, 39, 0.05);
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    animation: modalScaleUp 0.35s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+/* Close button (top right) */
+.login-modal__close-btn {
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    background: rgba(0, 0, 0, 0.04);
+    border: none;
+    cursor: pointer;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #4B5563;
+    transition: background 0.15s, color 0.15s, transform 0.15s;
+}
+
+.login-modal__close-btn:hover {
+    background: rgba(0, 0, 0, 0.08);
+    color: #111827;
+    transform: rotate(90deg);
+}
+
+/* Decorative circle icon at the top */
+.login-modal__icon-decor {
+    width: 64px;
+    height: 64px;
+    border-radius: 50%;
+    background: rgba(18, 72, 39, 0.08);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    flex-shrink: 0;
+}
+
+.login-modal__header {
+    text-align: center;
+    margin-bottom: 24px;
+}
+
+.login-modal__header h3 {
+    font-size: 21px;
+    font-weight: 850;
+    color: #124827;
+    margin-bottom: 8px;
+    letter-spacing: -0.5px;
+}
+
+.login-modal__header p {
+    font-size: 13.5px;
+    color: #6B7280;
+    line-height: 1.5;
+}
+
+.login-modal__body {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    width: 100%;
+    margin-bottom: 24px;
+}
+
+/* Interactive link cards */
+.contact-link {
+    display: flex;
+    align-items: center;
+    padding: 16px;
+    border-radius: 16px;
+    text-decoration: none;
+    transition: background 0.2s, border-color 0.2s, transform 0.15s;
+    border: 1px solid transparent;
+}
+
+.contact-link--wa {
+    background: rgba(34, 197, 94, 0.06);
+    border-color: rgba(34, 197, 94, 0.15);
+    color: #16A34A;
+}
+
+.contact-link--wa:hover {
+    background: rgba(34, 197, 94, 0.12);
+    border-color: rgba(34, 197, 94, 0.25);
+    transform: translateY(-2px);
+}
+
+.contact-link--email {
+    background: rgba(59, 130, 246, 0.06);
+    border-color: rgba(59, 130, 246, 0.15);
+    color: #2563EB;
+}
+
+.contact-link--email:hover {
+    background: rgba(59, 130, 246, 0.12);
+    border-color: rgba(59, 130, 246, 0.25);
+    transform: translateY(-2px);
+}
+
+.contact-link__text {
+    flex: 1;
+    margin-left: 14px;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.contact-link__title {
+    font-size: 11px;
+    text-transform: uppercase;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+    color: #9CA3AF;
+    margin-bottom: 2px;
+}
+
+.contact-link__val {
+    font-size: 14px;
+    font-weight: 700;
+    color: #1F2937;
+}
+
+.contact-link__chevron {
+    color: #9CA3AF;
+    opacity: 0.6;
+    transition: transform 0.2s, color 0.2s;
+}
+
+.contact-link:hover .contact-link__chevron {
+    color: #1F2937;
+    transform: translateX(4px);
+    opacity: 1;
+}
+
+.login-modal__footer {
+    width: 100%;
+}
+
+.login-modal__btn-primary {
+    width: 100%;
+    background: #124827;
+    color: #FFFFFF;
+    height: 48px;
+    border-radius: 12px;
+    font-size: 15px;
+    font-weight: 750;
+    cursor: pointer;
+    border: none;
+    transition: background 0.15s, box-shadow 0.15s, transform 0.1s;
+}
+
+.login-modal__btn-primary:hover {
+    background: #0d3620;
+    box-shadow: 0 4px 12px rgba(18, 72, 39, 0.2);
+    transform: translateY(-1px);
+}
+
+.login-modal__btn-primary:active {
+    transform: translateY(0);
+}
+
+@keyframes modalFadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modalScaleUp {
+    from { transform: scale(0.95); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}

@@ -1,0 +1,11 @@
+{
+    "agents": [
+        "claude_code"
+    ],
+    "cloud": true,
+    "skills": [
+        "laravel-best-practices",
+        "tailwindcss-development",
+        "deploying-laravel-cloud"
+    ]
+}

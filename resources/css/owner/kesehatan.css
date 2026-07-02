@@ -1,0 +1,439 @@
+/* ============================================================
+   Data Sapi / Kesehatan Sapi Styles — Figma node 97-203
+   ============================================================ */
+
+/* Page card wrapper — connects seamlessly with filter bar above */
+.ks-card {
+    background: #FFFFFF;
+    border-radius: 0 0 16px 16px;
+    border: 1px solid #E2E8F0;
+    border-top: none;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.06);
+    overflow: hidden;
+    margin-bottom: 0;
+}
+
+/* Card top header */
+.ks-card__header {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    padding: 28px 32px 20px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.ks-card__heading {
+    flex: 1;
+    min-width: 0;
+}
+
+.ks-card__title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #111827;
+    margin: 0 0 4px;
+}
+
+.ks-card__subtitle {
+    font-size: 13px;
+    font-weight: 400;
+    color: #6B7280;
+    margin: 0;
+}
+
+/* Date selector — right side */
+.ks-date-selector {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 15px;
+    font-weight: 700;
+    color: #111827;
+    cursor: pointer;
+    white-space: nowrap;
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    padding: 0;
+    font-family: 'Manrope', sans-serif;
+    transition: color 0.15s;
+}
+
+.ks-date-selector:hover {
+    color: #124827;
+}
+
+.ks-date-selector__arrow {
+    font-size: 16px;
+    color: #124827;
+    font-weight: 900;
+}
+
+/* Filter container — sits between page-header and ks-card */
+.ks-filters {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    background: #FFFFFF;
+    border-radius: 14px 14px 0 0;
+    border: 1px solid #E2E8F0;
+    border-bottom: none;
+    padding: 14px 20px;
+    gap: 16px;
+    flex-wrap: wrap;
+}
+
+.ks-filter-tabs {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    flex-wrap: wrap;
+}
+
+.ks-tab {
+    padding: 8px 18px;
+    border-radius: 8px;
+    font-size: 13.5px;
+    font-weight: 700;
+    border: none;
+    cursor: pointer;
+    transition: background 0.15s, color 0.15s, transform 0.1s;
+    font-family: 'Manrope', sans-serif;
+    white-space: nowrap;
+}
+
+.ks-tab--active {
+    background: #124827;
+    color: #FFFFFF;
+}
+
+.ks-tab--normal {
+    background: transparent;
+    color: #111827;
+}
+
+.ks-tab--normal:hover {
+    background: #F3F4F6;
+}
+
+.ks-tab--warning {
+    background: transparent;
+    color: #D97706;
+}
+
+.ks-tab--warning:hover {
+    background: #FFFBEB;
+}
+
+.ks-tab--danger {
+    background: transparent;
+    color: #DC2626;
+}
+
+.ks-tab--danger:hover {
+    background: #FEF2F2;
+}
+
+.ks-tab--active:hover {
+    background: #0e3a1f;
+    transform: translateY(-1px);
+}
+
+/* Filter button */
+.ks-filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    background: none;
+    border: none;
+    cursor: pointer;
+    font-size: 14px;
+    font-weight: 700;
+    color: #374151;
+    font-family: 'Manrope', sans-serif;
+    padding: 6px 10px;
+    border-radius: 8px;
+    transition: background 0.15s;
+}
+
+.ks-filter-btn:hover {
+    background: #F3F4F6;
+}
+
+.ks-filter-btn svg {
+    flex-shrink: 0;
+}
+
+/* Divider */
+.ks-divider {
+    border: none;
+    border-top: 1px solid #F3F4F6;
+    margin: 0;
+}
+
+/* Data Table */
+.ks-table-wrap {
+    overflow-x: auto;
+}
+
+.ks-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-family: 'Manrope', sans-serif;
+}
+
+.ks-table thead th {
+    padding: 14px 24px;
+    font-size: 13px;
+    font-weight: 700;
+    color: #374151;
+    text-align: left;
+    background: #FAFAFA;
+    border-bottom: 1px solid #F3F4F6;
+    white-space: nowrap;
+}
+
+.ks-table thead th:first-child {
+    border-radius: 0;
+    padding-left: 32px;
+}
+
+.ks-table thead th:last-child {
+    padding-right: 32px;
+}
+
+.ks-table tbody tr {
+    border-bottom: 1px solid #F9FAFB;
+    transition: background 0.12s;
+}
+
+.ks-table tbody tr:last-child {
+    border-bottom: none;
+}
+
+.ks-table tbody tr:hover {
+    background: #F9FAFB;
+}
+
+.ks-table tbody td {
+    padding: 18px 24px;
+    font-size: 14px;
+    color: #111827;
+    vertical-align: middle;
+}
+
+.ks-table tbody td:first-child {
+    padding-left: 32px;
+}
+
+.ks-table tbody td:last-child {
+    padding-right: 32px;
+}
+
+/* Daftar Sapi cell */
+.ks-cow-cell {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.ks-cow-thumb {
+    width: 52px;
+    height: 52px;
+    border-radius: 10px;
+    background: #124827;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.ks-cow-name {
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 2px;
+    line-height: 1.2;
+}
+
+.ks-cow-id {
+    font-size: 12px;
+    font-weight: 400;
+    color: #9CA3AF;
+    margin: 0;
+    line-height: 1.2;
+}
+
+/* Health indicator text */
+.ks-val {
+    font-weight: 700;
+    font-size: 14px;
+}
+
+.ks-val--good {
+    color: #16A34A;
+}
+
+.ks-val--normal {
+    color: #124827;
+    font-weight: 700;
+}
+
+.ks-val--active {
+    color: #16A34A;
+}
+
+.ks-val--low {
+    color: #D97706;
+}
+
+.ks-val--lethargic {
+    color: #DC2626;
+}
+
+/* Catatan Terakhir */
+.ks-note-date {
+    font-size: 12.5px;
+    font-weight: 600;
+    color: #6B7280;
+    display: block;
+    margin-bottom: 2px;
+}
+
+.ks-note-text {
+    font-size: 13px;
+    font-weight: 400;
+    color: #9CA3AF;
+    display: block;
+}
+
+/* Status badges */
+.ks-status {
+    display: inline-flex;
+    align-items: center;
+    font-size: 13px;
+    font-weight: 700;
+    white-space: nowrap;
+}
+
+.ks-status--normal {
+    color: #124827;
+}
+
+.ks-status--pemantauan {
+    color: #D97706;
+}
+
+.ks-status--tindakan {
+    color: #DC2626;
+}
+
+/* Empty state */
+.ks-empty {
+    text-align: center;
+    padding: 64px 24px;
+    color: #9CA3AF;
+}
+
+.ks-empty__icon {
+    font-size: 44px;
+    margin-bottom: 14px;
+}
+
+.ks-empty__title {
+    font-size: 17px;
+    font-weight: 700;
+    color: #374151;
+    margin: 0 0 6px;
+}
+
+.ks-empty__sub {
+    font-size: 13px;
+    font-weight: 400;
+    margin: 0;
+}
+
+/* ── Pagination footer ──────────────────────────────────── */
+.ks-pagination-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 16px 32px 20px;
+    border-top: 1px solid #F3F4F6;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+
+.ks-pagination-info {
+    font-size: 13px;
+    font-weight: 600;
+    color: #6B7280;
+    white-space: nowrap;
+}
+
+.ks-pagination-nav {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.ks-page-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 34px;
+    height: 34px;
+    padding: 0 6px;
+    border-radius: 8px;
+    border: 1.5px solid #E5E7EB;
+    background: #FFFFFF;
+    font-size: 13px;
+    font-weight: 700;
+    color: #374151;
+    cursor: pointer;
+    font-family: 'Manrope', sans-serif;
+    transition: background 0.15s, color 0.15s, border-color 0.15s, transform 0.1s;
+    user-select: none;
+    line-height: 1;
+}
+
+.ks-page-btn:hover:not(:disabled):not(.ks-page-btn--active) {
+    background: #F3F4F6;
+    border-color: #D1D5DB;
+    transform: translateY(-1px);
+}
+
+.ks-page-btn--active {
+    background: #124827;
+    border-color: #124827;
+    color: #FFFFFF;
+    cursor: default;
+}
+
+.ks-page-btn--arrow {
+    color: #374151;
+    font-size: 15px;
+    font-weight: 900;
+}
+
+.ks-page-btn--arrow:disabled {
+    opacity: 0.3;
+    cursor: not-allowed;
+    transform: none;
+}
+
+.ks-page-btn--ellipsis {
+    border-color: transparent;
+    background: transparent;
+    cursor: default;
+    color: #9CA3AF;
+    font-size: 14px;
+    letter-spacing: 1px;
+}
+
+.ks-page-btn--ellipsis:hover {
+    background: transparent;
+    transform: none;
+}
