@@ -478,8 +478,12 @@
 
                 @forelse($sapis as $sapi)
                     @php
-                        $pagi = $sapi->produksi->where('sesi', 'pagi')->first()?->jumlah_susu;
-                        $sore = $sapi->produksi->where('sesi', 'sore')->first()?->jumlah_susu;
+                        $pagiRec = $sapi->produksi->where('sesi', 'pagi')->first();
+                        $soreRec = $sapi->produksi->where('sesi', 'sore')->first();
+                        $pagi = $pagiRec?->jumlah_susu;
+                        $sore = $soreRec?->jumlah_susu;
+                        $pagiId = $pagiRec?->id ?? '';
+                        $soreId = $soreRec?->id ?? '';
                         $total = ($pagi ?? 0) + ($sore ?? 0);
                         
                         $sessionAttr = 'none';
@@ -512,7 +516,7 @@
                             </span>
                         </td>
                         <td>
-                            <button type="button" class="ps-edit-btn" onclick="openEditProduksiModal({{ $sapi->id }}, '{{ $pagi ?? '' }}', '{{ $sore ?? '' }}')">
+                            <button type="button" class="ps-edit-btn" onclick="openEditProduksiModal({{ $sapi->id }}, '{{ $pagi ?? '' }}', '{{ $sore ?? '' }}', '{{ $pagiId }}', '{{ $soreId }}')">
                                 <img src="{{ asset('images/icons/iconedit.svg') }}" alt="Edit">
                             </button>
                         </td>
@@ -647,13 +651,20 @@
             </div>
 
             <!-- Form Actions -->
-            <div class="obs-form-actions" style="margin-top: 20px; display: flex; gap: 12px;">
+            <div class="obs-form-actions" style="margin-top: 20px; display: flex; gap: 12px; justify-content: space-between;">
                 <button type="button" class="obs-btn-cancel" onclick="closeProduksiModal()" style="flex: 1; padding: 10px 20px; border: 1.5px solid #D1D5DB; background: #FFFFFF; color: #111827; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; text-align: center;">Batal</button>
-                <button type="submit" class="obs-btn-save" style="flex: 1.2; padding: 10.5px 20px; border: none; background: #124827; color: #FFFFFF; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; text-align: center;">Simpan Perubahan</button>
+                <button type="button" id="btn-delete-produksi" class="obs-btn-cancel" onclick="deleteActiveProduksi()" style="flex: 1; padding: 10px 20px; border: none; background: #DC2626; color: #FFFFFF; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; text-align: center; display: none;">Hapus</button>
+                <button type="submit" class="obs-btn-save" style="flex: 1.2; padding: 10.5px 20px; border: none; background: #124827; color: #FFFFFF; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; text-align: center;">Simpan</button>
             </div>
         </form>
     </div>
 </div>
+
+{{-- Hidden form for delete action --}}
+<form id="delete-produksi-form" action="" method="POST" style="display: none;">
+    @csrf
+    @method('DELETE')
+</form>
 
 @endsection
 
@@ -823,27 +834,36 @@
     }
     window.setSession = setSession;
 
+    let activePagiId = '';
+    let activeSoreId = '';
+
     function updateSessionRadioDots() {
         const pagiRadio = document.getElementById('prodSesiPagi');
         const soreRadio = document.getElementById('prodSesiSore');
         const dotPagi = document.getElementById('dotPagi');
         const dotSore = document.getElementById('dotSore');
+        const deleteBtn = document.getElementById('btn-delete-produksi');
 
         if (pagiRadio.checked) {
             dotPagi.style.background = '#124827';
             dotPagi.style.borderColor = '#124827';
             dotSore.style.background = 'transparent';
             dotSore.style.borderColor = '#9CA3AF';
+            deleteBtn.style.display = activePagiId ? 'block' : 'none';
         } else if (soreRadio.checked) {
             dotSore.style.background = '#124827';
             dotSore.style.borderColor = '#124827';
             dotPagi.style.background = 'transparent';
             dotPagi.style.borderColor = '#9CA3AF';
+            deleteBtn.style.display = activeSoreId ? 'block' : 'none';
         }
     }
     window.updateSessionRadioDots = updateSessionRadioDots;
 
-    window.openEditProduksiModal = function(sapiId, pagiVal, soreVal) {
+    window.openEditProduksiModal = function(sapiId, pagiVal, soreVal, pagiId, soreId) {
+        activePagiId = pagiId || '';
+        activeSoreId = soreId || '';
+        
         document.getElementById('prodSapiSelect').value = sapiId;
 
         // Set date to the currently selected date
@@ -864,6 +884,18 @@
 
     window.closeProduksiModal = function() {
         document.getElementById('produksiModal').style.display = 'none';
+    };
+
+    window.deleteActiveProduksi = function() {
+        const pagiRadio = document.getElementById('prodSesiPagi');
+        const activeId = pagiRadio.checked ? activePagiId : activeSoreId;
+        if (!activeId) return;
+
+        if (confirm('Hapus data produksi untuk sesi ini?')) {
+            const form = document.getElementById('delete-produksi-form');
+            form.action = `/owner/produksi/${activeId}`;
+            form.submit();
+        }
     };
 
     render();

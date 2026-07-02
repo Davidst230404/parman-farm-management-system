@@ -122,5 +122,11 @@ class ProduksiController extends Controller
     public function show($id) { return view('owner.produksi.show', compact('id')); }
     public function edit($id) { return view('owner.produksi.edit', compact('id')); }
     public function update(\Illuminate\Http\Request $request, $id) { return redirect()->route('owner.produksi.index'); }
-    public function destroy($id) { return redirect()->route('owner.produksi.index'); }
+    public function destroy($id)
+    {
+        $produksi = Produksi::findOrFail($id);
+        $produksi->delete();
+
+        return redirect()->route('owner.produksi.index')->with('success', 'Data produksi berhasil dihapus.');
+    }
 }

@@ -1062,6 +1062,14 @@
                                         </button>
                                     </form>
                                 @endif
+                                <form action="{{ route('owner.sapi.destroy', $sapi->id) }}" method="POST" onsubmit="return confirm('Hapus Sapi ini? Semua data observasi & produksi sapi ini juga akan dihapus secara permanen.')">
+                                    @csrf
+                                    @method('DELETE')
+                                    <button type="submit" class="ks-dropdown-item ks-dropdown-item--danger" style="border-top: 1px solid #F3F4F6;">
+                                        <img src="{{ asset('images/icons/icontrashmerah.svg') }}" alt="" style="width:14px; height:14px; margin-right:8px;">
+                                        Hapus Sapi
+                                    </button>
+                                </form>
                             </div>
                         </td>
                     </tr>

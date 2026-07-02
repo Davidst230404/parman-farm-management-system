@@ -45,5 +45,11 @@ class SapiController extends Controller
     public function show($id) { return view('owner.sapi.show', compact('id')); }
     public function edit($id) { return view('owner.sapi.edit', compact('id')); }
     public function update(Request $request, $id) { return redirect()->route('owner.sapi.index'); }
-    public function destroy($id) { return redirect()->route('owner.sapi.index'); }
+    public function destroy($id)
+    {
+        $sapi = Sapi::findOrFail($id);
+        $sapi->delete();
+
+        return redirect()->route('owner.kesehatan.index')->with('success', 'Sapi berhasil dihapus.');
+    }
 }

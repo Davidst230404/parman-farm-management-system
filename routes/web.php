@@ -25,6 +25,9 @@ use Illuminate\Support\Facades\Route;
 // Halaman utama landing page
 Route::get('/', [LandingController::class, 'index'])->name('landing');
 
+// Public API: real-time production stats for landing page (no auth needed)
+Route::get('/api/landing-stats', [LandingController::class, 'stats'])->name('landing.stats');
+
 // Fallback dashboard Breeze (redirect ke owner atau karyawan dashboard berdasarkan role)
 Route::get('/dashboard', function () {
     if (auth()->user()->isKaryawan()) {

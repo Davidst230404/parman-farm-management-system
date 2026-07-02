@@ -790,6 +790,7 @@
                     <th>Total</th>
                     <th>Metode Pembayaran</th>
                     <th>Status</th>
+                    <th>Aksi</th>
                 </tr>
             </thead>
             <tbody id="pj-table-body">
@@ -1283,6 +1284,11 @@
                 <td class="pj-bold">${formatRupiah(s.volume * s.harga)}</td>
                 <td>${s.metode}</td>
                 <td><span class="pj-badge ${badgeClass}">${s.status}</span></td>
+                <td>
+                    <button class="pj-action-btn" onclick="deleteSales(${s.id})" title="Hapus Transaksi" style="border: 1.5px solid #E5E7EB; border-radius: 8px; width: 34px; height: 34px; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s;">
+                        <img src="{{ asset('images/icons/icontrashmerah.svg') }}" style="width: 18px; height: 18px;" alt="Hapus">
+                    </button>
+                </td>
             `;
             tbody.appendChild(tr);
         });
@@ -1551,6 +1557,35 @@
             .catch(err => {
                 console.error(err);
                 alert('Terjadi kesalahan saat menghapus mitra.');
+            });
+        }
+    }
+
+    window.deleteSales = function(saleId) {
+        if (confirm('Apakah Anda yakin ingin menghapus transaksi penjualan ini?')) {
+            fetch(`/owner/penjualan/${saleId}`, {
+                method: 'DELETE',
+                headers: {
+                    'X-CSRF-TOKEN': csrfToken,
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json'
+                }
+            })
+            .then(res => res.json())
+            .then(data => {
+                if (data.success) {
+                    const idx = sales.findIndex(s => s.id === saleId);
+                    if (idx !== -1) {
+                        sales.splice(idx, 1);
+                        saveState();
+                    }
+                } else {
+                    alert(data.message || 'Gagal menghapus transaksi penjualan.');
+                }
+            })
+            .catch(err => {
+                console.error(err);
+                alert('Terjadi kesalahan saat menghapus transaksi penjualan.');
             });
         }
     }
