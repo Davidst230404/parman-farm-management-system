@@ -904,7 +904,7 @@
 <div class="ks-stats">
 
     <div class="ks-stat-card">
-        <img src="{{ Vite::asset('resources/images/icons/iconsapihijaucarddashboard.svg') }}" alt="" class="ks-stat-card__icon">
+        <img src="{{ asset('images/icons/iconsapihijaucarddashboard.svg') }}" alt="" class="ks-stat-card__icon">
         <div>
             <div class="ks-stat-card__value ks-stat-card__value--green">{{ $countSemua }}</div>
             <div class="ks-stat-card__label">Total Sapi</div>
@@ -913,7 +913,7 @@
     </div>
 
     <div class="ks-stat-card">
-        <img src="{{ Vite::asset('resources/images/icons/hearthijau.png') }}" alt="" class="ks-stat-card__icon">
+        <img src="{{ asset('images/icons/hearthijau.png') }}" alt="" class="ks-stat-card__icon">
         <div>
             <div class="ks-stat-card__value ks-stat-card__value--green">{{ $countNormal }}</div>
             <div class="ks-stat-card__label">Sapi Sehat</div>
@@ -922,7 +922,7 @@
     </div>
 
     <div class="ks-stat-card">
-        <img src="{{ Vite::asset('resources/images/icons/heart kuning.png') }}" alt="" class="ks-stat-card__icon">
+        <img src="{{ asset('images/icons/heart kuning.png') }}" alt="" class="ks-stat-card__icon">
         <div>
             <div class="ks-stat-card__value ks-stat-card__value--yellow">{{ $countPemantauan }}</div>
             <div class="ks-stat-card__label">Perlu Pemantauan</div>
@@ -931,7 +931,7 @@
     </div>
 
     <div class="ks-stat-card">
-        <img src="{{ Vite::asset('resources/images/icons/heartmerah.png') }}" alt="" class="ks-stat-card__icon">
+        <img src="{{ asset('images/icons/heartmerah.png') }}" alt="" class="ks-stat-card__icon">
         <div>
             <div class="ks-stat-card__value ks-stat-card__value--red">{{ $countTindakan }}</div>
             <div class="ks-stat-card__label">Perlu Tindakan</div>
@@ -949,7 +949,7 @@
         <h2 class="ks-data-header__title">Data Sapi</h2>
         <div class="ks-data-header__actions">
             <button class="ks-btn-filter">
-                <img src="{{ Vite::asset('resources/images/icons/iconfilter.svg') }}" alt="" class="ks-btn-filter__icon">
+                <img src="{{ asset('images/icons/iconfilter.svg') }}" alt="" class="ks-btn-filter__icon">
                 Filter
             </button>
             <button type="button" class="ks-btn-primary" onclick="openSapiModal()">
@@ -1010,7 +1010,7 @@
                     <tr class="ks-row" data-status="{{ $statusClass }}">
                         <td>
                             <div class="ks-cow-cell">
-                                <img src="{{ Vite::asset('resources/images/icons/icondatasapi.svg') }}" alt="" class="ks-cow-thumb-img">
+                                <img src="{{ asset('images/icons/icondatasapi.svg') }}" alt="" class="ks-cow-thumb-img">
                                 <div>
                                     <div class="ks-cow-name">{{ $sapi->name }}</div>
                                     <div class="ks-cow-id">{{ $sapi->code }}</div>
@@ -1045,11 +1045,11 @@
                         </td>
                         <td style="position: relative;">
                             <button type="button" class="ks-btn-edit" title="Aksi" onclick="toggleDropdown(this, event)">
-                                <img src="{{ Vite::asset('resources/images/icons/iconedit.svg') }}" alt="Aksi" class="ks-btn-edit__icon">
+                                <img src="{{ asset('images/icons/iconedit.svg') }}" alt="Aksi" class="ks-btn-edit__icon">
                             </button>
                             <div class="ks-action-dropdown" style="display:none;">
                                 <button type="button" class="ks-dropdown-item" onclick="openEditModal({{ $sapi->id }}, '{{ $sapi->name }}', '{{ $sapi->code }}', '{{ $latest ? $latest->id : '' }}', '{{ $latest ? $latest->nafsu_makan : 'Baik' }}', '{{ $latest ? $latest->kondisi_susu : 'Normal' }}', '{{ $latest ? $latest->perilaku : 'Aktif' }}', '{{ $latest ? $latest->status : 'Normal' }}', '{{ $latest ? $latest->catatan : '' }}', '{{ $latest ? $latest->created_at->format('Y-m-d') : now()->format('Y-m-d') }}', '{{ $latest ? $latest->created_at->format('H:i') : now()->format('H:i') }}')">
-                                    <img src="{{ Vite::asset('resources/images/icons/iconpensil2.svg') }}" alt="" style="width:14px; height:14px; margin-right:8px;">
+                                    <img src="{{ asset('images/icons/iconpensil2.svg') }}" alt="" style="width:14px; height:14px; margin-right:8px;">
                                     Edit Observasi
                                 </button>
                                 @if($latest)
@@ -1057,7 +1057,7 @@
                                         @csrf
                                         @method('DELETE')
                                         <button type="submit" class="ks-dropdown-item ks-dropdown-item--danger">
-                                            <img src="{{ Vite::asset('resources/images/icons/icontrashmerah.svg') }}" alt="" style="width:14px; height:14px; margin-right:8px;">
+                                            <img src="{{ asset('images/icons/icontrashmerah.svg') }}" alt="" style="width:14px; height:14px; margin-right:8px;">
                                             Hapus Observasi
                                         </button>
                                     </form>
@@ -1093,7 +1093,7 @@
     <div class="obs-modal-content">
         <div class="obs-modal-header">
             <h3 class="obs-modal-title">
-                <img src="{{ Vite::asset('resources/images/icons/iconpensil2.svg') }}" style="width:20px; height:20px; margin-right:8px; vertical-align:middle;">
+                <img src="{{ asset('images/icons/iconpensil2.svg') }}" style="width:20px; height:20px; margin-right:8px; vertical-align:middle;">
                 <span id="modalTitleText" style="vertical-align:middle;">Edit Observasi</span>
             </h3>
             <button type="button" class="obs-modal-close" onclick="closeModal()">&times;</button>
@@ -1107,7 +1107,7 @@
                 <label>Sapi</label>
                 <div class="obs-input-wrapper">
                     <div class="obs-left-icon">
-                        <img src="{{ Vite::asset('resources/images/icons/icondatasapi.svg') }}" alt="">
+                        <img src="{{ asset('images/icons/icondatasapi.svg') }}" alt="">
                     </div>
                     <input type="text" id="formSapiNameText" disabled style="background:#E5E7EB; border-color:#7F7F7F;">
                 </div>
@@ -1118,7 +1118,7 @@
                 <div class="obs-datetime-wrap">
                     <div class="obs-input-wrapper">
                         <div class="obs-left-icon">
-                            <img src="{{ Vite::asset('resources/images/icons/icon kalender.svg') }}" alt="">
+                            <img src="{{ asset('images/icons/icon kalender.svg') }}" alt="">
                         </div>
                         <input type="date" name="tanggal" id="formTanggal" required>
                     </div>
@@ -1200,7 +1200,7 @@
     <div class="obs-modal-content" style="background: #E5E7EB; border: 1px solid #7F7F7F; border-radius: 12px; max-width: 400px; padding: 24px;">
         <div class="obs-modal-header" style="margin-bottom: 16px;">
             <h3 class="obs-modal-title" style="font-size: 16.5px; font-weight: 800; color: #000000; display: flex; align-items: center; gap: 8px;">
-                <img src="{{ Vite::asset('resources/images/icons/iconpensil2.svg') }}" style="width:16px; height:16px;" alt="">
+                <img src="{{ asset('images/icons/iconpensil2.svg') }}" style="width:16px; height:16px;" alt="">
                 Tambah Data Sapi
             </h3>
             <button type="button" class="obs-modal-close" onclick="closeSapiModal()" style="font-size: 24px; font-weight: 800; color: #000000;">&times;</button>

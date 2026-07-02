@@ -423,7 +423,7 @@
                 <div style="position: relative; display: flex; align-items: center; background: #FFFFFF; border: 1.5px solid #D1D5DB; border-radius: 8px; height: 42px; padding: 0 14px; box-sizing: border-box; flex: 1; cursor: pointer;">
                     <span id="label-start-date" style="font-weight: 700; color: #111827; font-size: 13.5px;">{{ Carbon\Carbon::today()->subDays(6)->locale('id')->isoFormat('D MMMM YYYY') }}</span>
                     <input type="date" id="filter-start-date" value="{{ Carbon\Carbon::today()->subDays(6)->format('Y-m-d') }}" style="position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;">
-                    <img src="{{ Vite::asset('resources/images/icons/icon kalender.svg') }}" style="position: absolute; right: 14px; width: 18px; height: 18px; pointer-events: none;" alt="">
+                    <img src="{{ asset('images/icons/icon kalender.svg') }}" style="position: absolute; right: 14px; width: 18px; height: 18px; pointer-events: none;" alt="">
                 </div>
                 
                 <span class="lr-filter-sep" style="font-size: 13px; font-weight: 700; color: #374151;">sd</span>
@@ -432,7 +432,7 @@
                 <div style="position: relative; display: flex; align-items: center; background: #FFFFFF; border: 1.5px solid #D1D5DB; border-radius: 8px; height: 42px; padding: 0 14px; box-sizing: border-box; flex: 1; cursor: pointer;">
                     <span id="label-end-date" style="font-weight: 700; color: #111827; font-size: 13.5px;">{{ Carbon\Carbon::today()->locale('id')->isoFormat('D MMMM YYYY') }}</span>
                     <input type="date" id="filter-end-date" value="{{ Carbon\Carbon::today()->format('Y-m-d') }}" style="position: absolute; inset: 0; opacity: 0; cursor: pointer; width: 100%; height: 100%;">
-                    <img src="{{ Vite::asset('resources/images/icons/icon kalender.svg') }}" style="position: absolute; right: 14px; width: 18px; height: 18px; pointer-events: none;" alt="">
+                    <img src="{{ asset('images/icons/icon kalender.svg') }}" style="position: absolute; right: 14px; width: 18px; height: 18px; pointer-events: none;" alt="">
                 </div>
                 
             </div>

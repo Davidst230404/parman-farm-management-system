@@ -101,7 +101,7 @@
             @forelse($latestActivities as $activity)
                 <div class="activity-item">
                     <div class="activity-item__dot">
-                        <img src="{{ Vite::asset('resources/images/icons/iconplus.svg') }}" alt="" style="width:16px; height:16px; filter: brightness(0) invert(1);">
+                        <img src="{{ asset('images/icons/iconplus.svg') }}" alt="" style="width:16px; height:16px; filter: brightness(0) invert(1);">
                     </div>
                     <div style="flex:1;">
                         <p class="activity-item__text">{{ $activity->sapi->name }} ({{ $activity->sapi->code }}) — <span class="kd-badge @if($activity->status === 'Normal') kd-badge--success @else kd-badge--warning @endif" style="font-size:10px; padding:2px 8px;">{{ $activity->status }}</span></p>
@@ -176,7 +176,7 @@
         </div>
         <div class="mitra-box">
             <div class="mitra-box__logo">
-                <img src="{{ Vite::asset('resources/images/logo/logogreenfield.svg') }}"
+                <img src="{{ asset('images/logo/logogreenfield.svg') }}"
                      alt="Greenfields Logo">
             </div>
             <div>

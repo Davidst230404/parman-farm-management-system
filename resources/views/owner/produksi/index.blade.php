@@ -396,7 +396,7 @@
     {{-- Total Sapi --}}
     <div class="ps-stat-card ps-stat-card--dark">
         <div class="ps-stat-icon-wrap">
-            <img src="{{ Vite::asset('resources/images/icons/iconsapihijaucarddashboard.svg') }}" alt="Total Sapi">
+            <img src="{{ asset('images/icons/iconsapihijaucarddashboard.svg') }}" alt="Total Sapi">
         </div>
         <div class="ps-stat-content">
             <div class="ps-stat-value">{{ $totalSapi }}</div>
@@ -408,7 +408,7 @@
     {{-- Sapi Sehat --}}
     <div class="ps-stat-card ps-stat-card--green">
         <div class="ps-stat-icon-wrap">
-            <img src="{{ Vite::asset('resources/images/icons/tamengplus.svg') }}" alt="Sapi Sehat">
+            <img src="{{ asset('images/icons/tamengplus.svg') }}" alt="Sapi Sehat">
         </div>
         <div class="ps-stat-content">
             <div class="ps-stat-value">{{ $sapiSehat }}</div>
@@ -421,7 +421,7 @@
     {{-- Sudah Diperah --}}
     <div class="ps-stat-card ps-stat-card--blue">
         <div class="ps-stat-icon-wrap">
-            <img src="{{ Vite::asset('resources/images/icons/iconsusunyasapi.svg') }}" alt="Sudah Diperah">
+            <img src="{{ asset('images/icons/iconsusunyasapi.svg') }}" alt="Sudah Diperah">
         </div>
         <div class="ps-stat-content">
             <div class="ps-stat-value" id="stat-sudah-diperah">{{ $sudahDiperah }}</div>
@@ -433,7 +433,7 @@
     {{-- Terjual --}}
     <div class="ps-stat-card ps-stat-card--purple">
         <div class="ps-stat-icon-wrap">
-            <img src="{{ Vite::asset('resources/images/icons/icondogtag.svg') }}" alt="Terjual">
+            <img src="{{ asset('images/icons/icondogtag.svg') }}" alt="Terjual">
         </div>
         <div class="ps-stat-content">
             <div class="ps-stat-value">{{ number_format($terjualHariIniVolume, 0, ',', '.') }}<span class="ps-stat-unit" style="font-size: 28px; font-weight: 800; vertical-align: baseline; margin-left: 2px;">L</span></div>
@@ -455,7 +455,7 @@
                 onclick="setSession(this,'sore')">Sore</button>
     </div>
     <button class="ps-filter-btn" id="btn-filter" aria-label="Filter">
-        <img src="{{ Vite::asset('resources/images/icons/iconfilter.svg') }}" alt="Filter">
+        <img src="{{ asset('images/icons/iconfilter.svg') }}" alt="Filter">
         Filter
     </button>
 </div>
@@ -496,7 +496,7 @@
                     <tr class="ps-row" data-session="{{ $sessionAttr }}" data-pagi="{{ $pagi ?? '' }}" data-sore="{{ $sore ?? '' }}" data-total="{{ $total ?? 0 }}" data-name="{{ $sapi->name }}" data-code="{{ $sapi->code }}">
                         <td>
                             <div class="ps-cow-cell">
-                                <img src="{{ Vite::asset('resources/images/icons/icondatasapi.svg') }}" alt="" style="width: 32px; height: 32px; object-fit: contain;">
+                                <img src="{{ asset('images/icons/icondatasapi.svg') }}" alt="" style="width: 32px; height: 32px; object-fit: contain;">
                                 <div>
                                     <div style="font-size: 16px; font-weight: 800; color: #111827; margin-bottom: 2px;">{{ $sapi->name }}</div>
                                     <div style="font-size: 13px; font-weight: 600; color: #9CA3AF;">({{ $sapi->code }})</div>
@@ -513,7 +513,7 @@
                         </td>
                         <td>
                             <button type="button" class="ps-edit-btn" onclick="openEditProduksiModal({{ $sapi->id }}, '{{ $pagi ?? '' }}', '{{ $sore ?? '' }}')">
-                                <img src="{{ Vite::asset('resources/images/icons/iconedit.svg') }}" alt="Edit">
+                                <img src="{{ asset('images/icons/iconedit.svg') }}" alt="Edit">
                             </button>
                         </td>
                     </tr>
@@ -583,7 +583,7 @@
     <div class="obs-modal-content" style="background: #D9D9D9; border: 1px solid #7F7F7F; border-radius: 12px; max-width: 380px; padding: 24px; width: 100%; box-sizing: border-box; font-family: 'Manrope', sans-serif;">
         <div class="obs-modal-header" style="margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
             <h3 class="obs-modal-title" style="font-size: 16.5px; font-weight: 800; color: #000000; display: flex; align-items: center; gap: 8px; margin: 0;">
-                <img src="{{ Vite::asset('resources/images/icons/iconpensil2.svg') }}" style="width:16px; height:16px;" alt="">
+                <img src="{{ asset('images/icons/iconpensil2.svg') }}" style="width:16px; height:16px;" alt="">
                 Edit Produksi Susu
             </h3>
             <button type="button" class="obs-modal-close" onclick="closeProduksiModal()" style="font-size: 20px; font-weight: 900; color: #000000; border: none; background: none; cursor: pointer; padding: 0; line-height: 1;">X</button>
@@ -595,7 +595,7 @@
             <div class="obs-form-group" style="margin-bottom: 12px;">
                 <label style="font-size: 13px; font-weight: 700; color: #6B7280; margin-bottom: 6px; display: block;">Tanggal</label>
                 <div style="position: relative; display: flex; align-items: center;">
-                    <img src="{{ Vite::asset('resources/images/icons/icon kalender.svg') }}" style="position: absolute; left: 14px; width: 18px; height: 18px; pointer-events: none;" alt="">
+                    <img src="{{ asset('images/icons/icon kalender.svg') }}" style="position: absolute; left: 14px; width: 18px; height: 18px; pointer-events: none;" alt="">
                     <input type="date" name="tanggal" id="prodTanggal" style="padding: 10px 14px 10px 42px; border: 1.5px solid #D1D5DB; border-radius: 8px; font-size: 14px; font-weight: 700; font-family: 'Manrope', sans-serif; color: #111827; background: #FFFFFF; width: 100%; box-sizing: border-box;">
                 </div>
             </div>
@@ -606,7 +606,7 @@
                 <div style="display: flex; gap: 12px;">
                     <label style="flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border: 1.5px solid #D1D5DB; border-radius: 8px; background: #FFFFFF; cursor: pointer; user-select: none;">
                         <span style="font-size: 14px; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 8px;">
-                            <img src="{{ Vite::asset('resources/images/icons/iconmatahari.svg') }}" style="width: 18px; height: 18px;" alt="">
+                            <img src="{{ asset('images/icons/iconmatahari.svg') }}" style="width: 18px; height: 18px;" alt="">
                             Pagi
                         </span>
                         <input type="radio" name="sesi" value="pagi" id="prodSesiPagi" style="display: none;" onchange="updateSessionRadioDots()">
@@ -614,7 +614,7 @@
                     </label>
                     <label style="flex: 1; display: flex; align-items: center; justify-content: space-between; padding: 10px 14px; border: 1.5px solid #D1D5DB; border-radius: 8px; background: #FFFFFF; cursor: pointer; user-select: none;">
                         <span style="font-size: 14px; font-weight: 700; color: #111827; display: flex; align-items: center; gap: 8px;">
-                            <img src="{{ Vite::asset('resources/images/icons/iconbulan.svg') }}" style="width: 18px; height: 18px;" alt="">
+                            <img src="{{ asset('images/icons/iconbulan.svg') }}" style="width: 18px; height: 18px;" alt="">
                             Sore
                         </span>
                         <input type="radio" name="sesi" value="sore" id="prodSesiSore" style="display: none;" onchange="updateSessionRadioDots()">
@@ -627,7 +627,7 @@
             <div class="obs-form-group" style="margin-bottom: 12px;">
                 <label style="font-size: 13px; font-weight: 700; color: #6B7280; margin-bottom: 6px; display: block;">Pilih Sapi</label>
                 <div style="position: relative; display: flex; align-items: center;">
-                    <img src="{{ Vite::asset('resources/images/icons/icondatasapi.svg') }}" style="position: absolute; left: 14px; width: 18px; height: 18px; pointer-events: none; object-fit: contain;" alt="">
+                    <img src="{{ asset('images/icons/icondatasapi.svg') }}" style="position: absolute; left: 14px; width: 18px; height: 18px; pointer-events: none; object-fit: contain;" alt="">
                     <select name="sapi_id" id="prodSapiSelect" style="padding: 10px 14px 10px 42px; border: 1.5px solid #D1D5DB; border-radius: 8px; font-size: 14px; font-weight: 700; font-family: 'Manrope', sans-serif; color: #111827; background: #FFFFFF; width: 100%; box-sizing: border-box; appearance: none; -webkit-appearance: none; cursor: pointer;">
                         @foreach($sapis as $s)
                             <option value="{{ $s->id }}">{{ $s->name }} ({{ $s->code }})</option>

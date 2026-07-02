@@ -15,7 +15,7 @@
         {{-- Background --}}
         <div
             class="login-background"
-            style="background-image: url('{{ Vite::asset('resources/images/backgrounds/Bglogin.jpg') }}');"></div>
+            style="background-image: url('{{ asset('images/backgrounds/Bglogin.jpg') }}');"></div>
 
         {{-- Overlay --}}
         <div class="login-overlay"></div>
@@ -31,7 +31,7 @@
                 {{-- Brand --}}
                 <header class="hero-brand">
                     <img
-                        src="{{ Vite::asset('resources/images/logo/logologin.png') }}"
+                        src="{{ asset('images/logo/logologin.png') }}"
                         alt="Logo Peternakan Pak Suparman"
                         class="hero-brand__logo">
                     <div class="hero-brand__content">
@@ -57,7 +57,7 @@
                     <article class="feature-item">
                         <div class="feature-item__icon">
                             <img
-                                src="{{ Vite::asset('resources/images/icons/icontamengcentangtengah.svg') }}"
+                                src="{{ asset('images/icons/icontamengcentangtengah.svg') }}"
                                 alt="Aman">
                         </div>
                         <div class="feature-item__content">
@@ -70,7 +70,7 @@
                     <article class="feature-item">
                         <div class="feature-item__icon">
                             <img
-                                src="{{ Vite::asset('resources/images/icons/iconbranch.svg') }}"
+                                src="{{ asset('images/icons/iconbranch.svg') }}"
                                 alt="Terstruktur">
                         </div>
                         <div class="feature-item__content">
@@ -83,7 +83,7 @@
                     <article class="feature-item">
                         <div class="feature-item__icon">
                             <img
-                                src="{{ Vite::asset('resources/images/icons/iconkacamata.svg') }}"
+                                src="{{ asset('images/icons/iconkacamata.svg') }}"
                                 alt="Transparan">
                         </div>
                         <div class="feature-item__content">

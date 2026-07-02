@@ -668,7 +668,7 @@
 @section('topbar-right')
 <div style="display: flex; align-items: center; gap: 12px;">
     <button type="button" class="pj-btn" id="btn-open-tambah-penjualan" style="background: #124827; border: none; color: #FFFFFF; border-radius: 8px; height: 42px; padding: 0 20px; font-weight: 700; font-family: 'Manrope', sans-serif; cursor: pointer; display: inline-flex; align-items: center; gap: 8px;">
-        <img src="{{ Vite::asset('resources/images/icons/iconplus.svg') }}" style="width: 14px; height: 14px;" alt="">
+        <img src="{{ asset('images/icons/iconplus.svg') }}" style="width: 14px; height: 14px;" alt="">
         Tambah Penjualan
     </button>
     <button type="button" class="pj-btn" id="btn-open-kelola-mitra" style="background: #FFFFFF; border: 1.5px solid #D1D5DB; color: #374151; border-radius: 8px; height: 42px; padding: 0 20px; font-weight: 700; font-family: 'Manrope', sans-serif; cursor: pointer; display: inline-flex; align-items: center;">
@@ -686,7 +686,7 @@
     <!-- Start Date Input Wrapper -->
     <div class="pj-filter-date-wrapper" style="position: relative; display: flex; align-items: center; justify-content: space-between; background: #FFFFFF; border: 1.5px solid #E5E7EB; border-radius: 12px; padding: 0 16px; height: 52px; width: 210px; box-sizing: border-box; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
         <span id="display-start-date" style="font-size: 15.5px; font-weight: 700; color: #111827;">{{ Carbon\Carbon::today()->subDays(6)->locale('id')->isoFormat('D MMMM YYYY') }}</span>
-        <img src="{{ Vite::asset('resources/images/icons/icon kalender.svg') }}" style="width: 20px; height: 20px; pointer-events: none;" alt="">
+        <img src="{{ asset('images/icons/icon kalender.svg') }}" style="width: 20px; height: 20px; pointer-events: none;" alt="">
         <input type="date" id="filter-start-date" value="{{ Carbon\Carbon::today()->subDays(6)->format('Y-m-d') }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2;">
     </div>
 
@@ -696,7 +696,7 @@
     <!-- End Date Input Wrapper -->
     <div class="pj-filter-date-wrapper" style="position: relative; display: flex; align-items: center; justify-content: space-between; background: #FFFFFF; border: 1.5px solid #E5E7EB; border-radius: 12px; padding: 0 16px; height: 52px; width: 210px; box-sizing: border-box; box-shadow: 0 1px 3px rgba(0,0,0,0.02);">
         <span id="display-end-date" style="font-size: 15.5px; font-weight: 700; color: #111827;">{{ Carbon\Carbon::today()->locale('id')->isoFormat('D MMMM YYYY') }}</span>
-        <img src="{{ Vite::asset('resources/images/icons/icon kalender.svg') }}" style="width: 20px; height: 20px; pointer-events: none;" alt="">
+        <img src="{{ asset('images/icons/icon kalender.svg') }}" style="width: 20px; height: 20px; pointer-events: none;" alt="">
         <input type="date" id="filter-end-date" value="{{ Carbon\Carbon::today()->format('Y-m-d') }}" style="position: absolute; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; cursor: pointer; z-index: 2;">
     </div>
 
@@ -710,7 +710,7 @@
 
     <!-- Filter Button -->
     <button class="pj-filter-btn" id="btn-apply-filters" style="background: #FFFFFF; border: 1.5px solid #E5E7EB; border-radius: 12px; padding: 0 24px; height: 52px; font-size: 15.5px; font-weight: 700; color: #124827; display: flex; align-items: center; gap: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer; transition: all 0.15s; outline: none;">
-        <img src="{{ Vite::asset('resources/images/icons/iconfilter.svg') }}" style="width: 16px; height: 16px; filter: brightness(0) saturate(100%) invert(20%) sepia(85%) saturate(415%) hue-rotate(94deg) brightness(91%) contrast(93%);" alt="">
+        <img src="{{ asset('images/icons/iconfilter.svg') }}" style="width: 16px; height: 16px; filter: brightness(0) saturate(100%) invert(20%) sepia(85%) saturate(415%) hue-rotate(94deg) brightness(91%) contrast(93%);" alt="">
         Filter
     </button>
     <button class="pj-filter-btn" id="btn-reset-filters" style="background: #FFFFFF; border: 1.5px solid #E5E7EB; border-radius: 12px; padding: 0 24px; height: 52px; font-size: 15.5px; font-weight: 700; color: #DC2626; display: flex; align-items: center; gap: 8px; box-shadow: 0 1px 3px rgba(0,0,0,0.02); cursor: pointer; transition: all 0.15s; outline: none;">
@@ -726,7 +726,7 @@
     {{-- Total Penjualan --}}
     <div class="pj-stat-card pj-stat-card--green">
         <div class="pj-stat-icon-wrap">
-            <img src="{{ Vite::asset('resources/images/icons/iconkeranjang.svg') }}" alt="Total Penjualan">
+            <img src="{{ asset('images/icons/iconkeranjang.svg') }}" alt="Total Penjualan">
         </div>
         <div class="pj-stat-content">
             <div class="pj-stat-value" id="stat-total-penjualan">Rp 0</div>
@@ -738,7 +738,7 @@
     {{-- Penjualan Bersih --}}
     <div class="pj-stat-card pj-stat-card--green">
         <div class="pj-stat-icon-wrap">
-            <img src="{{ Vite::asset('resources/images/icons/iconuang.svg') }}" alt="Penjualan Bersih">
+            <img src="{{ asset('images/icons/iconuang.svg') }}" alt="Penjualan Bersih">
         </div>
         <div class="pj-stat-content">
             <div class="pj-stat-value" id="stat-penjualan-bersih">Rp 0</div>
@@ -751,7 +751,7 @@
     <div class="pj-stat-card pj-stat-card--combined">
         <div class="pj-stat-combined-section pj-stat-combined-section--left">
             <div class="pj-stat-icon-wrap">
-                <img src="{{ Vite::asset('resources/images/icons/iconbotolsusubiru.svg') }}" alt="Total Volume">
+                <img src="{{ asset('images/icons/iconbotolsusubiru.svg') }}" alt="Total Volume">
             </div>
             <div class="pj-stat-content">
                 <div class="pj-stat-value" id="stat-total-volume" style="color: #000000;">0 <span style="color: #068B4A; font-weight: 700; margin-left: 4px;">Liter</span></div>
@@ -764,7 +764,7 @@
         
         <div class="pj-stat-combined-section pj-stat-combined-section--right">
             <div class="pj-stat-icon-wrap">
-                <img src="{{ Vite::asset('resources/images/icons/iconorang.svg') }}" alt="Total Transaksi">
+                <img src="{{ asset('images/icons/iconorang.svg') }}" alt="Total Transaksi">
             </div>
             <div class="pj-stat-content">
                 <div class="pj-stat-value" id="stat-total-transaksi" style="color: #000000;">0</div>
@@ -823,7 +823,7 @@
                 <label style="font-size: 13px; font-weight: 700; color: #374151; margin-bottom: 6px; display: block;">Tanggal</label>
                 <div style="position: relative; display: flex; align-items: center;">
                     <input type="date" class="pj-form-input" id="input-pj-tanggal" style="padding: 10px 42px 10px 14px; width: 100%; box-sizing: border-box; font-weight: 700; height: 42px; background: #FFFFFF; border: 1.5px solid #E5E7EB; border-radius: 8px; appearance: none; -webkit-appearance: none; font-family: 'Manrope', sans-serif;">
-                    <img src="{{ Vite::asset('resources/images/icons/icon kalender.svg') }}" style="position: absolute; right: 14px; width: 18px; height: 18px; pointer-events: none;" alt="">
+                    <img src="{{ asset('images/icons/icon kalender.svg') }}" style="position: absolute; right: 14px; width: 18px; height: 18px; pointer-events: none;" alt="">
                 </div>
                 <span class="pj-validation-err" style="color: #EF4444; font-size: 11px; font-weight: 600; margin-top: 4px; display: none;">Tanggal wajib diisi.</span>
             </div>
@@ -1375,10 +1375,10 @@
                 <td>
                     <div style="display:flex; gap:8px;">
                         <button class="pj-action-btn" onclick="editMitra(${globalIndex})" title="Edit Mitra" style="border: 1.5px solid #E5E7EB; border-radius: 8px; width: 34px; height: 34px; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s;">
-                            <img src="{{ Vite::asset('resources/images/icons/iconpensil2.svg') }}" style="width: 18px; height: 18px;" alt="Edit">
+                            <img src="{{ asset('images/icons/iconpensil2.svg') }}" style="width: 18px; height: 18px;" alt="Edit">
                         </button>
                         <button class="pj-action-btn" onclick="deleteMitra(${globalIndex})" title="Hapus Mitra" style="border: 1.5px solid #E5E7EB; border-radius: 8px; width: 34px; height: 34px; background: #FFFFFF; display: inline-flex; align-items: center; justify-content: center; cursor: pointer; transition: all 0.15s;">
-                            <img src="{{ Vite::asset('resources/images/icons/icontrashmerah.svg') }}" style="width: 18px; height: 18px;" alt="Hapus">
+                            <img src="{{ asset('images/icons/icontrashmerah.svg') }}" style="width: 18px; height: 18px;" alt="Hapus">
                         </button>
                     </div>
                 </td>

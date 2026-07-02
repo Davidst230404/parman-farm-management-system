@@ -160,8 +160,8 @@
     {{-- Input Produksi Susu --}}
     <a href="{{ route('karyawan.produksi.index') }}" class="kd-shortcut-item" style="text-decoration:none;">
         <div class="kd-shortcut-item__icon-container">
-            <img src="{{ Vite::asset('resources/images/icons/lingkaranhijau.svg') }}" alt="" class="kd-shortcut-bg">
-            <img src="{{ Vite::asset('resources/images/icons/botolhijau.svg') }}" alt="" class="kd-shortcut-fg">
+            <img src="{{ asset('images/icons/lingkaranhijau.svg') }}" alt="" class="kd-shortcut-bg">
+            <img src="{{ asset('images/icons/botolhijau.svg') }}" alt="" class="kd-shortcut-fg">
         </div>
         <div class="kd-shortcut-item__content">
             <h3 class="kd-shortcut-item__title">Input Produksi Susu (Pemerahan)</h3>
@@ -179,8 +179,8 @@
     {{-- Input Kesehatan Sapi --}}
     <a href="{{ route('karyawan.kesehatan.index') }}" class="kd-shortcut-item" style="text-decoration:none;">
         <div class="kd-shortcut-item__icon-container">
-            <img src="{{ Vite::asset('resources/images/icons/lingkarankunig.svg') }}" alt="" class="kd-shortcut-bg">
-            <img src="{{ Vite::asset('resources/images/icons/heart kuning.png') }}" alt="" class="kd-shortcut-fg" style="width:32px;height:32px;">
+            <img src="{{ asset('images/icons/lingkarankunig.svg') }}" alt="" class="kd-shortcut-bg">
+            <img src="{{ asset('images/icons/heart kuning.png') }}" alt="" class="kd-shortcut-fg" style="width:32px;height:32px;">
         </div>
         <div class="kd-shortcut-item__content">
             <h3 class="kd-shortcut-item__title">Input Kesehatan Sapi (Observasi)</h3>

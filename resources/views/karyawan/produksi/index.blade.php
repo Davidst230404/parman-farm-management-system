@@ -1048,7 +1048,7 @@
 <div class="kp-stats">
 
     <div class="kp-stat-card">
-        <img src="{{ Vite::asset('resources/images/icons/iconsapihijaucarddashboard.svg') }}" alt="Total Sapi" class="kp-stat-card__icon">
+        <img src="{{ asset('images/icons/iconsapihijaucarddashboard.svg') }}" alt="Total Sapi" class="kp-stat-card__icon">
         <div class="kp-stat-card__content">
             <div class="kp-stat-card__value kp-stat-card__value--green" id="stat-total-sapi">{{ number_format($totalSapi, 0, ',', '.') }}</div>
             <div class="kp-stat-card__label">Total Sapi</div>
@@ -1057,7 +1057,7 @@
     </div>
 
     <div class="kp-stat-card">
-        <img src="{{ Vite::asset('resources/images/icons/iconbotolungu1.svg') }}" alt="Total Minggu Ini" class="kp-stat-card__icon">
+        <img src="{{ asset('images/icons/iconbotolungu1.svg') }}" alt="Total Minggu Ini" class="kp-stat-card__icon">
         <div class="kp-stat-card__content">
             <div class="kp-stat-card__value kp-stat-card__value--purple" id="stat-weekly-production">{{ number_format($weeklyProduction, 0, ',', '.') }}<span class="kp-stat-card__value-unit">L</span></div>
             <div class="kp-stat-card__label">Produksi</div>
@@ -1066,7 +1066,7 @@
     </div>
 
     <div class="kp-stat-card">
-        <img src="{{ Vite::asset('resources/images/icons/icondatakuning.svg') }}" alt="Total Bulan Ini" class="kp-stat-card__icon">
+        <img src="{{ asset('images/icons/icondatakuning.svg') }}" alt="Total Bulan Ini" class="kp-stat-card__icon">
         <div class="kp-stat-card__content">
             <div class="kp-stat-card__value kp-stat-card__value--yellow" id="stat-monthly-production">{{ number_format($monthlyProduction, 0, ',', '.') }}<span class="kp-stat-card__value-unit">L</span></div>
             <div class="kp-stat-card__label">Produksi</div>
@@ -1075,7 +1075,7 @@
     </div>
 
     <div class="kp-stat-card">
-        <img src="{{ Vite::asset('resources/images/icons/iconbotolsusubiru.svg') }}" alt="Total Hari Ini" class="kp-stat-card__icon" style="filter: invert(15%) sepia(90%) saturate(3000%) hue-rotate(225deg) brightness(80%) contrast(110%);">
+        <img src="{{ asset('images/icons/iconbotolsusubiru.svg') }}" alt="Total Hari Ini" class="kp-stat-card__icon" style="filter: invert(15%) sepia(90%) saturate(3000%) hue-rotate(225deg) brightness(80%) contrast(110%);">
         <div class="kp-stat-card__content">
             <div class="kp-stat-card__value kp-stat-card__value--blue" id="stat-today-production">{{ number_format($todayProduction, 0, ',', '.') }}<span class="kp-stat-card__value-unit">L</span></div>
             <div class="kp-stat-card__label">Produksi</div>
@@ -1096,7 +1096,7 @@
                 <label for="inputTanggal">Tanggal</label>
                 <div class="kp-input-wrapper">
                     <div class="kp-left-icon">
-                        <img src="{{ Vite::asset('resources/images/icons/icon kalender.svg') }}" alt="">
+                        <img src="{{ asset('images/icons/icon kalender.svg') }}" alt="">
                     </div>
                     <input type="date" name="tanggal" id="inputTanggal" value="{{ now()->format('Y-m-d') }}" required>
                 </div>
@@ -1107,7 +1107,7 @@
                 <label for="inputSesi">Sesi</label>
                 <div class="kp-input-wrapper">
                     <div class="kp-left-icon" id="sesiIconWrap">
-                        <img id="sesiIcon" src="{{ Vite::asset('resources/images/icons/iconmatahari.svg') }}" alt="" style="width:16px; height:16px;">
+                        <img id="sesiIcon" src="{{ asset('images/icons/iconmatahari.svg') }}" alt="" style="width:16px; height:16px;">
                     </div>
                     <select name="sesi" id="inputSesi" required>
                         <option value="pagi">Pagi</option>
@@ -1122,7 +1122,7 @@
                 <label for="inputSapi">Pilih Sapi</label>
                 <div class="kp-input-wrapper">
                     <div class="kp-left-icon">
-                        <img src="{{ Vite::asset('resources/images/icons/icondatasapi.svg') }}" alt="" style="width:18px; height:18px;">
+                        <img src="{{ asset('images/icons/icondatasapi.svg') }}" alt="" style="width:18px; height:18px;">
                     </div>
                     <select name="sapi_id" id="inputSapi" required>
                         <option value="" disabled selected>Pilih Sapi</option>
@@ -1145,7 +1145,7 @@
 
             {{-- Button --}}
             <button type="submit" class="kp-btn-primary">
-                <img src="{{ Vite::asset('resources/images/icons/iconbutonsimpan.svg') }}" alt="" style="width:16px; height:16px; margin-right:6px; filter: brightness(0) invert(1);">
+                <img src="{{ asset('images/icons/iconbutonsimpan.svg') }}" alt="" style="width:16px; height:16px; margin-right:6px; filter: brightness(0) invert(1);">
                 Simpan
             </button>
         </div>
@@ -1163,7 +1163,7 @@
             <div class="kp-riwayat-filters-left">
                 {{-- Date range picker --}}
                 <div class="kp-inline-date-range">
-                    <img src="{{ Vite::asset('resources/images/icons/icon kalender.svg') }}" alt="" style="width:14px; height:14px; opacity:0.55; flex-shrink:0;">
+                    <img src="{{ asset('images/icons/icon kalender.svg') }}" alt="" style="width:14px; height:14px; opacity:0.55; flex-shrink:0;">
                     <input type="date" id="filterTanggalMulai" class="kp-inline-date" title="Tanggal Mulai">
                     <span class="kp-date-sep">-</span>
                     <input type="date" id="filterTanggalSelesai" class="kp-inline-date" title="Tanggal Selesai">
@@ -1194,12 +1194,12 @@
             {{-- RIGHT: Filter + Lihat Laporan --}}
             <div class="kp-riwayat-filters-right">
                 <button type="button" class="kp-filter-btn" id="btnFilterApply">
-                    <img src="{{ Vite::asset('resources/images/icons/iconfilter.svg') }}" alt="" style="width:14px; height:14px; margin-right:6px;">
+                    <img src="{{ asset('images/icons/iconfilter.svg') }}" alt="" style="width:14px; height:14px; margin-right:6px;">
                     Filter
                 </button>
 
                 <a href="/owner/laporan" class="kp-btn-laporan">
-                    <img src="{{ Vite::asset('resources/images/icons/icondataputih.svg') }}" alt="" style="width:15px; height:15px; margin-right:6px; filter: brightness(0) invert(1);">
+                    <img src="{{ asset('images/icons/icondataputih.svg') }}" alt="" style="width:15px; height:15px; margin-right:6px; filter: brightness(0) invert(1);">
                     Lihat Laporan
                 </a>
             </div>
@@ -1227,17 +1227,17 @@
                         <td>
                             <div class="kp-session-cell">
                                 @if(strtolower($prod->sesi) === 'pagi')
-                                    <img src="{{ Vite::asset('resources/images/icons/iconmatahari.svg') }}" alt="Pagi" class="kp-session-icon">
+                                    <img src="{{ asset('images/icons/iconmatahari.svg') }}" alt="Pagi" class="kp-session-icon">
                                     <span>Pagi</span>
                                 @else
-                                    <img src="{{ Vite::asset('resources/images/icons/iconbulan.svg') }}" alt="Sore" class="kp-session-icon">
+                                    <img src="{{ asset('images/icons/iconbulan.svg') }}" alt="Sore" class="kp-session-icon">
                                     <span>Sore</span>
                                 @endif
                             </div>
                         </td>
                         <td>
                             <div class="kp-sapi-cell">
-                                <img src="{{ Vite::asset('resources/images/icons/icondatasapi.svg') }}" alt="" class="kp-sapi-icon">
+                                <img src="{{ asset('images/icons/icondatasapi.svg') }}" alt="" class="kp-sapi-icon">
                                 <div>
                                     <div class="kp-sapi-name">{{ $prod->sapi->name }}</div>
                                     <div class="kp-sapi-code">{{ $prod->sapi->code }}</div>
@@ -1251,19 +1251,19 @@
                         </td>
                         <td style="position: relative;">
                             <button type="button" class="kp-btn-action" title="Aksi" onclick="toggleDropdown(this, event)">
-                                <img src="{{ Vite::asset('resources/images/icons/iconedit.svg') }}" alt="Aksi" style="width:20px; height:20px;">
+                                <img src="{{ asset('images/icons/iconedit.svg') }}" alt="Aksi" style="width:20px; height:20px;">
                             </button>
                             {{-- Dropdown actions --}}
                             <div class="kp-action-dropdown">
                                 <button type="button" class="kp-dropdown-item" onclick="openEditModal({{ $prod->sapi_id }}, '{{ $prod->id }}', '{{ $prod->sesi }}', '{{ floatval($prod->jumlah_susu) }}', '{{ $prod->tanggal }}')">
-                                    <img src="{{ Vite::asset('resources/images/icons/iconpensiledit.svg') }}" alt="" style="width:14px; height:14px; margin-right:8px;">
+                                    <img src="{{ asset('images/icons/iconpensiledit.svg') }}" alt="" style="width:14px; height:14px; margin-right:8px;">
                                     Edit Produksi
                                 </button>
                                 <form action="{{ route('karyawan.produksi.destroy', $prod->id) }}" method="POST" onsubmit="return confirm('Hapus pencatatan produksi ini?')">
                                     @csrf
                                     @method('DELETE')
                                     <button type="submit" class="kp-dropdown-item kp-dropdown-item--danger">
-                                        <img src="{{ Vite::asset('resources/images/icons/icontrashmerah.svg') }}" alt="" style="width:14px; height:14px; margin-right:8px;">
+                                        <img src="{{ asset('images/icons/icontrashmerah.svg') }}" alt="" style="width:14px; height:14px; margin-right:8px;">
                                         Hapus Produksi
                                     </button>
                                 </form>
@@ -1296,7 +1296,7 @@
     <div class="kp-modal-content">
         <div class="kp-modal-header">
             <h3 class="kp-modal-title">
-                <img src="{{ Vite::asset('resources/images/icons/iconpensil2.svg') }}" style="width:18px; height:18px; margin-right:8px; vertical-align:middle;">
+                <img src="{{ asset('images/icons/iconpensil2.svg') }}" style="width:18px; height:18px; margin-right:8px; vertical-align:middle;">
                 <span style="vertical-align:middle;">Edit Produksi Susu</span>
             </h3>
             <button type="button" class="kp-modal-close" onclick="closeModal()">&times;</button>
@@ -1310,7 +1310,7 @@
                 <label for="formTanggal">Tanggal</label>
                 <div class="kp-modal-input-wrapper">
                     <div class="kp-modal-left-icon">
-                        <img src="{{ Vite::asset('resources/images/icons/icon kalender.svg') }}" alt="">
+                        <img src="{{ asset('images/icons/icon kalender.svg') }}" alt="">
                     </div>
                     <input type="date" name="tanggal" id="formTanggal" class="kp-modal-input-no-chevron" required>
                 </div>
@@ -1326,12 +1326,12 @@
                 </select>
                 <div class="kp-sesi-toggle">
                     <button type="button" class="kp-sesi-btn kp-sesi-btn--active" id="sesiPagiBtn" onclick="selectSesi('pagi')">
-                        <img src="{{ Vite::asset('resources/images/icons/iconmatahari.svg') }}" alt="" class="kp-sesi-btn-icon">
+                        <img src="{{ asset('images/icons/iconmatahari.svg') }}" alt="" class="kp-sesi-btn-icon">
                         Pagi
                         <span class="kp-sesi-radio"></span>
                     </button>
                     <button type="button" class="kp-sesi-btn" id="sesiSoreBtn" onclick="selectSesi('sore')">
-                        <img src="{{ Vite::asset('resources/images/icons/iconbulan.svg') }}" alt="" class="kp-sesi-btn-icon">
+                        <img src="{{ asset('images/icons/iconbulan.svg') }}" alt="" class="kp-sesi-btn-icon">
                         Sore
                         <span class="kp-sesi-radio"></span>
                     </button>
@@ -1343,7 +1343,7 @@
                 <label for="formSapi">Pilih Sapi</label>
                 <div class="kp-modal-input-wrapper">
                     <div class="kp-modal-left-icon">
-                        <img src="{{ Vite::asset('resources/images/icons/icondatasapi.svg') }}" alt="" style="width:20px; height:20px;">
+                        <img src="{{ asset('images/icons/icondatasapi.svg') }}" alt="" style="width:20px; height:20px;">
                     </div>
                     <select name="sapi_id" id="formSapi" required>
                         @foreach($sapis as $sapi)
@@ -1645,8 +1645,8 @@
         const sesiIcon = document.getElementById('sesiIcon');
         if (!sesiSelect || !sesiIcon) return;
 
-        const iconMatahari = "{{ Vite::asset('resources/images/icons/iconmatahari.svg') }}";
-        const iconBulan = "{{ Vite::asset('resources/images/icons/iconbulan.svg') }}";
+        const iconMatahari = "{{ asset('images/icons/iconmatahari.svg') }}";
+        const iconBulan = "{{ asset('images/icons/iconbulan.svg') }}";
 
         function updateSesiIcon() {
             if (sesiSelect.value === 'pagi') {

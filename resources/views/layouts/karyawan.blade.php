@@ -25,7 +25,7 @@
         {{-- Brand --}}
         <div class="o-brand">
             <img
-                src="{{ Vite::asset('resources/images/logo/logologin.png') }}"
+                src="{{ asset('images/logo/logologin.png') }}"
                 alt="Logo Parman Farm"
                 class="o-brand__logo">
             <div class="o-brand__text">
@@ -40,7 +40,7 @@
             <a href="{{ route('karyawan.dashboard') }}"
                id="nav-dashboard"
                class="o-nav__item {{ request()->routeIs('karyawan.dashboard') ? 'o-nav__item--active' : '' }}">
-                <img src="{{ Vite::asset('resources/images/icons/iconhome.svg') }}"
+                <img src="{{ asset('images/icons/iconhome.svg') }}"
                      alt="" class="o-nav__icon-img">
                 <span>Dashboard</span>
             </a>
@@ -48,7 +48,7 @@
             <a href="{{ route('karyawan.kesehatan.index') }}"
                id="nav-kesehatan"
                class="o-nav__item {{ request()->routeIs('karyawan.kesehatan.*') ? 'o-nav__item--active' : '' }}">
-                <img src="{{ Vite::asset('resources/images/icons/iconsapikecil.svg') }}"
+                <img src="{{ asset('images/icons/iconsapikecil.svg') }}"
                      alt="" class="o-nav__icon-img">
                 <span>Data Sapi</span>
             </a>
@@ -56,7 +56,7 @@
             <a href="{{ route('karyawan.produksi.index') }}"
                id="nav-produksi"
                class="o-nav__item {{ request()->routeIs('karyawan.produksi.*') ? 'o-nav__item--active' : '' }}">
-                <img src="{{ Vite::asset('resources/images/icons/iconbotolsusukecil.svg') }}"
+                <img src="{{ asset('images/icons/iconbotolsusukecil.svg') }}"
                      alt="" class="o-nav__icon-img">
                 <span>Produksi Susu</span>
             </a>
@@ -68,7 +68,7 @@
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="o-logout" id="btn-logout">
-                    <img src="{{ Vite::asset('resources/images/icons/iconpintukeluar.svg') }}"
+                    <img src="{{ asset('images/icons/iconpintukeluar.svg') }}"
                          alt="" class="o-nav__icon-img">
                     <span>Logout</span>
                 </button>
@@ -86,7 +86,7 @@
         <header class="o-topbar">
             <div class="o-topbar__left" style="display: flex; align-items: flex-start; gap: 16px;">
                 <button class="o-topbar__hamburger" id="sidebarToggle" aria-label="Toggle sidebar" style="display: flex; align-items: center; justify-content: center; background: none; border: none; padding: 0; cursor: pointer; margin-top: 2px;">
-                    <img src="{{ Vite::asset('resources/images/icons/iconhamburger.svg') }}" alt="Menu" style="width: 24px; height: 24px;">
+                    <img src="{{ asset('images/icons/iconhamburger.svg') }}" alt="Menu" style="width: 24px; height: 24px;">
                 </button>
                 <div class="o-topbar__page" style="display: flex; flex-direction: column; align-items: flex-start; gap: 4px; font-size: inherit; font-weight: inherit; color: inherit;">
                     <span style="font-size: 20px; font-weight: 800; color: #124827; font-family: 'Manrope', sans-serif; line-height: 1.2;">

@@ -25,7 +25,7 @@
         {{-- Brand --}}
         <div class="o-brand">
             <img
-                src="{{ Vite::asset('resources/images/logo/logologin.png') }}"
+                src="{{ asset('images/logo/logologin.png') }}"
                 alt="Logo Parman Farm"
                 class="o-brand__logo">
             <div class="o-brand__text">
@@ -40,7 +40,7 @@
             <a href="{{ route('owner.dashboard') }}"
                id="nav-dashboard"
                class="o-nav__item {{ request()->routeIs('owner.dashboard') ? 'o-nav__item--active' : '' }}">
-                <img src="{{ Vite::asset('resources/images/icons/iconhome.svg') }}"
+                <img src="{{ asset('images/icons/iconhome.svg') }}"
                      alt="" class="o-nav__icon-img">
                 <span>Dashboard</span>
             </a>
@@ -49,17 +49,17 @@
                 <a href="{{ route('owner.kesehatan.index') }}"
                    id="nav-kesehatan"
                    class="o-nav__item {{ request()->routeIs('owner.kesehatan.*') ? 'o-nav__item--active' : '' }}">
-                    <img src="{{ Vite::asset('resources/images/icons/iconsapikecil.svg') }}"
+                    <img src="{{ asset('images/icons/iconsapikecil.svg') }}"
                          alt="" class="o-nav__icon-img">
                     <span>Data Sapi</span>
                 </a>
                 <div class="o-nav__sub" style="padding-left: 24px; padding-right: 12px; display: flex; flex-direction: column; gap: 4px; margin-top: 6px; margin-bottom: 8px;">
                     <a href="{{ route('owner.kesehatan.index') }}" class="o-nav__sub-item" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: #FFFFFF; font-size: 13.5px; font-weight: 700; padding: 6px 12px; border-radius: 8px; transition: background 0.15s, opacity 0.15s; opacity: {{ request()->routeIs('owner.kesehatan.index') ? '1' : '0.65' }}; {{ request()->routeIs('owner.kesehatan.index') ? 'background: #6B9B69;' : '' }}">
-                        <img src="{{ Vite::asset('resources/images/icons/circleputih.svg') }}" style="width: 6px; height: 6px;" alt="">
+                        <img src="{{ asset('images/icons/circleputih.svg') }}" style="width: 6px; height: 6px;" alt="">
                         Data Sapi
                     </a>
                     <a href="{{ route('owner.kesehatan.observasi') }}" class="o-nav__sub-item" style="display: flex; align-items: center; gap: 8px; text-decoration: none; color: #FFFFFF; font-size: 13.5px; font-weight: 700; padding: 6px 12px; border-radius: 8px; transition: background 0.15s, opacity 0.15s; opacity: {{ request()->routeIs('owner.kesehatan.observasi') ? '1' : '0.65' }}; {{ request()->routeIs('owner.kesehatan.observasi') ? 'background: #6B9B69;' : '' }}">
-                        <img src="{{ Vite::asset('resources/images/icons/circleputih.svg') }}" style="width: 6px; height: 6px;" alt="">
+                        <img src="{{ asset('images/icons/circleputih.svg') }}" style="width: 6px; height: 6px;" alt="">
                         Observasi Kesehatan
                     </a>
                 </div>
@@ -68,7 +68,7 @@
             <a href="{{ route('owner.produksi.index') }}"
                id="nav-produksi"
                class="o-nav__item {{ request()->routeIs('owner.produksi.*') ? 'o-nav__item--active' : '' }}">
-                <img src="{{ Vite::asset('resources/images/icons/iconbotolsusukecil.svg') }}"
+                <img src="{{ asset('images/icons/iconbotolsusukecil.svg') }}"
                      alt="" class="o-nav__icon-img">
                 <span>Produksi Susu</span>
             </a>
@@ -76,7 +76,7 @@
             <a href="{{ route('owner.penjualan.index') }}"
                id="nav-penjualan"
                class="o-nav__item {{ request()->routeIs('owner.penjualan.*') ? 'o-nav__item--active' : '' }}">
-                <img src="{{ Vite::asset('resources/images/icons/icontasbelanja.svg') }}"
+                <img src="{{ asset('images/icons/icontasbelanja.svg') }}"
                      alt="" class="o-nav__icon-img">
                 <span>Penjualan Susu</span>
             </a>
@@ -84,7 +84,7 @@
             <a href="{{ route('owner.laporan.index') }}"
                id="nav-laporan"
                class="o-nav__item {{ request()->routeIs('owner.laporan.*') ? 'o-nav__item--active' : '' }}">
-                <img src="{{ Vite::asset('resources/images/icons/iconlaporansidebar.svg') }}"
+                <img src="{{ asset('images/icons/iconlaporansidebar.svg') }}"
                      alt="" class="o-nav__icon-img">
                 <span>Laporan</span>
             </a>
@@ -96,7 +96,7 @@
             <form method="POST" action="{{ route('logout') }}">
                 @csrf
                 <button type="submit" class="o-logout" id="btn-logout">
-                    <img src="{{ Vite::asset('resources/images/icons/iconpintukeluar.svg') }}"
+                    <img src="{{ asset('images/icons/iconpintukeluar.svg') }}"
                          alt="" class="o-nav__icon-img">
                     <span>Logout</span>
                 </button>
@@ -114,7 +114,7 @@
         <header class="o-topbar" style="height: auto; min-height: 72px; padding: 16px 32px;">
             <div class="o-topbar__left" style="display: flex; align-items: flex-start; gap: 16px;">
                 <button class="o-topbar__hamburger" id="sidebarToggle" aria-label="Toggle sidebar" style="display: flex; align-items: center; justify-content: center; background: none; border: none; padding: 0; cursor: pointer; margin-top: 2px;">
-                    <img src="{{ Vite::asset('resources/images/icons/iconhamburger.svg') }}" alt="Menu" style="width: 24px; height: 24px;">
+                    <img src="{{ asset('images/icons/iconhamburger.svg') }}" alt="Menu" style="width: 24px; height: 24px;">
                 </button>
                 <div class="o-topbar__page" style="display: flex; flex-direction: column; align-items: flex-start; gap: 2px;">
                     <span style="font-size: 20px; font-weight: 800; color: #124827; font-family: 'Manrope', sans-serif; line-height: 1.2;">

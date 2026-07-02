@@ -393,7 +393,7 @@
         </div>
         <div style="padding-bottom: 12px;">
             <button class="ks-btn-filter">
-                <img src="{{ Vite::asset('resources/images/icons/iconfilter.svg') }}" alt="" class="ks-btn-filter__icon">
+                <img src="{{ asset('images/icons/iconfilter.svg') }}" alt="" class="ks-btn-filter__icon">
                 Filter
             </button>
         </div>
@@ -424,7 +424,7 @@
                     <tr class="ks-row" data-status="{{ $statusClass }}">
                         <td>
                             <div class="ks-cow-cell">
-                                <img src="{{ Vite::asset('resources/images/icons/icondatasapi.svg') }}" alt="" class="ks-cow-thumb-img">
+                                <img src="{{ asset('images/icons/icondatasapi.svg') }}" alt="" class="ks-cow-thumb-img">
                                 <div>
                                     <div class="ks-cow-name">{{ $sapi->name }}</div>
                                     <div class="ks-cow-id">({{ $sapi->code }})</div>
