@@ -10,6 +10,7 @@ use App\Http\Controllers\owner\LaporanController;
 use App\Http\Controllers\karyawan\DashboardController as KaryawanDashboardController;
 use App\Http\Controllers\karyawan\KesehatanController as KaryawanKesehatanController;
 use App\Http\Controllers\karyawan\ProduksiController as KaryawanProduksiController;
+use App\Http\Controllers\LandingController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -21,8 +22,8 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-// Redirect halaman utama ke login
-Route::redirect('/', '/login');
+// Halaman utama landing page
+Route::get('/', [LandingController::class, 'index'])->name('landing');
 
 // Fallback dashboard Breeze (redirect ke owner atau karyawan dashboard berdasarkan role)
 Route::get('/dashboard', function () {
