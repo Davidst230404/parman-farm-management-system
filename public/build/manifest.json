@@ -1,0 +1,45 @@
+{
+  "public/images/landingpage/bglandingpage.png": {
+    "file": "assets/bglandingpage-DH7b9f_u.png",
+    "src": "public/images/landingpage/bglandingpage.png"
+  },
+  "resources/css/app.css": {
+    "file": "assets/app-iIsh7vg6.css",
+    "name": "app",
+    "names": [
+      "app.css"
+    ],
+    "src": "resources/css/app.css",
+    "isEntry": true
+  },
+  "resources/css/landing.css": {
+    "file": "assets/landing-AtJb5--g.css",
+    "name": "landing",
+    "names": [
+      "landing.css"
+    ],
+    "src": "resources/css/landing.css",
+    "isEntry": true,
+    "assets": [
+      "assets/bglandingpage-DH7b9f_u.png"
+    ]
+  },
+  "resources/css/owner/owner.css": {
+    "file": "assets/owner-BnVAHN25.css",
+    "name": "owner",
+    "names": [
+      "owner.css"
+    ],
+    "src": "resources/css/owner/owner.css",
+    "isEntry": true
+  },
+  "resources/js/app.js": {
+    "file": "assets/app-y048J2CC.js",
+    "name": "app",
+    "src": "resources/js/app.js",
+    "isEntry": true,
+    "css": [
+      "assets/app-Wccfh2th.css"
+    ]
+  }
+}
