@@ -952,13 +952,6 @@
                 <img src="{{ asset('images/icons/iconfilter.svg') }}" alt="" class="ks-btn-filter__icon">
                 Filter
             </button>
-            <button type="button" class="ks-btn-primary" onclick="openSapiModal()">
-                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
-                    <line x1="12" y1="5" x2="12" y2="19"/>
-                    <line x1="5" y1="12" x2="19" y2="12"/>
-                </svg>
-                Tambah Sapi
-            </button>
         </div>
     </div>
 
@@ -980,7 +973,6 @@
                     <th scope="col">Umur</th>
                     <th scope="col">Catatan Terakhir</th>
                     <th scope="col">Status</th>
-                    <th scope="col">Aksi</th>
                 </tr>
             </thead>
             <tbody id="ks-tbody">
@@ -1043,39 +1035,10 @@
                                 <span style="color: #EF0000; font-weight: 800; font-size: 15px;">Perlu Tindakan</span>
                             @endif
                         </td>
-                        <td style="position: relative;">
-                            <button type="button" class="ks-btn-edit" title="Aksi" onclick="toggleDropdown(this, event)">
-                                <img src="{{ asset('images/icons/iconedit.svg') }}" alt="Aksi" class="ks-btn-edit__icon">
-                            </button>
-                            <div class="ks-action-dropdown" style="display:none;">
-                                <button type="button" class="ks-dropdown-item" onclick="openEditModal({{ $sapi->id }}, '{{ $sapi->name }}', '{{ $sapi->code }}', '{{ $latest ? $latest->id : '' }}', '{{ $latest ? $latest->nafsu_makan : 'Baik' }}', '{{ $latest ? $latest->kondisi_susu : 'Normal' }}', '{{ $latest ? $latest->perilaku : 'Aktif' }}', '{{ $latest ? $latest->status : 'Normal' }}', '{{ $latest ? $latest->catatan : '' }}', '{{ $latest ? $latest->created_at->format('Y-m-d') : now()->format('Y-m-d') }}', '{{ $latest ? $latest->created_at->format('H:i') : now()->format('H:i') }}')">
-                                    <img src="{{ asset('images/icons/iconpensil2.svg') }}" alt="" style="width:14px; height:14px; margin-right:8px;">
-                                    Edit Observasi
-                                </button>
-                                @if($latest)
-                                    <form action="{{ route('owner.kesehatan.destroy', $latest->id) }}" method="POST" onsubmit="return confirm('Hapus observasi ini?')">
-                                        @csrf
-                                        @method('DELETE')
-                                        <button type="submit" class="ks-dropdown-item ks-dropdown-item--danger">
-                                            <img src="{{ asset('images/icons/icontrashmerah.svg') }}" alt="" style="width:14px; height:14px; margin-right:8px;">
-                                            Hapus Observasi
-                                        </button>
-                                    </form>
-                                @endif
-                                <form action="{{ route('owner.sapi.destroy', $sapi->id) }}" method="POST" onsubmit="return confirm('Hapus Sapi ini? Semua data observasi & produksi sapi ini juga akan dihapus secara permanen.')">
-                                    @csrf
-                                    @method('DELETE')
-                                    <button type="submit" class="ks-dropdown-item ks-dropdown-item--danger" style="border-top: 1px solid #F3F4F6;">
-                                        <img src="{{ asset('images/icons/icontrashmerah.svg') }}" alt="" style="width:14px; height:14px; margin-right:8px;">
-                                        Hapus Sapi
-                                    </button>
-                                </form>
-                            </div>
-                        </td>
                     </tr>
                 @empty
                     <tr id="ks-empty-row">
-                        <td colspan="6">
+                        <td colspan="5">
                             <div class="ks-empty">
                                 <h4 class="ks-empty__title">Tidak ada data sapi</h4>
                                 <p class="ks-empty__sub">Data sapi saat ini kosong atau belum dimasukkan.</p>
@@ -1102,22 +1065,22 @@
         <div class="obs-modal-header">
             <h3 class="obs-modal-title">
                 <img src="{{ asset('images/icons/iconpensil2.svg') }}" style="width:20px; height:20px; margin-right:8px; vertical-align:middle;">
-                <span id="modalTitleText" style="vertical-align:middle;">Edit Observasi</span>
+                <span id="modalTitleText" style="vertical-align:middle;">Catat Observasi</span>
             </h3>
             <button type="button" class="obs-modal-close" onclick="closeModal()">&times;</button>
         </div>
-        <form id="obsForm" action="" method="POST">
+        <form id="obsForm" action="{{ route('owner.kesehatan.store') }}" method="POST">
             @csrf
-            <input type="hidden" name="_method" id="formMethod" value="PUT">
+            <input type="hidden" name="_method" id="formMethod" value="POST">
             <input type="hidden" name="sapi_id" id="formSapiId">
             
             <div class="obs-form-group">
-                <label>Sapi</label>
+                <label for="formSapiNameText">Sapi</label>
                 <div class="obs-input-wrapper">
                     <div class="obs-left-icon">
                         <img src="{{ asset('images/icons/icondatasapi.svg') }}" alt="">
                     </div>
-                    <input type="text" id="formSapiNameText" disabled style="background:#E5E7EB; border-color:#7F7F7F;">
+                    <input type="text" id="formSapiNameText" disabled style="padding: 10px 14px 10px 40px; border: 1px solid #7F7F7F; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #000000; background: #E5E7EB; width: 100%; box-sizing: border-box;">
                 </div>
             </div>
 
@@ -1145,8 +1108,8 @@
             <div class="obs-form-group">
                 <label for="formKondisi">Kondisi</label>
                 <div class="obs-input-wrapper">
-                    <div class="obs-status-dot" id="formStatusDot"></div>
-                    <select name="status" id="formKondisi" required onchange="updateKondisiDot(this.value)">
+                    <span id="formStatusDot" class="obs-status-dot"></span>
+                    <select name="status" id="formKondisi" onchange="updateKondisiDot(this.value)" required>
                         <option value="Normal">Normal</option>
                         <option value="Perlu Pemantauan">Perlu Pemantauan</option>
                         <option value="Perlu Tindakan">Perlu Tindakan</option>
@@ -1167,7 +1130,7 @@
                     </div>
                 </div>
                 <div class="obs-form-group flex-1">
-                    <label for="formSusu">Kondisi Susu</label>
+                    <label for="formSusu">Susu</label>
                     <div class="obs-input-wrapper">
                         <select name="kondisi_susu" id="formSusu" required>
                             <option value="Normal">Normal</option>
@@ -1190,92 +1153,20 @@
             </div>
 
             <div class="obs-form-group">
-                <label for="formCatatan">Catatan Tambahan</label>
-                <textarea name="catatan" id="formCatatan" rows="3" placeholder="Masukkan catatan tambahan..."></textarea>
+                <label for="formCatatan">Catatan (Opsional)</label>
+                <textarea name="catatan" id="formCatatan" placeholder="Masukkan catatan" rows="3"></textarea>
             </div>
 
             <div class="obs-form-actions">
                 <button type="button" class="obs-btn-cancel" onclick="closeModal()">Batal</button>
-                <button type="submit" class="obs-btn-save">Simpan Observasi</button>
+                <button type="submit" id="btnSubmit" class="obs-btn-save">Simpan Perubahan</button>
             </div>
         </form>
     </div>
 </div>
 
-{{-- Modal Form Tambah Sapi --}}
-{{-- Modal Form Tambah Sapi --}}
-<div id="sapiModal" class="obs-modal-overlay" style="display: none;">
-    <div class="obs-modal-content" style="background: #E5E7EB; border: 1px solid #7F7F7F; border-radius: 12px; max-width: 400px; padding: 24px;">
-        <div class="obs-modal-header" style="margin-bottom: 16px;">
-            <h3 class="obs-modal-title" style="font-size: 16.5px; font-weight: 800; color: #000000; display: flex; align-items: center; gap: 8px;">
-                <img src="{{ asset('images/icons/iconpensil2.svg') }}" style="width:16px; height:16px;" alt="">
-                Tambah Data Sapi
-            </h3>
-            <button type="button" class="obs-modal-close" onclick="closeSapiModal()" style="font-size: 24px; font-weight: 800; color: #000000;">&times;</button>
-        </div>
-        <form action="{{ route('owner.sapi.store') }}" method="POST">
-            @csrf
-            
-            <div class="obs-form-group" style="margin-bottom: 12px;">
-                <label style="font-size: 13px; font-weight: 700; color: #000000; margin-bottom: 6px;">ID Sapi <span style="color: #EF0000;">*</span></label>
-                <div class="obs-input-wrapper">
-                    <input type="text" name="code" required placeholder="Contoh SP001" style="padding: 10px 14px; border: 1.5px solid #7F7F7F; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #000000; background: #FFFFFF; width: 100%; box-sizing: border-box;">
-                </div>
-            </div>
 
-            <div class="obs-form-group" style="margin-bottom: 12px;">
-                <label style="font-size: 13px; font-weight: 700; color: #000000; margin-bottom: 6px;">Nama Sapi <span style="color: #EF0000;">*</span></label>
-                <div class="obs-input-wrapper">
-                    <input type="text" name="name" required placeholder="Contoh Sapi 1" style="padding: 10px 14px; border: 1.5px solid #7F7F7F; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #000000; background: #FFFFFF; width: 100%; box-sizing: border-box;">
-                </div>
-            </div>
 
-            <div class="obs-form-row" style="margin-bottom: 12px; gap: 12px;">
-                <div class="obs-form-group flex-1" style="margin-bottom: 0;">
-                    <label style="font-size: 13px; font-weight: 700; color: #000000; margin-bottom: 6px;">Tanggal Lahir <span style="color: #EF0000;">*</span></label>
-                    <div class="obs-input-wrapper">
-                        <input type="date" name="tanggal_lahir" required style="padding: 10px 14px; border: 1.5px solid #7F7F7F; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #000000; background: #FFFFFF; width: 100%; box-sizing: border-box;">
-                    </div>
-                </div>
-                <div class="obs-form-group flex-1" style="margin-bottom: 0;">
-                    <label style="font-size: 13px; font-weight: 700; color: #000000; margin-bottom: 6px;">Jenis Kelamin <span style="color: #EF0000;">*</span></label>
-                    <div class="obs-radio-group" style="display: flex; align-items: center; gap: 12px; margin-top: 8px;">
-                        <label class="obs-radio-label" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #000000; cursor: pointer;">
-                            <input type="radio" name="jenis_kelamin" value="Jantan" class="obs-radio-input">
-                            Jantan
-                        </label>
-                        <label class="obs-radio-label" style="display: inline-flex; align-items: center; gap: 6px; font-size: 13px; font-weight: 700; color: #000000; cursor: pointer;">
-                            <input type="radio" name="jenis_kelamin" value="Betina" checked class="obs-radio-input">
-                            Betina
-                        </label>
-                    </div>
-                </div>
-            </div>
-
-            <div class="obs-form-group" style="margin-bottom: 12px;">
-                <label style="font-size: 13px; font-weight: 700; color: #000000; margin-bottom: 6px;">Status <span style="color: #EF0000;">*</span></label>
-                <div class="obs-input-wrapper">
-                    <select name="status" required style="padding: 10px 36px 10px 14px; border: 1.5px solid #7F7F7F; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #000000; background: #FFFFFF; width: 100%; box-sizing: border-box; -webkit-appearance: none; -moz-appearance: none; appearance: none;">
-                        <option value="Normal" selected>Normal</option>
-                        <option value="Perlu Pemantauan">Perlu Pemantauan</option>
-                        <option value="Perlu Tindakan">Perlu Tindakan</option>
-                    </select>
-                    <svg class="obs-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="right: 12px; width: 16px; height: 16px; color: #000000; pointer-events: none; position: absolute; top: 50%; transform: translateY(-50%);"><polyline points="6 9 12 15 18 9"></polyline></svg>
-                </div>
-            </div>
-
-            <div class="obs-form-group" style="margin-bottom: 16px;">
-                <label style="font-size: 13px; font-weight: 700; color: #000000; margin-bottom: 6px;">Catatan (Opsional)</label>
-                <textarea name="catatan" rows="3" placeholder="Masukkan catatan" style="padding: 10px 14px; border: 1.5px solid #7F7F7F; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #000000; background: #FFFFFF; width: 100%; box-sizing: border-box; resize: vertical;"></textarea>
-            </div>
-
-            <div class="obs-form-actions" style="margin-top: 20px; display: flex; gap: 12px;">
-                <button type="button" class="obs-btn-cancel" onclick="closeSapiModal()" style="flex: 1; padding: 10px 20px; border: 1.5px solid #7F7F7F; background: #FFFFFF; color: #000000; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; text-align: center;">Batal</button>
-                <button type="submit" class="obs-btn-save" style="flex: 1.2; padding: 10.5px 20px; border: none; background: #124827; color: #FFFFFF; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; text-align: center;">Simpan Perubahan</button>
-            </div>
-        </form>
-    </div>
-</div>
 
 @endsection
 
@@ -1467,14 +1358,6 @@
         document.getElementById('obsModal').style.display = 'none';
     }
 
-    function openSapiModal() {
-        document.getElementById('sapiModal').style.display = 'flex';
-    }
-
-    function closeSapiModal() {
-        document.getElementById('sapiModal').style.display = 'none';
-    }
-
     function updateKondisiDot(status) {
         const dot = document.getElementById('formStatusDot');
         if (status === 'Normal') {
@@ -1498,8 +1381,6 @@
     window.toggleDropdown = toggleDropdown;
     window.openEditModal = openEditModal;
     window.closeModal = closeModal;
-    window.openSapiModal = openSapiModal;
-    window.closeSapiModal = closeSapiModal;
     window.updateKondisiDot = updateKondisiDot;
 
     // ── Initial render ─────────────────────────────────────────

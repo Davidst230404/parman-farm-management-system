@@ -11,12 +11,8 @@ return new class extends Migration
      */
     public function up(): void
     {
-        Schema::create('sapi', function (Blueprint $table) {
-            $table->id();
-            $table->char('name', 20);
-            $table->char('code', 10)->unique();
-            $table->string('status')->default('normal'); // normal, perlu_pemantauan, perlu_tindakan
-            $table->timestamps();
+        Schema::table('users', function (Blueprint $table) {
+            $table->string('username')->nullable()->unique()->after('name');
         });
     }
 
@@ -25,6 +21,8 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sapi');
+        Schema::table('users', function (Blueprint $table) {
+            $table->dropColumn('username');
+        });
     }
 };

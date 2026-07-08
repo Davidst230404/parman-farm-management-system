@@ -207,13 +207,14 @@
 }
 .lr-stat-value {
     grid-area: value;
-    font-size: 38px !important;
+    font-size: 26px !important;
     font-weight: 800;
-    line-height: 1;
+    line-height: 1.1;
     margin: 0;
     align-self: center;
     justify-self: start;
     text-align: left;
+    white-space: nowrap;
 }
 .lr-stat-label {
     grid-area: label;
@@ -387,6 +388,110 @@
 @media (max-width: 640px) {
     .lr-filter-grid { grid-template-columns: 1fr; }
     .lr-stats { grid-template-columns: 1fr; }
+}
+
+/* Hybrid Searchable Dropdown Styles */
+.hybrid-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+.hybrid-select-display {
+    width: 100%;
+    padding: 10px 34px 10px 12px;
+    border: 1.5px solid #E5E7EB; /* match theme */
+    border-radius: 10px;
+    font-size: 13.5px;
+    font-weight: 700;
+    color: #374151;
+    background: #FFFFFF;
+    box-sizing: border-box;
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    position: relative;
+    font-family: 'Manrope', sans-serif;
+    height: 42px;
+    line-height: 20px;
+}
+.hybrid-select-display::after {
+    content: "∨";
+    position: absolute;
+    right: 12px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    font-weight: 800;
+    color: #9CA3AF;
+    pointer-events: none;
+}
+.hybrid-select-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    z-index: 999;
+    margin-top: 4px;
+    padding: 8px;
+    box-sizing: border-box;
+}
+.hybrid-select-search {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-family: 'Manrope', sans-serif;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    font-weight: 600;
+}
+.hybrid-select-search:focus {
+    outline: none;
+    border-color: #124827;
+}
+.hybrid-select-options {
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.hybrid-select-option {
+    padding: 8px 12px;
+    font-size: 13.5px;
+    color: #374151;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    text-align: left;
+}
+.hybrid-select-option:hover {
+    background: #124827;
+    color: #FFFFFF;
+}
+.hybrid-select-option--selected {
+    background: #F3F4F6;
+    color: #124827;
+}
+.hybrid-select-option--hidden {
+    display: none;
+}
+.hybrid-select-no-results {
+    padding: 8px 12px;
+    font-size: 13.5px;
+    color: #9CA3AF;
+    text-align: center;
+    font-family: 'Manrope', sans-serif;
 }
 </style>
 @endpush
@@ -608,16 +713,12 @@
        ============================================================ */
     
     // Seed list of partners
-    const partners = [
-        "UD. Maju Jaya",
-        "Koperasi Tani",
-        "Susu Sehat",
-        "Greenfields Dairy",
-        "Toko Sehat"
-    ];
+    const partners = {!! json_encode($mitras->pluck('nama')->toArray()) !!};
 
     // Seed list of daily records from database
     const reportData = {!! json_encode($dates) !!};
+    const rawPenjualan = {!! json_encode($penjualans) !!};
+    const rawProduksi = {!! json_encode($produksis) !!};
 
     /* ============================================================
        State Variables
@@ -634,6 +735,7 @@
        ============================================================ */
     function init() {
         populatePartnerSelect();
+        initSearchableDropdown('filter-partner', 'Cari Mitra...');
         renderTable();
         updateStats();
     }
@@ -719,6 +821,151 @@
         });
     }
 
+    function getFilteredPenjualan() {
+        const startVal = document.getElementById('filter-start-date').value;
+        const endVal = document.getElementById('filter-end-date').value;
+        const partner = document.getElementById('filter-partner').value;
+
+        const startDate = startVal ? parseDateString(startVal) : null;
+        const endDate = endVal ? parseDateString(endVal) : null;
+        if (endDate) endDate.setHours(23, 59, 59, 999);
+        if (startDate) startDate.setHours(0, 0, 0, 0);
+
+        return rawPenjualan.filter(p => {
+            if (startDate || endDate) {
+                const pDate = parseDateString(p.tanggal);
+                if (startDate && pDate < startDate) return false;
+                if (endDate && pDate > endDate) return false;
+            }
+            if (partner !== 'Semua Mitra') {
+                const partnerName = p.mitra ? p.mitra.nama : '';
+                if (partnerName !== partner) return false;
+            }
+            return true;
+        }).map(p => ({
+            tanggal: formatIndonesianDate(p.tanggal),
+            pembeli: p.mitra ? p.mitra.nama : '—',
+            jumlah_terjual: parseFloat(p.jumlah_terjual) || 0,
+            harga_liter: p.jumlah_terjual > 0 ? Math.round(p.total_pendapatan / p.jumlah_terjual) : 0,
+            total_harga: parseFloat(p.total_pendapatan) || 0
+        }));
+    }
+
+    function getFilteredProduksi() {
+        const startVal = document.getElementById('filter-start-date').value;
+        const endVal = document.getElementById('filter-end-date').value;
+        const partner = document.getElementById('filter-partner').value;
+
+        const startDate = startVal ? parseDateString(startVal) : null;
+        const endDate = endVal ? parseDateString(endVal) : null;
+        if (endDate) endDate.setHours(23, 59, 59, 999);
+        if (startDate) startDate.setHours(0, 0, 0, 0);
+
+        let allowedDates = null;
+        if (partner !== 'Semua Mitra') {
+            allowedDates = rawPenjualan.filter(p => p.mitra && p.mitra.nama === partner).map(p => p.tanggal);
+        }
+
+        const filteredProd = rawProduksi.filter(pr => {
+            if (startDate || endDate) {
+                const prDate = parseDateString(pr.tanggal);
+                if (startDate && prDate < startDate) return false;
+                if (endDate && prDate > endDate) return false;
+            }
+            if (allowedDates !== null && !allowedDates.includes(pr.tanggal)) return false;
+            return true;
+        });
+
+        const groups = {};
+        filteredProd.forEach(pr => {
+            const code = pr.sapi ? pr.sapi.code : '—';
+            const key = pr.tanggal + '_' + code;
+            if (!groups[key]) {
+                groups[key] = {
+                    tanggal: pr.tanggal,
+                    sapiCode: code,
+                    pagi: 0,
+                    sore: 0
+                };
+            }
+            const vol = parseFloat(pr.jumlah_susu) || 0;
+            if (pr.sesi === 'pagi') {
+                groups[key].pagi += vol;
+            } else if (pr.sesi === 'sore') {
+                groups[key].sore += vol;
+            }
+        });
+
+        return Object.values(groups).sort((a, b) => b.tanggal.localeCompare(a.tanggal)).map(g => ({
+            tanggal: formatIndonesianDate(g.tanggal),
+            sapiCode: g.sapiCode,
+            pagi: g.pagi,
+            sore: g.sore,
+            total: g.pagi + g.sore
+        }));
+    }
+
+    function getFilteredRekap() {
+        const startVal = document.getElementById('filter-start-date').value;
+        const endVal = document.getElementById('filter-end-date').value;
+        const partner = document.getElementById('filter-partner').value;
+
+        const startDate = startVal ? parseDateString(startVal) : null;
+        const endDate = endVal ? parseDateString(endVal) : null;
+        if (endDate) endDate.setHours(23, 59, 59, 999);
+        if (startDate) startDate.setHours(0, 0, 0, 0);
+
+        const uniqueDatesMap = {};
+        
+        const filteredProd = rawProduksi.filter(pr => {
+            if (startDate || endDate) {
+                const prDate = parseDateString(pr.tanggal);
+                if (startDate && prDate < startDate) return false;
+                if (endDate && prDate > endDate) return false;
+            }
+            return true;
+        });
+
+        const filteredPenjualan = rawPenjualan.filter(p => {
+            if (startDate || endDate) {
+                const pDate = parseDateString(p.tanggal);
+                if (startDate && pDate < startDate) return false;
+                if (endDate && pDate > endDate) return false;
+            }
+            if (partner !== 'Semua Mitra' && p.mitra && p.mitra.nama !== partner) return false;
+            return true;
+        });
+
+        filteredProd.forEach(pr => uniqueDatesMap[pr.tanggal] = true);
+        filteredPenjualan.forEach(p => uniqueDatesMap[p.tanggal] = true);
+
+        const uniqueDates = Object.keys(uniqueDatesMap).sort((a, b) => b.localeCompare(a));
+
+        const rekapRows = [];
+        uniqueDates.forEach(tgl => {
+            const dailyProd = filteredProd
+                .filter(pr => pr.tanggal === tgl)
+                .reduce((sum, pr) => sum + (parseFloat(pr.jumlah_susu) || 0), 0);
+            
+            const dailySales = filteredPenjualan.filter(p => p.tanggal === tgl);
+            const dailyQtySold = dailySales.reduce((sum, p) => sum + (parseFloat(p.jumlah_terjual) || 0), 0);
+            const dailyRevenue = dailySales.reduce((sum, p) => sum + (parseFloat(p.total_pendapatan) || 0), 0);
+            const remaining = Math.max(0, dailyProd - dailyQtySold);
+
+            if (dailyProd > 0 || dailyQtySold > 0) {
+                rekapRows.push({
+                    tanggal: formatIndonesianDate(tgl),
+                    produksi: dailyProd,
+                    terjual: dailyQtySold,
+                    sisa: remaining,
+                    pendapatan: dailyRevenue
+                });
+            }
+        });
+
+        return rekapRows;
+    }
+
     /* ============================================================
        Stats Updates based on filtered list
        ============================================================ */
@@ -768,9 +1015,42 @@
     /* ============================================================
        Table Render & Pagination (Exactly 5 rows preview as requested)
        ============================================================ */
+    function renderTableHeader(reportType) {
+        const thead = document.querySelector('.lr-table thead');
+        if (!thead) return;
+
+        let headers = [];
+        if (reportType === 'Penjualan Susu') {
+            headers = ['Tanggal', 'Pembeli', 'Jumlah Liter Terjual', 'Harga/Liter', 'Total Harga'];
+        } else if (reportType === 'Produksi Susu') {
+            headers = ['Tanggal', 'ID Sapi', 'Produksi Pagi (L)', 'Produksi Sore (L)', 'Total Produksi (L)'];
+        } else {
+            // Semua Data
+            headers = ['Tanggal', 'Total Produksi (L)', 'Total Terjual (L)', 'Sisa Stok Susu (L)', 'Pendapatan'];
+        }
+
+        let html = '<tr>';
+        headers.forEach(h => {
+            html += `<th scope="col">${h}</th>`;
+        });
+        html += '</tr>';
+        thead.innerHTML = html;
+    }
+
     function renderTable() {
-        const filtered = getFilteredData();
-        const total = filtered.length;
+        const reportType = document.getElementById('filter-report-type').value;
+        renderTableHeader(reportType);
+
+        let data = [];
+        if (reportType === 'Penjualan Susu') {
+            data = getFilteredPenjualan();
+        } else if (reportType === 'Produksi Susu') {
+            data = getFilteredProduksi();
+        } else {
+            data = getFilteredRekap();
+        }
+
+        const total = data.length;
         const totalPages = Math.max(1, Math.ceil(total / PER_PAGE));
 
         if (currentPage > totalPages) currentPage = totalPages;
@@ -782,32 +1062,44 @@
         tbody.innerHTML = '';
 
         // Update card preview title based on filter selections
-        const reportType = document.getElementById('filter-report-type').value;
         document.getElementById('lr-table-card-title').textContent = `Preview Data Laporan (${reportType})`;
 
         if (total === 0) {
-            tbody.innerHTML = '<tr><td colspan="6" style="text-align:center; padding: 40px; color:#9CA3AF;">Tidak ada data laporan ditemukan untuk kriteria filter ini.</td></tr>';
+            tbody.innerHTML = '<tr><td colspan="5" style="text-align:center; padding: 40px; color:#9CA3AF;">Tidak ada data laporan ditemukan untuk kriteria filter ini.</td></tr>';
             document.getElementById('lr-pagination-info').textContent = 'Tidak ada data';
             document.getElementById('lr-pagination-nav').innerHTML = '';
             return;
         }
 
-        const slice = filtered.slice(start, end);
+        const slice = data.slice(start, end);
         slice.forEach(d => {
             const tr = document.createElement('tr');
             
-            // Format status badge
-            let badgeClass = 'lr-badge--selesai';
-            if (d.status === 'Perlu Pantau') badgeClass = 'lr-badge--pending';
-
-            tr.innerHTML = `
-                <td>${d.tanggal}</td>
-                <td class="lr-bold">${d.produksi}</td>
-                <td class="lr-bold">${formatRupiah(d.penjualan)}</td>
-                <td>${d.mitra}</td>
-                <td>${d.catatan}</td>
-                <td><span class="lr-badge ${badgeClass}">${d.status}</span></td>
-            `;
+            if (reportType === 'Penjualan Susu') {
+                tr.innerHTML = `
+                    <td>${d.tanggal}</td>
+                    <td>${d.pembeli}</td>
+                    <td class="lr-bold">${d.jumlah_terjual.toLocaleString('id-ID')} L</td>
+                    <td>Rp ${d.harga_liter.toLocaleString('id-ID')}</td>
+                    <td class="lr-bold">Rp ${d.total_harga.toLocaleString('id-ID')}</td>
+                `;
+            } else if (reportType === 'Produksi Susu') {
+                tr.innerHTML = `
+                    <td>${d.tanggal}</td>
+                    <td>${d.sapiCode}</td>
+                    <td>${d.pagi.toLocaleString('id-ID')} L</td>
+                    <td>${d.sore.toLocaleString('id-ID')} L</td>
+                    <td class="lr-bold">${d.total.toLocaleString('id-ID')} L</td>
+                `;
+            } else {
+                tr.innerHTML = `
+                    <td>${d.tanggal}</td>
+                    <td class="lr-bold">${d.produksi.toLocaleString('id-ID')} L</td>
+                    <td class="lr-bold">${d.terjual.toLocaleString('id-ID')} L</td>
+                    <td>${d.sisa.toLocaleString('id-ID')} L</td>
+                    <td class="lr-bold">Rp ${d.pendapatan.toLocaleString('id-ID')}</td>
+                `;
+            }
             tbody.appendChild(tr);
         });
 
@@ -875,7 +1167,7 @@
             'Januari', 'Februari', 'Maret', 'April', 'Mei', 'Juni',
             'Juli', 'Agustus', 'September', 'Oktober', 'November', 'Desember'
         ];
-        return `${d < 10 ? '0' + d : d} ${months[m]} ${y}`;
+        return `${d} ${months[m]} ${y}`;
     }
 
     function syncDateLabels() {
@@ -888,6 +1180,44 @@
     // Change listeners to sync display labels
     document.getElementById('filter-start-date').addEventListener('change', syncDateLabels);
     document.getElementById('filter-end-date').addEventListener('change', syncDateLabels);
+
+    // Make sure clicking the wrapper container or the input opens the native date picker calendar
+    const startInput = document.getElementById('filter-start-date');
+    const endInput = document.getElementById('filter-end-date');
+    
+    if (startInput) {
+        startInput.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (typeof this.showPicker === 'function') {
+                try { this.showPicker(); } catch(err) {}
+            }
+        });
+        startInput.parentElement.addEventListener('click', function(e) {
+            if (e.target !== startInput) {
+                startInput.focus();
+                if (typeof startInput.showPicker === 'function') {
+                    try { startInput.showPicker(); } catch(err) {}
+                }
+            }
+        });
+    }
+    
+    if (endInput) {
+        endInput.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (typeof this.showPicker === 'function') {
+                try { this.showPicker(); } catch(err) {}
+            }
+        });
+        endInput.parentElement.addEventListener('click', function(e) {
+            if (e.target !== endInput) {
+                endInput.focus();
+                if (typeof endInput.showPicker === 'function') {
+                    try { endInput.showPicker(); } catch(err) {}
+                }
+            }
+        });
+    }
 
     // Apply filters trigger
     document.getElementById('btn-submit-filter').addEventListener('click', function() {
@@ -902,6 +1232,7 @@
         document.getElementById('filter-end-date').value = '';
         document.getElementById('filter-report-type').value = "Semua Data";
         document.getElementById('filter-partner').value = "Semua Mitra";
+        updateSearchableSelect('filter-partner');
 
         syncDateLabels();
         currentPage = 1;
@@ -911,40 +1242,24 @@
 
     // Export Excel action trigger
     document.getElementById('btn-export-excel').addEventListener('click', function() {
-        const filtered = getFilteredData();
-        if (filtered.length === 0) {
-            alert('Tidak ada data untuk diekspor.');
-            return;
-        }
+        const startVal = document.getElementById('filter-start-date').value;
+        const endVal = document.getElementById('filter-end-date').value;
+        const reportType = document.getElementById('filter-report-type').value;
+        const partner = document.getElementById('filter-partner').value;
 
-        // CSV Header
-        let csvContent = "Tanggal,Produksi (Liter),Penjualan (Rp),Mitra / Pembeli,Catatan Kesehatan,Status\n";
+        // Redirect to backend Excel download route with query filters
+        const url = "{{ route('owner.laporan.export') }}" + 
+            "?start_date=" + encodeURIComponent(startVal) + 
+            "&end_date=" + encodeURIComponent(endVal) + 
+            "&report_type=" + encodeURIComponent(reportType) + 
+            "&partner=" + encodeURIComponent(partner);
+            
+        window.location.href = url;
 
-        // CSV Rows
-        filtered.forEach(row => {
-            const dateStr = row.tanggal;
-            const prod = row.produksi;
-            const sale = row.penjualan;
-            const partner = row.mitra;
-            const note = row.catatan;
-            const status = row.status;
-
-            csvContent += `"${dateStr}",${prod},${sale},"${partner}","${note}","${status}"\n`;
-        });
-
-        // Download CSV
-        const blob = new Blob(["\ufeff" + csvContent], { type: 'text/csv;charset=utf-8;' });
-        const url = URL.createObjectURL(blob);
-        const link = document.createElement("a");
-        link.setAttribute("href", url);
-        link.setAttribute("download", `laporan_peternakan_${new Date().toISOString().slice(0,10)}.csv`);
-        link.style.visibility = 'hidden';
-        document.body.appendChild(link);
-        link.click();
-        document.body.removeChild(link);
-
+        // Show download alert banner
         const alertBanner = document.getElementById('lr-success-alert');
         if (alertBanner) {
+            alertBanner.querySelector('span').textContent = 'Laporan Excel berhasil diunduh!';
             alertBanner.style.display = 'inline-flex';
             setTimeout(() => {
                 alertBanner.style.display = 'none';
@@ -958,12 +1273,132 @@
         document.getElementById('filter-end-date').value = defaultEndDate;
         document.getElementById('filter-report-type').value = "Semua Data";
         document.getElementById('filter-partner').value = "Semua Mitra";
+        updateSearchableSelect('filter-partner');
 
         syncDateLabels();
         currentPage = 1;
         renderTable();
         updateStats();
     });
+
+    function updateSearchableSelect(selectId) {
+        const select = document.getElementById(selectId);
+        if (select && select.nextElementSibling && select.nextElementSibling.classList.contains('hybrid-select-wrapper')) {
+            const display = select.nextElementSibling.querySelector('.hybrid-select-display');
+            const selectedOpt = select.options[select.selectedIndex];
+            display.textContent = selectedOpt ? selectedOpt.textContent : 'Pilih...';
+        }
+    }
+
+    function initSearchableDropdown(selectId, placeholder = 'Cari...') {
+        const originalSelect = document.getElementById(selectId);
+        if (!originalSelect) return;
+
+        // Hide original select
+        originalSelect.style.display = 'none';
+        
+        const wrapper = document.createElement('div');
+        wrapper.className = 'hybrid-select-wrapper';
+        
+        const display = document.createElement('div');
+        display.className = 'hybrid-select-display';
+        const selectedOpt = originalSelect.options[originalSelect.selectedIndex];
+        display.textContent = selectedOpt ? selectedOpt.textContent : 'Pilih Mitra';
+        
+        const dropdown = document.createElement('div');
+        dropdown.className = 'hybrid-select-dropdown';
+        
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.className = 'hybrid-select-search';
+        searchInput.placeholder = placeholder;
+        
+        const optionsList = document.createElement('div');
+        optionsList.className = 'hybrid-select-options';
+        
+        const noResults = document.createElement('div');
+        noResults.className = 'hybrid-select-no-results';
+        noResults.textContent = 'Tidak ada hasil';
+        noResults.style.display = 'none';
+        
+        function repopulate() {
+            optionsList.innerHTML = '';
+            Array.from(originalSelect.options).forEach(opt => {
+                if (opt.value === '' && opt.disabled) return;
+                const item = document.createElement('div');
+                item.className = 'hybrid-select-option';
+                if (opt.value == originalSelect.value) {
+                    item.classList.add('hybrid-select-option--selected');
+                }
+                item.dataset.value = opt.value;
+                item.textContent = opt.textContent;
+                optionsList.appendChild(item);
+            });
+        }
+        repopulate();
+        
+        dropdown.appendChild(searchInput);
+        dropdown.appendChild(optionsList);
+        dropdown.appendChild(noResults);
+        
+        wrapper.appendChild(display);
+        wrapper.appendChild(dropdown);
+        
+        originalSelect.parentNode.insertBefore(wrapper, originalSelect.nextSibling);
+
+        display.addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.querySelectorAll('.hybrid-select-dropdown').forEach(el => {
+                if (el !== dropdown) el.style.display = 'none';
+            });
+            const isOpen = dropdown.style.display === 'block';
+            dropdown.style.display = isOpen ? 'none' : 'block';
+            if (!isOpen) {
+                searchInput.value = '';
+                filterOptions('');
+                searchInput.focus();
+                repopulate();
+            }
+        });
+
+        searchInput.addEventListener('click', e => e.stopPropagation());
+        searchInput.addEventListener('input', function() {
+            filterOptions(this.value);
+        });
+
+        function filterOptions(query) {
+            const cleanQuery = query.toLowerCase().trim();
+            const items = optionsList.querySelectorAll('.hybrid-select-option');
+            let visibleCount = 0;
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(cleanQuery)) {
+                    item.classList.remove('hybrid-select-option--hidden');
+                    visibleCount++;
+                } else {
+                    item.classList.add('hybrid-select-option--hidden');
+                }
+            });
+            
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        optionsList.addEventListener('click', function(e) {
+            const item = e.target.closest('.hybrid-select-option');
+            if (!item) return;
+            
+            originalSelect.value = item.dataset.value;
+            originalSelect.dispatchEvent(new Event('change'));
+            
+            display.textContent = item.textContent;
+            dropdown.style.display = 'none';
+        });
+
+        document.addEventListener('click', function() {
+            dropdown.style.display = 'none';
+        });
+    }
 
     // Run init
     init();

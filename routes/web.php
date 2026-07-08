@@ -49,7 +49,9 @@ Route::middleware(['auth', 'role:owner'])
             ->name('dashboard');
 
         // Data Sapi & Kesehatan
-        Route::resource('sapi', SapiController::class);
+        Route::get('sapi', function () {
+            return redirect()->route('owner.kesehatan.index');
+        })->name('sapi.index');
         Route::get('/observasi', [KesehatanController::class, 'observasi'])
             ->name('kesehatan.observasi');
         Route::resource('kesehatan', KesehatanController::class);
@@ -66,7 +68,11 @@ Route::middleware(['auth', 'role:owner'])
         // Laporan
         Route::get('/laporan', [LaporanController::class, 'index'])
             ->name('laporan.index');
+        Route::get('/laporan/export', [LaporanController::class, 'export'])
+            ->name('laporan.export');
 
+        // Kelola Karyawan
+        Route::resource('karyawan', \App\Http\Controllers\owner\KaryawanController::class);
     });
 
 // ============================================================
@@ -83,6 +89,9 @@ Route::middleware(['auth', 'role:karyawan'])
 
         // Kesehatan Sapi & Observasi
         Route::resource('kesehatan', KaryawanKesehatanController::class);
+
+        // Sapi CRUD
+        Route::resource('sapi', \App\Http\Controllers\karyawan\SapiController::class)->only(['store', 'update', 'destroy']);
 
         // Produksi Susu (Pemerahan)
         Route::resource('produksi', KaryawanProduksiController::class);

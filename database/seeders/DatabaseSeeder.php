@@ -23,7 +23,9 @@ class DatabaseSeeder extends Seeder
         Schema::disableForeignKeyConstraints();
 
         // Clean tables
-        User::whereIn('email', ['owner', 'karyawan', 'owner2', 'karyawan2'])->delete();
+        User::whereIn('email', ['owner', 'karyawan', 'owner2', 'karyawan2', 'owner@parmanfarm.com', 'karyawan@parmanfarm.com'])
+            ->orWhereIn('username', ['owner', 'karyawan'])
+            ->delete();
         Produksi::truncate();
         Kesehatan::truncate();
         Sapi::truncate();
@@ -35,7 +37,8 @@ class DatabaseSeeder extends Seeder
         // Seed basic users
         User::create([
             'name'              => 'Owner',
-            'email'             => 'owner',
+            'email'             => 'owner@parmanfarm.com',
+            'username'          => 'owner',
             'role'              => 'owner',
             'password'          => Hash::make('12345678'),
             'email_verified_at' => now(),
@@ -43,7 +46,8 @@ class DatabaseSeeder extends Seeder
 
         User::create([
             'name'              => 'Budi',
-            'email'             => 'karyawan',
+            'email'             => 'karyawan@parmanfarm.com',
+            'username'          => 'karyawan',
             'role'              => 'karyawan',
             'password'          => Hash::make('12345678'),
             'email_verified_at' => now(),

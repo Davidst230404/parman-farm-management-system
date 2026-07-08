@@ -429,8 +429,8 @@ body.owner-body {
 }
 
 .stat-card__value-unit {
-    font-size: 32px !important;
-    font-weight: 800 !important;
+    font-size: inherit !important;
+    font-weight: inherit !important;
     letter-spacing: 0;
     margin-left: 2px;
     vertical-align: baseline;

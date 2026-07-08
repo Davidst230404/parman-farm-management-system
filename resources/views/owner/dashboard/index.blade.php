@@ -137,7 +137,7 @@
             @empty
                 <p style="font-size:13px;color:#6B7280;text-align:center;padding:24px 0;">Belum ada data produksi.</p>
             @endforelse
-        </div>
+        </div> 
     </div>
 
     {{-- Penjualan Bulan Ini --}}
@@ -176,8 +176,8 @@
         </div>
         <div class="mitra-box">
             <div class="mitra-box__logo">
-                <img src="{{ asset('images/logo/logogreenfield.svg') }}"
-                     alt="Greenfields Logo">
+                <img src="{{ asset('images/icons/iconjabattangan.svg') }}"
+                     alt="Mitra Logo">
             </div>
             <div>
                 <p class="mitra-box__name">{{ $activeMitra && $activeMitra->mitra ? $activeMitra->mitra->nama : 'Greenfields' }}</p>

@@ -89,6 +89,14 @@
                 <span>Laporan</span>
             </a>
 
+            <a href="{{ route('owner.karyawan.index') }}"
+               id="nav-karyawan"
+               class="o-nav__item {{ request()->routeIs('owner.karyawan.*') ? 'o-nav__item--active' : '' }}">
+                <img src="{{ asset('images/icons/iconorang.svg') }}"
+                     alt="" class="o-nav__icon-img" style="filter: brightness(0) invert(1);">
+                <span>Kelola Karyawan</span>
+            </a>
+
         </nav>
 
         {{-- Logout --}}

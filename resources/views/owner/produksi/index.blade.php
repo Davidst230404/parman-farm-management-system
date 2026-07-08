@@ -671,6 +671,16 @@
 @push('scripts')
 <script>
 (function () {
+    const topbarDatePicker = document.getElementById('topbar-date-picker');
+    if (topbarDatePicker) {
+        topbarDatePicker.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (typeof this.showPicker === 'function') {
+                try { this.showPicker(); } catch(err) {}
+            }
+        });
+    }
+
     /* ── Pagination ───────────────────────────────────────────── */
     const PER_PAGE = 4;
     let currentPage = 1;

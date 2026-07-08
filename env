@@ -1,6 +1,6 @@
 APP_NAME=Laravel
 APP_ENV=local
-APP_KEY=
+APP_KEY=base64:ZKQtSy1sFgirqknhlGaXYaLihZl9wKBooHMjLjPLrwE=
 APP_DEBUG=true
 APP_URL=http://localhost
 
@@ -20,12 +20,12 @@ LOG_STACK=single
 LOG_DEPRECATIONS_CHANNEL=null
 LOG_LEVEL=debug
 
-DB_CONNECTION=sqlite
-# DB_HOST=127.0.0.1
-# DB_PORT=3306
-# DB_DATABASE=laravel
-# DB_USERNAME=root
-# DB_PASSWORD=
+DB_CONNECTION=mysql
+DB_HOST=localhost
+DB_PORT=3306
+DB_DATABASE=suparman_farm
+DB_USERNAME=suparman_farm
+DB_PASSWORD=Ternaksehat123
 
 SESSION_DRIVER=database
 SESSION_LIFETIME=120
@@ -63,10 +63,3 @@ AWS_BUCKET=
 AWS_USE_PATH_STYLE_ENDPOINT=false
 
 VITE_APP_NAME="${APP_NAME}"
-
-# Dynamic Contact Settings
-CONTACT_WHATSAPP_NUMBER=6281234567890
-CONTACT_WHATSAPP_DISPLAY="+62 812-3456-7890"
-CONTACT_WHATSAPP_TEXT_LANDING="Halo Parman Farm, saya tertarik untuk bekerja sama."
-CONTACT_WHATSAPP_TEXT_ADMIN="Halo Admin Parman Farm, saya butuh bantuan dengan akun saya."
-CONTACT_EMAIL="admin@parmanfarm.com"

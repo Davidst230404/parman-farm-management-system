@@ -8,7 +8,7 @@ Dokumen ini ditujukan untuk tim teknis (developer / administrator sistem) untuk 
 ## 1. Spesifikasi Teknologi (Tech Stack)
 
 Aplikasi dibangun menggunakan teknologi berikut:
-- **Backend Framework:** Laravel (PHP >= 8.1)
+- **Backend Framework:** Laravel (PHP >= 8.3)
 - **Database:** MariaDB / MySQL >= 10.4
 - **Frontend Assets:** Vite + Vanilla CSS / TailwindCSS
 - **Server Environment:** Laragon (Local Development) / Docker (Opsional) / Nginx (Production)
@@ -122,7 +122,7 @@ Diagram di atas membagi sistem menjadi beberapa komponen utama:
 
 ## 4. Langkah Instalasi di Lingkungan Lokal (Development Setup)
 
-1. **Klon Repositori:**
+1. **Klon Repositori & Masuk ke Direktori Proyek:**
    ```bash
    git clone <repository-url>
    cd parman-farm
@@ -139,27 +139,31 @@ Diagram di atas membagi sistem menjadi beberapa komponen utama:
    ```
 
 4. **Konfigurasi Environment:**
-   Salin `.env.example` menjadi `.env` dan sesuaikan kredensial database Anda:
-   ```bash
-   cp .env.example .env
-   ```
+   Salin berkas `.env.example` menjadi `.env`:
+   *   Untuk Windows (CMD): `copy .env.example .env`
+   *   Untuk Linux/macOS/PowerShell/Git Bash: `cp .env.example .env`
+   
+   Setelah disalin, buka berkas `.env` tersebut dan sesuaikan konfigurasi database Anda (misalnya nama database `parman-farm` atau `suparman_farm`).
 
 5. **Generate Application Key:**
    ```bash
    php artisan key:generate
    ```
 
-6. **Jalankan Migrasi & Seeder Database:**
+6. **Buat Database Baru:**
+   Buat database kosong baru di MySQL/MariaDB lokal Anda (misal menggunakan Laragon / phpMyAdmin) dengan nama database yang sesuai dengan berkas `.env` Anda (contoh: `parman-farm`).
+
+7. **Jalankan Migrasi & Seeder Database:**
    ```bash
    php artisan migrate --seed
    ```
 
-7. **Jalankan Vite Server (untuk compile CSS/JS):**
+8. **Jalankan Vite Development Server:**
    ```bash
    npm run dev
    ```
 
-8. **Akses Aplikasi:**
+9. **Akses Aplikasi:**
    Gunakan Laragon (misal: `http://parman-farm.test`) atau jalankan PHP built-in server:
    ```bash
    php artisan serve
@@ -169,16 +173,30 @@ Diagram di atas membagi sistem menjadi beberapa komponen utama:
 
 ## 5. Panduan Deployment Ke Server Produksi (VPS Nginx)
 
-1. Pastikan server produksi memiliki PHP >= 8.1 dan database MySQL/MariaDB.
-2. Arahkan *Document Root* Nginx ke folder `/public` dari proyek Laravel Anda.
-3. Ubah `.env` ke mode production:
+1. Pastikan server produksi telah memenuhi spesifikasi minimum: **PHP >= 8.3** dan **MySQL/MariaDB >= 10.4**.
+2. Arahkan *Document Root* web server (Nginx/Apache) ke folder `/public` dari proyek Laravel Anda.
+3. Konfigurasi berkas `.env` ke mode produksi:
    ```env
    APP_ENV=production
    APP_DEBUG=false
    ```
-4. Jalankan perintah optimasi Laravel di server produksi:
+4. Instal dependensi PHP produksi (tanpa dependensi development):
+   ```bash
+   composer install --no-dev --optimize-autoloader
+   ```
+5. Kompilasi aset frontend untuk produksi:
+   ```bash
+   npm install
+   npm run build
+   ```
+6. Jalankan migrasi database dengan flag `--force` (untuk mengabaikan prompt konfirmasi):
+   ```bash
+   php artisan migrate --force
+   ```
+7. Jalankan perintah optimasi/caching Laravel:
    ```bash
    php artisan config:cache
    php artisan route:cache
    php artisan view:cache
+   php artisan event:cache
    ```

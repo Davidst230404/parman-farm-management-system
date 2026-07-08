@@ -32,7 +32,7 @@
 
         <a href="{{ route('login') }}" class="l-btn-login">
             <img src="{{ asset('images/landingpage/iconloginowner.svg') }}" alt="">
-            Login Owner
+            Login
         </a>
 
         <button class="l-hamburger" id="hamburgerBtn" aria-label="Toggle menu">
@@ -239,7 +239,7 @@
                 <p class="l-cta-subtitle">Kami Terbuka untuk kemitraan dan kerja sama yang saling menguntungkan. Mari tumbuh bersama.</p>
             </div>
         </div>
-        <a href="https://wa.me/6281234567890" target="_blank" class="l-btn-cta">
+        <a href="https://wa.me/{{ config('contact.whatsapp.number') }}?text={{ urlencode(config('contact.whatsapp.text_landing')) }}" target="_blank" class="l-btn-cta">
             Hubungi Kami
             <svg class="l-btn-cta__arrow" viewBox="0 0 48 24" fill="none" stroke="currentColor" stroke-width="2.5" width="36" height="16">
                 <line x1="4" y1="12" x2="44" y2="12"/>

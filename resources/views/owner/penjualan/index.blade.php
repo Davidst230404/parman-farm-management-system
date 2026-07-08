@@ -225,13 +225,14 @@
 }
 .pj-stat-value {
     grid-area: value;
-    font-size: 38px !important;
+    font-size: 26px !important;
     font-weight: 800;
-    line-height: 1;
+    line-height: 1.1;
     margin: 0;
     align-self: center;
     justify-self: start;
     text-align: left;
+    white-space: nowrap;
 }
 .pj-stat-card--green .pj-stat-value { color: #068B4A; }
 
@@ -662,6 +663,109 @@
     .pj-form-field--full { grid-column: span 1; }
 }
 
+/* Hybrid Searchable Dropdown Styles */
+.hybrid-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+.hybrid-select-display {
+    width: 100%;
+    padding: 10px 36px 10px 14px;
+    border: 1.5px solid #E5E7EB; /* match theme */
+    border-radius: 8px;
+    font-size: 14.5px;
+    font-weight: 700;
+    color: #111827;
+    background: #FFFFFF;
+    box-sizing: border-box;
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    position: relative;
+    font-family: 'Manrope', sans-serif;
+    height: 42px;
+    line-height: 20px;
+}
+.hybrid-select-display::after {
+    content: "∨";
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    font-weight: 800;
+    color: #111827;
+    pointer-events: none;
+}
+.hybrid-select-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    border: 1px solid #E5E7EB;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    z-index: 999;
+    margin-top: 4px;
+    padding: 8px;
+    box-sizing: border-box;
+}
+.hybrid-select-search {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-family: 'Manrope', sans-serif;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    font-weight: 600;
+}
+.hybrid-select-search:focus {
+    outline: none;
+    border-color: #124827;
+}
+.hybrid-select-options {
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.hybrid-select-option {
+    padding: 8px 12px;
+    font-size: 13.5px;
+    color: #374151;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    text-align: left;
+}
+.hybrid-select-option:hover {
+    background: #124827;
+    color: #FFFFFF;
+}
+.hybrid-select-option--selected {
+    background: #F3F4F6;
+    color: #124827;
+}
+.hybrid-select-option--hidden {
+    display: none;
+}
+.hybrid-select-no-results {
+    padding: 8px 12px;
+    font-size: 13.5px;
+    color: #9CA3AF;
+    text-align: center;
+    font-family: 'Manrope', sans-serif;
+}
 </style>
 @endpush
 
@@ -1115,6 +1219,11 @@
         }
         if (currentSelectedPjMitra && mitras.some(m => m.id == currentSelectedPjMitra)) {
             pjMitraSelect.value = currentSelectedPjMitra;
+        }
+
+        // Initialize / Refresh hybrid searchable dropdown
+        if (typeof initSearchableDropdown === 'function') {
+            initSearchableDropdown('input-pj-mitra', 'Cari Mitra...');
         }
     }
 
@@ -1611,6 +1720,41 @@
     startDateInput.addEventListener('change', syncDateDisplays);
     endDateInput.addEventListener('change', syncDateDisplays);
 
+    // Make sure clicking the wrapper container or the input opens the native date picker calendar
+    if (startDateInput) {
+        startDateInput.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (typeof this.showPicker === 'function') {
+                try { this.showPicker(); } catch(err) {}
+            }
+        });
+        startDateInput.parentElement.addEventListener('click', function(e) {
+            if (e.target !== startDateInput) {
+                startDateInput.focus();
+                if (typeof startDateInput.showPicker === 'function') {
+                    try { startDateInput.showPicker(); } catch(err) {}
+                }
+            }
+        });
+    }
+
+    if (endDateInput) {
+        endDateInput.addEventListener('click', function(e) {
+            e.stopPropagation();
+            if (typeof this.showPicker === 'function') {
+                try { this.showPicker(); } catch(err) {}
+            }
+        });
+        endDateInput.parentElement.addEventListener('click', function(e) {
+            if (e.target !== endDateInput) {
+                endDateInput.focus();
+                if (typeof endDateInput.showPicker === 'function') {
+                    try { endDateInput.showPicker(); } catch(err) {}
+                }
+            }
+        });
+    }
+
     // Initial sync
     syncDateDisplays();
 
@@ -1701,6 +1845,9 @@
     document.getElementById('btn-open-tambah-penjualan').addEventListener('click', function() {
         document.getElementById('form-tambah-penjualan').reset();
         pjTotal.value = "Rp 0";
+        if (typeof updateSearchableSelect === 'function') {
+            updateSearchableSelect('input-pj-mitra');
+        }
         // Auto pre-fill today's date in YYYY-MM-DD format
         const today = new Date();
         const yyyy = today.getFullYear();
@@ -1769,6 +1916,150 @@
             if (parent) parent.classList.remove('pj-field--error');
         });
     });
+
+    function updateSearchableSelect(selectId) {
+        const select = document.getElementById(selectId);
+        if (select && select.nextElementSibling && select.nextElementSibling.classList.contains('hybrid-select-wrapper')) {
+            const display = select.nextElementSibling.querySelector('.hybrid-select-display');
+            const selectedOpt = select.options[select.selectedIndex];
+            display.textContent = selectedOpt ? selectedOpt.textContent : 'Pilih...';
+        }
+    }
+
+    function initSearchableDropdown(selectId, placeholder = 'Cari...') {
+        const originalSelect = document.getElementById(selectId);
+        if (!originalSelect) return;
+
+        // Check if already initialized
+        let wrapper = originalSelect.nextElementSibling;
+        let isInitialized = wrapper && wrapper.classList.contains('hybrid-select-wrapper');
+        
+        if (isInitialized) {
+            const optionsContainer = wrapper.querySelector('.hybrid-select-options');
+            optionsContainer.innerHTML = '';
+            
+            Array.from(originalSelect.options).forEach(opt => {
+                if (opt.value === '' && opt.disabled) return;
+                const optDiv = document.createElement('div');
+                optDiv.className = 'hybrid-select-option';
+                if (opt.value == originalSelect.value) {
+                    optDiv.classList.add('hybrid-select-option--selected');
+                }
+                optDiv.dataset.value = opt.value;
+                optDiv.textContent = opt.textContent;
+                optionsContainer.appendChild(optDiv);
+            });
+
+            const display = wrapper.querySelector('.hybrid-select-display');
+            const selectedOpt = originalSelect.options[originalSelect.selectedIndex];
+            display.textContent = selectedOpt ? selectedOpt.textContent : 'Pilih...';
+            return;
+        }
+
+        originalSelect.style.display = 'none';
+        
+        wrapper = document.createElement('div');
+        wrapper.className = 'hybrid-select-wrapper';
+        
+        const display = document.createElement('div');
+        display.className = 'hybrid-select-display';
+        const selectedOpt = originalSelect.options[originalSelect.selectedIndex];
+        display.textContent = selectedOpt ? selectedOpt.textContent : 'Pilih Mitra';
+        
+        const dropdown = document.createElement('div');
+        dropdown.className = 'hybrid-select-dropdown';
+        
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.className = 'hybrid-select-search';
+        searchInput.placeholder = placeholder;
+        
+        const optionsList = document.createElement('div');
+        optionsList.className = 'hybrid-select-options';
+        
+        const noResults = document.createElement('div');
+        noResults.className = 'hybrid-select-no-results';
+        noResults.textContent = 'Tidak ada hasil';
+        noResults.style.display = 'none';
+        
+        function repopulate() {
+            optionsList.innerHTML = '';
+            Array.from(originalSelect.options).forEach(opt => {
+                if (opt.value === '' && opt.disabled) return;
+                const item = document.createElement('div');
+                item.className = 'hybrid-select-option';
+                if (opt.value == originalSelect.value) {
+                    item.classList.add('hybrid-select-option--selected');
+                }
+                item.dataset.value = opt.value;
+                item.textContent = opt.textContent;
+                optionsList.appendChild(item);
+            });
+        }
+        repopulate();
+        
+        dropdown.appendChild(searchInput);
+        dropdown.appendChild(optionsList);
+        dropdown.appendChild(noResults);
+        
+        wrapper.appendChild(display);
+        wrapper.appendChild(dropdown);
+        
+        originalSelect.parentNode.insertBefore(wrapper, originalSelect.nextSibling);
+
+        display.addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.querySelectorAll('.hybrid-select-dropdown').forEach(el => {
+                if (el !== dropdown) el.style.display = 'none';
+            });
+            const isOpen = dropdown.style.display === 'block';
+            dropdown.style.display = isOpen ? 'none' : 'block';
+            if (!isOpen) {
+                searchInput.value = '';
+                filterOptions('');
+                searchInput.focus();
+                repopulate();
+            }
+        });
+
+        searchInput.addEventListener('click', e => e.stopPropagation());
+        searchInput.addEventListener('input', function() {
+            filterOptions(this.value);
+        });
+
+        function filterOptions(query) {
+            const cleanQuery = query.toLowerCase().trim();
+            const items = optionsList.querySelectorAll('.hybrid-select-option');
+            let visibleCount = 0;
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(cleanQuery)) {
+                    item.classList.remove('hybrid-select-option--hidden');
+                    visibleCount++;
+                } else {
+                    item.classList.add('hybrid-select-option--hidden');
+                }
+            });
+            
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        optionsList.addEventListener('click', function(e) {
+            const item = e.target.closest('.hybrid-select-option');
+            if (!item) return;
+            
+            originalSelect.value = item.dataset.value;
+            originalSelect.dispatchEvent(new Event('change'));
+            
+            display.textContent = item.textContent;
+            dropdown.style.display = 'none';
+        });
+
+        document.addEventListener('click', function() {
+            dropdown.style.display = 'none';
+        });
+    }
 
     /* ============================================================
        Initialization

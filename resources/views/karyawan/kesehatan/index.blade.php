@@ -770,11 +770,133 @@
         padding: 0 16px;
     }
 }
+
+/* Hybrid Searchable Dropdown Styles */
+.hybrid-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+.hybrid-select-display {
+    width: 100%;
+    padding: 10px 36px 10px 14px;
+    border: 1.5px solid #7F7F7F; /* match theme */
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000000;
+    background: #FFFFFF;
+    box-sizing: border-box;
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    position: relative;
+    font-family: 'Manrope', sans-serif;
+    height: 42px;
+    line-height: 20px;
+}
+.hybrid-select-display::after {
+    content: "∨";
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    font-weight: 800;
+    color: #000000;
+    pointer-events: none;
+}
+.hybrid-select-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    border: 1px solid #7F7F7F;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    z-index: 999;
+    margin-top: 4px;
+    padding: 8px;
+    box-sizing: border-box;
+}
+.hybrid-select-search {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1.5px solid #7F7F7F;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-family: 'Manrope', sans-serif;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    font-weight: 600;
+}
+.hybrid-select-search:focus {
+    outline: none;
+    border-color: #124827;
+}
+.hybrid-select-options {
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.hybrid-select-option {
+    padding: 8px 12px;
+    font-size: 13.5px;
+    color: #374151;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    text-align: left;
+}
+.hybrid-select-option:hover {
+    background: #124827;
+    color: #FFFFFF;
+}
+.hybrid-select-option--selected {
+    background: #F3F4F6;
+    color: #124827;
+}
+.hybrid-select-option--hidden {
+    display: none;
+}
+.hybrid-select-no-results {
+    padding: 8px 12px;
+    font-size: 13.5px;
+    color: #9CA3AF;
+    text-align: center;
+    font-family: 'Manrope', sans-serif;
+}
 </style>
 @endpush
 
 @section('content')
 
+@if(session('success'))
+    <div style="background: #DEF7EC; color: #03543F; padding: 16px 24px; border-radius: 12px; margin-bottom: 20px; font-size: 14.5px; font-weight: 700; display: flex; align-items: center; gap: 10px; font-family: 'Manrope', sans-serif;">
+        <svg viewBox="0 0 20 20" fill="currentColor" style="width: 20px; height: 20px; flex-shrink:0;">
+            <path fill-rule="evenodd" d="M10 18a8 8 0 100-16 8 8 0 000 16zm3.707-9.293a1 1 0 00-1.414-1.414L9 10.586 7.707 9.293a1 1 0 00-1.414 1.414l2 2a1 1 0 001.414 0l4-4z" clip-rule="evenodd" />
+        </svg>
+        {{ session('success') }}
+    </div>
+@endif
+
+@if($errors->any())
+    <div style="background: #FDE8E8; color: #9B1C1C; padding: 16px 24px; border-radius: 12px; margin-bottom: 20px; font-size: 14.5px; font-weight: 700; font-family: 'Manrope', sans-serif;">
+        <ul style="margin: 0; padding-left: 20px;">
+            @foreach ($errors->all() as $error)
+                <li>{{ $error }}</li>
+            @endforeach
+        </ul>
+    </div>
+@endif
 
 {{-- Stat Cards --}}
 <div class="ks-stats">
@@ -827,6 +949,13 @@
             <button class="ks-btn-filter">
                 <img src="{{ asset('images/icons/iconfilter.svg') }}" alt="" class="ks-btn-filter__icon">
                 Filter
+            </button>
+            <button type="button" class="ks-btn-primary" onclick="openSapiModal()" style="background: #6B9B69; margin-right: 6px;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
+                    <line x1="12" y1="5" x2="12" y2="19"/>
+                    <line x1="5" y1="12" x2="19" y2="12"/>
+                </svg>
+                Tambah Sapi Baru
             </button>
             <button type="button" class="ks-btn-primary" onclick="openCreateModal()">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
@@ -943,6 +1072,18 @@
                                     </button>
                                 </form>
                             @endif
+                            <button type="button" class="ks-dropdown-item" style="border-top: 1px solid #F3F4F6;" onclick="openEditSapiModal({{ $sapi->id }}, '{{ trim($sapi->name) }}', '{{ trim($sapi->code) }}', '{{ $sapi->status }}')">
+                                <img src="{{ asset('images/icons/iconpensil.svg') }}" alt="" style="width:14px; height:14px; margin-right:8px; filter: grayscale(1);">
+                                Edit Sapi
+                            </button>
+                            <form action="{{ route('karyawan.sapi.destroy', $sapi->id) }}" method="POST" onsubmit="return confirm('Hapus Sapi ini? Semua data observasi & produksi sapi ini juga akan dihapus secara permanen.')">
+                                @csrf
+                                @method('DELETE')
+                                <button type="submit" class="ks-dropdown-item ks-dropdown-item--danger" style="border-top: 1px solid #F3F4F6;">
+                                    <img src="{{ asset('images/icons/icontrashmerah.svg') }}" alt="" style="width:14px; height:14px; margin-right:8px;">
+                                    Hapus Sapi
+                                </button>
+                            </form>
                         </div>
                     </td>
                 </tr>
@@ -1073,6 +1214,54 @@
             <div class="obs-form-actions">
                 <button type="button" class="obs-btn-cancel" onclick="closeModal()">Batal</button>
                 <button type="submit" id="btnSubmit" class="obs-btn-save">Simpan Perubahan</button>
+            </div>
+        </form>
+    </div>
+</div>
+
+{{-- Modal Form Tambah & Edit Sapi --}}
+<div id="sapiModal" class="obs-modal-overlay" style="display: none;">
+    <div class="obs-modal-content" style="background: #E5E7EB; border: 1px solid #7F7F7F; border-radius: 12px; max-width: 400px; padding: 24px;">
+        <div class="obs-modal-header" style="margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
+            <h3 class="obs-modal-title" style="font-size: 16.5px; font-weight: 800; color: #000000; display: flex; align-items: center; gap: 8px; margin: 0;">
+                <img src="{{ asset('images/icons/iconpensil2.svg') }}" style="width:16px; height:16px;" alt="">
+                <span id="sapiModalTitleText">Tambah Data Sapi</span>
+            </h3>
+            <button type="button" class="obs-modal-close" onclick="closeSapiModal()" style="font-size: 24px; font-weight: 800; color: #000000; border: none; background: none; cursor: pointer; line-height: 1;">&times;</button>
+        </div>
+        <form id="sapiForm" action="" method="POST">
+            @csrf
+            <input type="hidden" name="_method" id="sapiFormMethod" value="POST">
+            
+            <div class="obs-form-group" style="margin-bottom: 12px;">
+                <label style="font-size: 13px; font-weight: 700; color: #000000; margin-bottom: 6px; display: block;">ID Sapi <span style="color: #EF0000;">*</span></label>
+                <div class="obs-input-wrapper">
+                    <input type="text" name="code" id="sapiFormCode" required placeholder="Contoh SP001" style="padding: 10px 14px; border: 1.5px solid #7F7F7F; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #000000; background: #FFFFFF; width: 100%; box-sizing: border-box;">
+                </div>
+            </div>
+
+            <div class="obs-form-group" style="margin-bottom: 12px;">
+                <label style="font-size: 13px; font-weight: 700; color: #000000; margin-bottom: 6px; display: block;">Nama Sapi <span style="color: #EF0000;">*</span></label>
+                <div class="obs-input-wrapper">
+                    <input type="text" name="name" id="sapiFormName" required placeholder="Contoh Sapi 1" style="padding: 10px 14px; border: 1.5px solid #7F7F7F; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #000000; background: #FFFFFF; width: 100%; box-sizing: border-box;">
+                </div>
+            </div>
+
+            <div class="obs-form-group" style="margin-bottom: 12px;">
+                <label style="font-size: 13px; font-weight: 700; color: #000000; margin-bottom: 6px; display: block;">Status <span style="color: #EF0000;">*</span></label>
+                <div class="obs-input-wrapper">
+                    <select name="status" id="sapiFormStatus" required style="padding: 10px 36px 10px 14px; border: 1.5px solid #7F7F7F; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #000000; background: #FFFFFF; width: 100%; box-sizing: border-box; -webkit-appearance: none; -moz-appearance: none; appearance: none;">
+                        <option value="Normal" selected>Normal</option>
+                        <option value="Perlu Pemantauan">Perlu Pemantauan</option>
+                        <option value="Perlu Tindakan">Perlu Tindakan</option>
+                    </select>
+                    <svg class="obs-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="right: 12px; width: 16px; height: 16px; color: #000000; pointer-events: none; position: absolute; top: 50%; transform: translateY(-50%);"><polyline points="6 9 12 15 18 9"></polyline></svg>
+                </div>
+            </div>
+
+            <div class="obs-form-actions" style="margin-top: 20px; display: flex; gap: 12px;">
+                <button type="button" class="obs-btn-cancel" onclick="closeSapiModal()" style="flex: 1; padding: 10px 20px; border: 1.5px solid #7F7F7F; background: #FFFFFF; color: #000000; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; text-align: center;">Batal</button>
+                <button type="submit" id="sapiBtnSubmit" class="obs-btn-save" style="flex: 1.2; padding: 10.5px 20px; border: none; background: #124827; color: #FFFFFF; font-size: 14px; font-weight: 700; border-radius: 8px; cursor: pointer; text-align: center;">Simpan</button>
             </div>
         </form>
     </div>
@@ -1250,6 +1439,7 @@
 
         // Enable sapi select
         document.getElementById('formSapi').disabled = false;
+        updateSearchableSelect('formSapi');
 
         // Set default date & time to today & now
         const now = new Date();
@@ -1292,6 +1482,7 @@
 
         // Set values
         document.getElementById('formSapi').value = sapiId;
+        updateSearchableSelect('formSapi');
         document.getElementById('formTanggal').value = tanggal;
         document.getElementById('formWaktu').value = waktu;
         document.getElementById('formKondisi').value = status;
@@ -1311,6 +1502,55 @@
         document.getElementById('obsModal').style.display = 'none';
     }
 
+    function openSapiModal() {
+        const modal = document.getElementById('sapiModal');
+        const form = document.getElementById('sapiForm');
+        const titleText = document.getElementById('sapiModalTitleText');
+        const methodInput = document.getElementById('sapiFormMethod');
+        const btnSubmit = document.getElementById('sapiBtnSubmit');
+
+        document.querySelectorAll('.ks-action-dropdown').forEach(el => el.style.display = 'none');
+        form.reset();
+
+        titleText.textContent = 'Tambah Data Sapi';
+        form.action = "{{ route('karyawan.sapi.store') }}";
+        methodInput.value = 'POST';
+        btnSubmit.textContent = 'Simpan';
+
+        document.getElementById('sapiFormCode').readOnly = false;
+        modal.style.display = 'flex';
+    }
+
+    function openEditSapiModal(id, name, code, status) {
+        const modal = document.getElementById('sapiModal');
+        const form = document.getElementById('sapiForm');
+        const titleText = document.getElementById('sapiModalTitleText');
+        const methodInput = document.getElementById('sapiFormMethod');
+        const btnSubmit = document.getElementById('sapiBtnSubmit');
+
+        document.querySelectorAll('.ks-action-dropdown').forEach(el => el.style.display = 'none');
+
+        titleText.textContent = 'Edit Data Sapi';
+        form.action = `/karyawan/sapi/${id}`;
+        methodInput.value = 'PUT';
+        btnSubmit.textContent = 'Simpan Perubahan';
+
+        document.getElementById('sapiFormCode').value = code;
+        document.getElementById('sapiFormCode').readOnly = true; // Code/ID sapi is fix and cannot be edited
+        document.getElementById('sapiFormName').value = name;
+        
+        let normalizedStatus = 'Normal';
+        if (status === 'perlu_pemantauan') normalizedStatus = 'Perlu Pemantauan';
+        if (status === 'perlu_tindakan') normalizedStatus = 'Perlu Tindakan';
+        document.getElementById('sapiFormStatus').value = normalizedStatus;
+
+        modal.style.display = 'flex';
+    }
+
+    function closeSapiModal() {
+        document.getElementById('sapiModal').style.display = 'none';
+    }
+
     // Global listener to close dropdowns when clicking outside
     document.addEventListener('click', function(e) {
         if (!e.target.closest('.ks-btn-edit') && !e.target.closest('.ks-action-dropdown')) {
@@ -1318,13 +1558,138 @@
         }
     });
 
+    function updateSearchableSelect(selectId) {
+        const select = document.getElementById(selectId);
+        if (select && select.nextElementSibling && select.nextElementSibling.classList.contains('hybrid-select-wrapper')) {
+            const display = select.nextElementSibling.querySelector('.hybrid-select-display');
+            const selectedOpt = select.options[select.selectedIndex];
+            display.textContent = selectedOpt ? selectedOpt.textContent : 'Pilih...';
+        }
+    }
+
+    function initSearchableDropdown(selectId, placeholder = 'Cari...') {
+        const originalSelect = document.getElementById(selectId);
+        if (!originalSelect) return;
+
+        // Hide original select
+        originalSelect.style.display = 'none';
+        
+        const wrapper = document.createElement('div');
+        wrapper.className = 'hybrid-select-wrapper';
+        
+        const display = document.createElement('div');
+        display.className = 'hybrid-select-display';
+        const selectedOpt = originalSelect.options[originalSelect.selectedIndex];
+        display.textContent = selectedOpt ? selectedOpt.textContent : 'Pilih Sapi';
+        
+        const dropdown = document.createElement('div');
+        dropdown.className = 'hybrid-select-dropdown';
+        
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.className = 'hybrid-select-search';
+        searchInput.placeholder = placeholder;
+        
+        const optionsList = document.createElement('div');
+        optionsList.className = 'hybrid-select-options';
+        
+        const noResults = document.createElement('div');
+        noResults.className = 'hybrid-select-no-results';
+        noResults.textContent = 'Tidak ada hasil';
+        noResults.style.display = 'none';
+        
+        function repopulate() {
+            optionsList.innerHTML = '';
+            Array.from(originalSelect.options).forEach(opt => {
+                if (opt.value === '' && opt.disabled) return;
+                const item = document.createElement('div');
+                item.className = 'hybrid-select-option';
+                if (opt.value == originalSelect.value) {
+                    item.classList.add('hybrid-select-option--selected');
+                }
+                item.dataset.value = opt.value;
+                item.textContent = opt.textContent;
+                optionsList.appendChild(item);
+            });
+        }
+        repopulate();
+        
+        dropdown.appendChild(searchInput);
+        dropdown.appendChild(optionsList);
+        dropdown.appendChild(noResults);
+        
+        wrapper.appendChild(display);
+        wrapper.appendChild(dropdown);
+        
+        originalSelect.parentNode.insertBefore(wrapper, originalSelect.nextSibling);
+
+        display.addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.querySelectorAll('.hybrid-select-dropdown').forEach(el => {
+                if (el !== dropdown) el.style.display = 'none';
+            });
+            const isOpen = dropdown.style.display === 'block';
+            dropdown.style.display = isOpen ? 'none' : 'block';
+            if (!isOpen) {
+                searchInput.value = '';
+                filterOptions('');
+                searchInput.focus();
+                repopulate();
+            }
+        });
+
+        searchInput.addEventListener('click', e => e.stopPropagation());
+        searchInput.addEventListener('input', function() {
+            filterOptions(this.value);
+        });
+
+        function filterOptions(query) {
+            const cleanQuery = query.toLowerCase().trim();
+            const items = optionsList.querySelectorAll('.hybrid-select-option');
+            let visibleCount = 0;
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(cleanQuery)) {
+                    item.classList.remove('hybrid-select-option--hidden');
+                    visibleCount++;
+                } else {
+                    item.classList.add('hybrid-select-option--hidden');
+                }
+            });
+            
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        optionsList.addEventListener('click', function(e) {
+            const item = e.target.closest('.hybrid-select-option');
+            if (!item) return;
+            
+            originalSelect.value = item.dataset.value;
+            originalSelect.dispatchEvent(new Event('change'));
+            
+            display.textContent = item.textContent;
+            dropdown.style.display = 'none';
+        });
+
+        document.addEventListener('click', function() {
+            dropdown.style.display = 'none';
+        });
+    }
+
     // Expose to window scope
     window.toggleDropdown = toggleDropdown;
     window.openCreateModal = openCreateModal;
     window.openEditModal = openEditModal;
     window.closeModal = closeModal;
+    window.openSapiModal = openSapiModal;
+    window.openEditSapiModal = openEditSapiModal;
+    window.closeSapiModal = closeSapiModal;
     window.setTab = setTab;
     window.updateKondisiDot = updateKondisiDot;
+
+    // Initialize searchable dropdown
+    initSearchableDropdown('formSapi', 'Cari Sapi...');
 
     // ── Initial render ─────────────────────────────────────────
     render();

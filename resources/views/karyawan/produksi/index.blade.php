@@ -1032,6 +1032,109 @@
     font-weight: 500;
 }
 
+/* Hybrid Searchable Dropdown Styles */
+.hybrid-select-wrapper {
+    position: relative;
+    width: 100%;
+}
+.hybrid-select-display {
+    width: 100%;
+    padding: 10px 36px 10px 14px;
+    border: 1.5px solid #7F7F7F; /* match theme */
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #000000;
+    background: #FFFFFF;
+    box-sizing: border-box;
+    cursor: pointer;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    display: block;
+    position: relative;
+    font-family: 'Manrope', sans-serif;
+    height: 42px;
+    line-height: 20px;
+}
+.hybrid-select-display::after {
+    content: "∨";
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    font-size: 14px;
+    font-weight: 800;
+    color: #000000;
+    pointer-events: none;
+}
+.hybrid-select-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    border: 1px solid #7F7F7F;
+    border-radius: 8px;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08);
+    z-index: 999;
+    margin-top: 4px;
+    padding: 8px;
+    box-sizing: border-box;
+}
+.hybrid-select-search {
+    width: 100%;
+    padding: 8px 12px;
+    border: 1.5px solid #7F7F7F;
+    border-radius: 6px;
+    font-size: 13.5px;
+    font-family: 'Manrope', sans-serif;
+    margin-bottom: 8px;
+    box-sizing: border-box;
+    font-weight: 600;
+}
+.hybrid-select-search:focus {
+    outline: none;
+    border-color: #124827;
+}
+.hybrid-select-options {
+    max-height: 200px;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+.hybrid-select-option {
+    padding: 8px 12px;
+    font-size: 13.5px;
+    color: #374151;
+    cursor: pointer;
+    border-radius: 4px;
+    transition: background 0.15s, color 0.15s;
+    font-family: 'Manrope', sans-serif;
+    font-weight: 600;
+    text-align: left;
+}
+.hybrid-select-option:hover {
+    background: #124827;
+    color: #FFFFFF;
+}
+.hybrid-select-option--selected {
+    background: #F3F4F6;
+    color: #124827;
+}
+.hybrid-select-option--hidden {
+    display: none;
+}
+.hybrid-select-no-results {
+    padding: 8px 12px;
+    font-size: 13.5px;
+    color: #9CA3AF;
+    text-align: center;
+    font-family: 'Manrope', sans-serif;
+}
 </style>
 @endpush
 
@@ -1594,6 +1697,7 @@
         // Setup Form
         form.action = `/karyawan/produksi/${id}`;
         document.getElementById('formSapi').value = sapiId;
+        updateSearchableSelect('formSapi');
         document.getElementById('formTanggal').value = tanggal;
         document.getElementById('formJumlah').value = volume;
 
@@ -1615,6 +1719,125 @@
         }
     });
 
+    function updateSearchableSelect(selectId) {
+        const select = document.getElementById(selectId);
+        if (select && select.nextElementSibling && select.nextElementSibling.classList.contains('hybrid-select-wrapper')) {
+            const display = select.nextElementSibling.querySelector('.hybrid-select-display');
+            const selectedOpt = select.options[select.selectedIndex];
+            display.textContent = selectedOpt ? selectedOpt.textContent : 'Pilih...';
+        }
+    }
+
+    function initSearchableDropdown(selectId, placeholder = 'Cari...') {
+        const originalSelect = document.getElementById(selectId);
+        if (!originalSelect) return;
+
+        // Hide original select
+        originalSelect.style.display = 'none';
+        
+        const wrapper = document.createElement('div');
+        wrapper.className = 'hybrid-select-wrapper';
+        
+        const display = document.createElement('div');
+        display.className = 'hybrid-select-display';
+        const selectedOpt = originalSelect.options[originalSelect.selectedIndex];
+        display.textContent = selectedOpt ? selectedOpt.textContent : 'Pilih Sapi';
+        
+        const dropdown = document.createElement('div');
+        dropdown.className = 'hybrid-select-dropdown';
+        
+        const searchInput = document.createElement('input');
+        searchInput.type = 'text';
+        searchInput.className = 'hybrid-select-search';
+        searchInput.placeholder = placeholder;
+        
+        const optionsList = document.createElement('div');
+        optionsList.className = 'hybrid-select-options';
+        
+        const noResults = document.createElement('div');
+        noResults.className = 'hybrid-select-no-results';
+        noResults.textContent = 'Tidak ada hasil';
+        noResults.style.display = 'none';
+        
+        function repopulate() {
+            optionsList.innerHTML = '';
+            Array.from(originalSelect.options).forEach(opt => {
+                if (opt.value === '' && opt.disabled) return;
+                const item = document.createElement('div');
+                item.className = 'hybrid-select-option';
+                if (opt.value == originalSelect.value) {
+                    item.classList.add('hybrid-select-option--selected');
+                }
+                item.dataset.value = opt.value;
+                item.textContent = opt.textContent;
+                optionsList.appendChild(item);
+            });
+        }
+        repopulate();
+        
+        dropdown.appendChild(searchInput);
+        dropdown.appendChild(optionsList);
+        dropdown.appendChild(noResults);
+        
+        wrapper.appendChild(display);
+        wrapper.appendChild(dropdown);
+        
+        originalSelect.parentNode.insertBefore(wrapper, originalSelect.nextSibling);
+
+        display.addEventListener('click', function(e) {
+            e.stopPropagation();
+            document.querySelectorAll('.hybrid-select-dropdown').forEach(el => {
+                if (el !== dropdown) el.style.display = 'none';
+            });
+            const isOpen = dropdown.style.display === 'block';
+            dropdown.style.display = isOpen ? 'none' : 'block';
+            if (!isOpen) {
+                searchInput.value = '';
+                filterOptions('');
+                searchInput.focus();
+                repopulate();
+            }
+        });
+
+        searchInput.addEventListener('click', e => e.stopPropagation());
+        searchInput.addEventListener('input', function() {
+            filterOptions(this.value);
+        });
+
+        function filterOptions(query) {
+            const cleanQuery = query.toLowerCase().trim();
+            const items = optionsList.querySelectorAll('.hybrid-select-option');
+            let visibleCount = 0;
+            
+            items.forEach(item => {
+                const text = item.textContent.toLowerCase();
+                if (text.includes(cleanQuery)) {
+                    item.classList.remove('hybrid-select-option--hidden');
+                    visibleCount++;
+                } else {
+                    item.classList.add('hybrid-select-option--hidden');
+                }
+            });
+            
+            noResults.style.display = visibleCount === 0 ? 'block' : 'none';
+        }
+
+        optionsList.addEventListener('click', function(e) {
+            const item = e.target.closest('.hybrid-select-option');
+            if (!item) return;
+            
+            originalSelect.value = item.dataset.value;
+            originalSelect.dispatchEvent(new Event('change'));
+            
+            display.textContent = item.textContent;
+            dropdown.style.display = 'none';
+        });
+
+        document.addEventListener('click', function() {
+            dropdown.style.display = 'none';
+        });
+    }
+
     // Expose functions globally for inline onclick attributes
     window.toggleDropdown = toggleDropdown;
     window.openEditModal = openEditModal;
@@ -1633,6 +1856,10 @@
             pagiBtn.classList.remove('kp-sesi-btn--active');
         }
     };
+
+    // Initialize searchable dropdowns
+    initSearchableDropdown('inputSapi', 'Cari Sapi...');
+    initSearchableDropdown('formSapi', 'Cari Sapi...');
 
     // Initial render
     render();
@@ -1659,6 +1886,21 @@
         sesiSelect.addEventListener('change', updateSesiIcon);
         updateSesiIcon(); // set on page load
     })();
+
+    // Expose selectSesi to update input display icon as well
+    const inputSesi = document.getElementById('inputSesi');
+    if (inputSesi) {
+        inputSesi.addEventListener('change', function() {
+            const sesiIcon = document.getElementById('sesiIcon');
+            const iconMatahari = "{{ asset('images/icons/iconmatahari.svg') }}";
+            const iconBulan = "{{ asset('images/icons/iconbulan.svg') }}";
+            if (this.value === 'pagi') {
+                sesiIcon.src = iconMatahari;
+            } else {
+                sesiIcon.src = iconBulan;
+            }
+        });
+    }
 
 })();
 </script>
