@@ -84,6 +84,11 @@ class KesehatanController extends Controller
             $sapi->update(['status' => $normalizedStatus]);
         }
 
+        // Redirect back to the correct page based on referer
+        $referer = request()->headers->get('referer', '');
+        if (str_contains($referer, 'observasi')) {
+            return redirect()->route('owner.kesehatan.observasi')->with('success', 'Observasi kesehatan berhasil dicatat.');
+        }
         return redirect()->route('owner.kesehatan.index')->with('success', 'Observasi kesehatan berhasil dicatat.');
     }
 
@@ -124,6 +129,11 @@ class KesehatanController extends Controller
             $sapi->update(['status' => $normalizedStatus]);
         }
 
+        // Redirect back to the correct page based on referer
+        $referer = request()->headers->get('referer', '');
+        if (str_contains($referer, 'observasi')) {
+            return redirect()->route('owner.kesehatan.observasi')->with('success', 'Observasi kesehatan berhasil diperbarui.');
+        }
         return redirect()->route('owner.kesehatan.index')->with('success', 'Observasi kesehatan berhasil diperbarui.');
     }
 
@@ -146,6 +156,10 @@ class KesehatanController extends Controller
             }
         }
 
+        $referer = request()->headers->get('referer', '');
+        if (str_contains($referer, 'observasi')) {
+            return redirect()->route('owner.kesehatan.observasi')->with('success', 'Observasi kesehatan berhasil dihapus.');
+        }
         return redirect()->route('owner.kesehatan.index')->with('success', 'Observasi kesehatan berhasil dihapus.');
     }
 }

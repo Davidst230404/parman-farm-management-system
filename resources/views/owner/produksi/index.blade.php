@@ -968,12 +968,22 @@
             dotSore.style.background = 'transparent';
             dotSore.style.borderColor = '#9CA3AF';
             deleteBtn.style.display = activePagiId ? 'block' : 'none';
+            // Swap jumlah susu to pagi value
+            const modal = document.getElementById('produksiModal');
+            if (modal && modal.dataset.pagiVal !== undefined) {
+                document.getElementById('prodJumlahSusu').value = modal.dataset.pagiVal;
+            }
         } else if (soreRadio.checked) {
             dotSore.style.background = '#124827';
             dotSore.style.borderColor = '#124827';
             dotPagi.style.background = 'transparent';
             dotPagi.style.borderColor = '#9CA3AF';
             deleteBtn.style.display = activeSoreId ? 'block' : 'none';
+            // Swap jumlah susu to sore value
+            const modal = document.getElementById('produksiModal');
+            if (modal && modal.dataset.soreVal !== undefined) {
+                document.getElementById('prodJumlahSusu').value = modal.dataset.soreVal;
+            }
         }
     }
     window.updateSessionRadioDots = updateSessionRadioDots;
@@ -981,6 +991,11 @@
     window.openEditProduksiModal = function(sapiId, pagiVal, soreVal, pagiId, soreId) {
         activePagiId = pagiId || '';
         activeSoreId = soreId || '';
+
+        // Store both session values on modal element for live swap
+        const modal = document.getElementById('produksiModal');
+        modal.dataset.pagiVal = pagiVal;
+        modal.dataset.soreVal = soreVal;
         
         document.getElementById('prodSapiSelect').value = sapiId;
 
@@ -1011,7 +1026,8 @@
 
         if (confirm('Hapus data produksi untuk sesi ini?')) {
             const form = document.getElementById('delete-produksi-form');
-            form.action = `/owner/produksi/${activeId}`;
+            const activeDateStr = "{{ $selectedDate->format('Y-m-d') }}";
+            form.action = `/owner/produksi/${activeId}?tanggal=${activeDateStr}`;
             form.submit();
         }
     };

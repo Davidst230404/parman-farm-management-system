@@ -116,7 +116,7 @@ class ProduksiController extends Controller
             ]
         );
 
-        return redirect()->route('owner.produksi.index')->with('success', 'Data produksi susu berhasil diperbarui.');
+        return redirect()->route('owner.produksi.index', ['tanggal' => $tanggal->format('Y-m-d')])->with('success', 'Data produksi susu berhasil diperbarui.');
     }
 
     public function show($id) { return view('owner.produksi.show', compact('id')); }
@@ -127,6 +127,7 @@ class ProduksiController extends Controller
         $produksi = Produksi::findOrFail($id);
         $produksi->delete();
 
-        return redirect()->route('owner.produksi.index')->with('success', 'Data produksi berhasil dihapus.');
+        $tanggalParam = request('tanggal', \Carbon\Carbon::today()->format('Y-m-d'));
+        return redirect()->route('owner.produksi.index', ['tanggal' => $tanggalParam])->with('success', 'Data produksi berhasil dihapus.');
     }
 }
