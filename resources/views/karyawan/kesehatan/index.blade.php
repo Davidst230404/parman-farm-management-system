@@ -946,10 +946,6 @@
     <div class="ks-data-header">
         <h2 class="ks-data-header__title">Data Sapi</h2>
         <div class="ks-data-header__actions">
-            <button class="ks-btn-filter">
-                <img src="{{ asset('images/icons/iconfilter.svg') }}" alt="" class="ks-btn-filter__icon">
-                Filter
-            </button>
             <button type="button" class="ks-btn-primary" onclick="openSapiModal()" style="background: #124827; margin-right: 6px;">
                 <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14">
                     <line x1="12" y1="5" x2="12" y2="19"/>
@@ -967,12 +963,29 @@
         </div>
     </div>
 
-    {{-- Filter Tabs --}}
-    <div class="ks-tabs" role="tablist">
-        <button class="ks-tab ks-tab--active" id="tab-semua" role="tab" aria-selected="true" onclick="setTab(this,'semua')">Semua ({{ $countSemua }})</button>
-        <button class="ks-tab" id="tab-normal" role="tab" aria-selected="false" onclick="setTab(this,'normal')">Normal ({{ $countNormal }})</button>
-        <button class="ks-tab ks-tab--yellow" id="tab-pemantauan" role="tab" aria-selected="false" onclick="setTab(this,'pemantauan')">Perlu Pemantauan ({{ $countPemantauan }})</button>
-        <button class="ks-tab ks-tab--red" id="tab-tindakan" role="tab" aria-selected="false" onclick="setTab(this,'tindakan')">Perlu Tindakan ({{ $countTindakan }})</button>
+    {{-- Search and Filter Row --}}
+    <div class="ks-table-controls" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; border-bottom: 1px solid #E5E7EB; gap: 16px; flex-wrap: wrap;">
+        <!-- Left: Search input -->
+        <div style="position: relative; flex: 1; max-width: 320px; min-width: 200px;">
+            <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; pointer-events: none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2.5" width="16" height="16">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+            </span>
+            <input type="text" id="sapiSearchInput" placeholder="Cari Sapi (Nama atau ID)..." style="padding: 9px 14px 9px 40px; border: 1.5px solid #D1D5DB; border-radius: 8px; font-size: 13.5px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #111827; background: #FFFFFF; width: 100%; box-sizing: border-box; transition: border-color 0.15s; outline: none;" oninput="onSearchOrFilterChange()">
+        </div>
+        
+        <!-- Right: Status Dropdown -->
+        <div style="position: relative; min-width: 180px;">
+            <select id="sapiStatusFilter" onchange="onSearchOrFilterChange()" style="padding: 9px 36px 9px 14px; border: 1.5px solid #D1D5DB; border-radius: 8px; font-size: 13.5px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #374151; background: #FFFFFF; width: 100%; box-sizing: border-box; -webkit-appearance: none; -moz-appearance: none; appearance: none; cursor: pointer; transition: border-color 0.15s; outline: none;">
+                <option value="semua">Semua Status</option>
+                <option value="normal">Normal</option>
+                <option value="pemantauan">Perlu Pemantauan</option>
+                <option value="tindakan">Perlu Tindakan</option>
+            </select>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="right: 12px; width: 16px; height: 16px; pointer-events: none; position: absolute; top: 50%; transform: translateY(-50%);"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
     </div>
 
     {{-- Data Table --}}
@@ -1314,8 +1327,32 @@
 
     /* ── Helpers ──────────────────────────────────────────────── */
     function getVisible() {
-        if (currentFilter === 'semua') return allRows;
-        return allRows.filter(r => r.dataset.status === currentFilter);
+        const searchInput = document.getElementById('sapiSearchInput');
+        const statusFilter = document.getElementById('sapiStatusFilter');
+        
+        const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        const selectedStatus = statusFilter ? statusFilter.value : 'semua';
+
+        return allRows.filter(row => {
+            // Status filter
+            let normalizedRowStatus = row.dataset.status; // 'normal', 'pemantauan', 'tindakan'
+            const statusMatch = (selectedStatus === 'semua' || normalizedRowStatus === selectedStatus);
+
+            // Search query filter (checks name and code)
+            const nameEl = row.querySelector('.ks-sapi-name');
+            const codeEl = row.querySelector('.ks-sapi-id');
+            const name = nameEl ? nameEl.textContent.toLowerCase() : '';
+            const code = codeEl ? codeEl.textContent.toLowerCase() : '';
+            
+            const searchMatch = !searchQuery || name.includes(searchQuery) || code.includes(searchQuery);
+
+            return statusMatch && searchMatch;
+        });
+    }
+
+    function onSearchOrFilterChange() {
+        currentPage = 1;
+        render();
     }
 
     function render() {
@@ -1394,27 +1431,6 @@
 
         // Next arrow
         btn('\u203A', currentPage + 1, 'ks-page-btn--arrow', currentPage === totalPages || total === 0);
-    }
-
-    /* ── Tab switching ────────────────────────────────────────── */
-    function setTab(el, filter) {
-        currentFilter = filter;
-        currentPage   = 1;
-
-        // Reset all tab styles
-        tabs.forEach(function (t) {
-            t.classList.remove('ks-tab--active');
-            if (t.id === 'tab-normal')     t.classList.add('ks-tab--normal');
-            if (t.id === 'tab-pemantauan') t.classList.add('ks-tab--yellow');
-            if (t.id === 'tab-tindakan')   t.classList.add('ks-tab--red');
-            t.setAttribute('aria-selected', 'false');
-        });
-
-        el.classList.add('ks-tab--active');
-        el.classList.remove('ks-tab--yellow', 'ks-tab--red');
-        el.setAttribute('aria-selected', 'true');
-
-        render();
     }
 
     /* ── Dropdown and Modal Handling ──────────────────────────── */
@@ -1729,7 +1745,7 @@
     window.openSapiModal = openSapiModal;
     window.openEditSapiModal = openEditSapiModal;
     window.closeSapiModal = closeSapiModal;
-    window.setTab = setTab;
+    window.onSearchOrFilterChange = onSearchOrFilterChange;
     window.updateKondisiDot = updateKondisiDot;
 
     // Initialize searchable dropdown
