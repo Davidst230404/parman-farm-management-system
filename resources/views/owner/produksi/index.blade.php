@@ -178,22 +178,76 @@
 .ps-tab--inactive { background: transparent; color: #124827; }
 .ps-tab--inactive:hover { opacity: 0.8; }
 
-.ps-filter-btn {
-    display: inline-flex;
+/* Produksi Search + Status Filter bar */
+.ps-filter-bar {
+    display: flex;
     align-items: center;
-    gap: 8px;
-    padding: 0;
-    border: none;
-    background: transparent;
-    color: #124827;
-    font-size: 18px;
-    font-weight: 700;
-    cursor: pointer;
-    font-family: 'Manrope', sans-serif;
-    transition: opacity 0.15s;
+    gap: 10px;
+    flex: 1;
+    justify-content: flex-end;
 }
-.ps-filter-btn:hover { opacity: 0.8; }
-.ps-filter-btn img { width: 20px; height: 20px; }
+.ps-search-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.ps-search-icon {
+    position: absolute;
+    left: 11px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #9CA3AF;
+    display: flex;
+    align-items: center;
+}
+.ps-search-input {
+    padding: 8px 12px 8px 34px;
+    border: 1.5px solid #D1D5DB;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Manrope', sans-serif;
+    color: #111827;
+    background: #FFFFFF;
+    width: 210px;
+    box-sizing: border-box;
+    transition: border-color 0.15s;
+    outline: none;
+}
+.ps-search-input:focus { border-color: #124827; box-shadow: 0 0 0 3px rgba(18,72,39,0.08); }
+.ps-status-select-wrap {
+    position: relative;
+    display: flex;
+    align-items: center;
+}
+.ps-status-select {
+    padding: 8px 30px 8px 12px;
+    border: 1.5px solid #D1D5DB;
+    border-radius: 8px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Manrope', sans-serif;
+    color: #374151;
+    background: #FFFFFF;
+    appearance: none;
+    -webkit-appearance: none;
+    cursor: pointer;
+    outline: none;
+    transition: border-color 0.15s;
+    min-width: 160px;
+}
+.ps-status-select:focus { border-color: #124827; }
+.ps-status-select-arrow {
+    position: absolute;
+    right: 10px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    color: #374151;
+    display: flex;
+    align-items: center;
+}
 
 /* Table */
 .ps-divider { border: none; border-top: 1px solid #F3F4F6; margin: 0; }
@@ -454,10 +508,29 @@
                 role="tab" aria-selected="false"
                 onclick="setSession(this,'sore')">Sore</button>
     </div>
-    <button class="ps-filter-btn" id="btn-filter" aria-label="Filter">
-        <img src="{{ asset('images/icons/iconfilter.svg') }}" alt="Filter">
-        Filter
-    </button>
+
+    {{-- Search + Status Filter --}}
+    <div class="ps-filter-bar">
+        {{-- Search Input --}}
+        <div class="ps-search-wrap">
+            <span class="ps-search-icon">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="14" height="14"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+            </span>
+            <input type="text" class="ps-search-input" id="ps-search-input" placeholder="Cari sapi..." oninput="onProdSearchOrFilter()" autocomplete="off">
+        </div>
+
+        {{-- Status Dropdown --}}
+        <div class="ps-status-select-wrap">
+            <select class="ps-status-select" id="ps-status-select" onchange="onProdSearchOrFilter()">
+                <option value="semua">Semua Status</option>
+                <option value="sudah">Sudah Diperah</option>
+                <option value="belum">Belum Diperah</option>
+            </select>
+            <span class="ps-status-select-arrow">
+                <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" width="14" height="14"><polyline points="6 9 12 15 18 9"></polyline></svg>
+            </span>
+        </div>
+    </div>
 </div>
 
 {{-- ── MAIN TABLE CARD ──────────────────────────────────────── --}}
@@ -691,8 +764,36 @@
     const navEl   = document.getElementById('ps-pagination-nav');
 
     function getVisible() {
-        return allRows;
+        const searchInput  = document.getElementById('ps-search-input');
+        const statusSelect = document.getElementById('ps-status-select');
+
+        const query        = searchInput  ? searchInput.value.toLowerCase().trim()  : '';
+        const statusVal    = statusSelect ? statusSelect.value : 'semua'; // 'semua'|'sudah'|'belum'
+
+        return allRows.filter(row => {
+            // ── Search by name / code ──────────────────────
+            const name = (row.dataset.name || '').toLowerCase();
+            const code = (row.dataset.code || '').toLowerCase();
+            const searchMatch = !query || name.includes(query) || code.includes(query);
+
+            // ── Status based on the active session tab ────
+            const pagi = parseFloat(row.dataset.pagi) || 0;
+            const sore = parseFloat(row.dataset.sore) || 0;
+            const isMilked = (currentSession === 'pagi') ? (pagi > 0) : (sore > 0);
+
+            const statusMatch = statusVal === 'semua'
+                || (statusVal === 'sudah' && isMilked)
+                || (statusVal === 'belum' && !isMilked);
+
+            return searchMatch && statusMatch;
+        });
     }
+
+    function onProdSearchOrFilter() {
+        currentPage = 1;
+        render();
+    }
+    window.onProdSearchOrFilter = onProdSearchOrFilter;
 
     function updateProduksiStats() {
         const totalSapi = allRows.length;
