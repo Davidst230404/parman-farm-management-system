@@ -130,4 +130,87 @@ class ProduksiController extends Controller
         $tanggalParam = request('tanggal', \Carbon\Carbon::today()->format('Y-m-d'));
         return redirect()->route('owner.produksi.index', ['tanggal' => $tanggalParam])->with('success', 'Data produksi berhasil dihapus.');
     }
+
+    /**
+     * Live JSON API — called by JS polling every 20s.
+     * Returns fresh production data for the given date.
+     */
+    public function liveData(\Illuminate\Http\Request $request)
+    {
+        $selectedDate = $request->query('tanggal') ? Carbon::parse($request->query('tanggal')) : Carbon::today();
+
+        $sapis = Sapi::with(['produksi' => function($q) use ($selectedDate) {
+            $q->whereDate('tanggal', $selectedDate)->where('status', 'Tersimpan');
+        }])->get();
+
+        $totalSapi = $sapis->count();
+
+        $sudahDiperah = Produksi::whereDate('tanggal', $selectedDate)
+            ->where('status', 'Tersimpan')
+            ->distinct('sapi_id')
+            ->count('sapi_id');
+
+        $totalProduksiHariIni = (float) Produksi::whereDate('tanggal', $selectedDate)
+            ->where('status', 'Tersimpan')
+            ->sum('jumlah_susu');
+
+        $rataRataPerSapi = $sudahDiperah > 0 ? round($totalProduksiHariIni / $sudahDiperah, 1) : 0;
+
+        $highestCowProd = Produksi::whereDate('tanggal', $selectedDate)
+            ->where('status', 'Tersimpan')
+            ->selectRaw('sapi_id, SUM(jumlah_susu) as total_susu')
+            ->groupBy('sapi_id')
+            ->with('sapi')
+            ->orderByDesc('total_susu')
+            ->first();
+
+        $lowestCowProd = Produksi::whereDate('tanggal', $selectedDate)
+            ->where('status', 'Tersimpan')
+            ->selectRaw('sapi_id, SUM(jumlah_susu) as total_susu')
+            ->groupBy('sapi_id')
+            ->with('sapi')
+            ->orderBy('total_susu')
+            ->first();
+
+        $sapiData = $sapis->map(function($sapi) {
+            $pagiRec = $sapi->produksi->where('sesi', 'pagi')->first();
+            $soreRec = $sapi->produksi->where('sesi', 'sore')->first();
+            $pagi = $pagiRec?->jumlah_susu;
+            $sore = $soreRec?->jumlah_susu;
+            $total = ($pagi ?? 0) + ($sore ?? 0);
+
+            $sessionAttr = 'none';
+            if (!is_null($pagi) && !is_null($sore)) $sessionAttr = 'both';
+            elseif (!is_null($pagi)) $sessionAttr = 'pagi';
+            elseif (!is_null($sore)) $sessionAttr = 'sore';
+
+            return [
+                'id'       => $sapi->id,
+                'name'     => $sapi->name,
+                'code'     => $sapi->code,
+                'pagi'     => $pagi,
+                'sore'     => $sore,
+                'total'    => $total,
+                'session'  => $sessionAttr,
+                'pagi_id'  => $pagiRec?->id ?? '',
+                'sore_id'  => $soreRec?->id ?? '',
+                'status'   => (!is_null($pagi) || !is_null($sore)) ? 'Sudah' : 'Belum',
+            ];
+        });
+
+        return response()->json([
+            'timestamp'    => now()->toISOString(),
+            'sapis'        => $sapiData,
+            'stats' => [
+                'total_sapi'         => $totalSapi,
+                'sudah_diperah'      => $sudahDiperah,
+                'belum_diperah'      => $totalSapi - $sudahDiperah,
+                'persen_diperah'     => $totalSapi > 0 ? round(($sudahDiperah / $totalSapi) * 100) : 0,
+                'total_produksi'     => $totalProduksiHariIni,
+                'rata_rata'          => $rataRataPerSapi,
+                'tertinggi_name'     => $highestCowProd ? $highestCowProd->sapi->name . ' (' . round($highestCowProd->total_susu) . ' Liter)' : '—',
+                'terendah_name'      => $lowestCowProd  ? $lowestCowProd->sapi->name  . ' (' . round($lowestCowProd->total_susu)  . ' Liter)' : '—',
+            ],
+        ]);
+    }
 }

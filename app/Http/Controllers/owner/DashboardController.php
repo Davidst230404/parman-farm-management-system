@@ -106,4 +106,60 @@ class DashboardController extends Controller
             'today'
         ));
     }
+
+    /**
+     * Live JSON API — called by JS polling every 30s.
+     * Returns fresh dashboard stats for the given date.
+     */
+    public function liveStats(\Illuminate\Http\Request $request)
+    {
+        $dateStr = $request->query('date');
+        try {
+            $today = $dateStr ? Carbon::parse($dateStr) : Carbon::today();
+        } catch (\Exception $e) {
+            $today = Carbon::today();
+        }
+
+        $totalSapi  = Sapi::count();
+        $sapiSehat  = Sapi::where('status', 'normal')->count();
+        $persenSehat = $totalSapi > 0 ? round(($sapiSehat / $totalSapi) * 100) : 0;
+
+        $sudahDiperah = Produksi::whereDate('tanggal', $today)
+            ->where('status', 'Tersimpan')
+            ->distinct('sapi_id')
+            ->count('sapi_id');
+        $persenDiperah = $totalSapi > 0 ? round(($sudahDiperah / $totalSapi) * 100) : 0;
+
+        $terjualVol = (float) Penjualan::whereDate('tanggal', $today)->sum('jumlah_terjual');
+        $terjualRev = (float) Penjualan::whereDate('tanggal', $today)->sum('total_pendapatan');
+
+        $latestActivities = Kesehatan::with('sapi')
+            ->whereDate('created_at', '<=', $today)
+            ->orderByDesc('created_at')
+            ->take(3)
+            ->get()
+            ->map(function($a) {
+                return [
+                    'sapi_name' => $a->sapi?->name,
+                    'sapi_code' => $a->sapi?->code,
+                    'catatan'   => $a->catatan,
+                    'status'    => $a->status,
+                    'time'      => $a->created_at->format('H:i'),
+                ];
+            });
+
+        return response()->json([
+            'timestamp' => now()->toISOString(),
+            'stats' => [
+                'total_sapi'          => $totalSapi,
+                'sapi_sehat'          => $sapiSehat,
+                'persen_sehat'        => $persenSehat,
+                'sudah_diperah'       => $sudahDiperah,
+                'persen_diperah'      => $persenDiperah,
+                'terjual_volume'      => $terjualVol,
+                'terjual_pendapatan'  => $terjualRev,
+            ],
+            'activities' => $latestActivities,
+        ]);
+    }
 }

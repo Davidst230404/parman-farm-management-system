@@ -162,4 +162,47 @@ class KesehatanController extends Controller
         }
         return redirect()->route('owner.kesehatan.index')->with('success', 'Observasi kesehatan berhasil dihapus.');
     }
+
+    /**
+     * Live JSON API — called by JS polling every 30s.
+     * Returns fresh health status for all sapi.
+     */
+    public function liveData()
+    {
+        $sapis = Sapi::with(['kesehatan' => function($q) {
+            $q->orderBy('created_at', 'desc');
+        }])->get();
+
+        $countSemua      = $sapis->count();
+        $countNormal     = $sapis->where('status', 'normal')->count();
+        $countPemantauan = $sapis->where('status', 'perlu_pemantauan')->count();
+        $countTindakan   = $sapis->where('status', 'perlu_tindakan')->count();
+
+        $sapiData = $sapis->map(function($sapi) {
+            $latest = $sapi->kesehatan->first();
+            return [
+                'id'           => $sapi->id,
+                'name'         => $sapi->name,
+                'code'         => $sapi->code,
+                'status'       => $sapi->status,
+                'nafsu_makan'  => $latest?->nafsu_makan,
+                'kondisi_susu' => $latest?->kondisi_susu,
+                'perilaku'     => $latest?->perilaku,
+                'catatan'      => $latest ? \Illuminate\Support\Str::limit($latest->catatan, 35) : null,
+                'catatan_date' => $latest ? $latest->created_at->locale('id')->isoFormat('D MMM YYYY') : null,
+                'latest_id'    => $latest?->id,
+            ];
+        });
+
+        return response()->json([
+            'timestamp' => now()->toISOString(),
+            'sapis'     => $sapiData,
+            'stats'     => [
+                'semua'      => $countSemua,
+                'normal'     => $countNormal,
+                'pemantauan' => $countPemantauan,
+                'tindakan'   => $countTindakan,
+            ],
+        ]);
+    }
 }

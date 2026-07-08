@@ -906,7 +906,7 @@
     <div class="ks-stat-card">
         <img src="{{ asset('images/icons/iconsapihijaucarddashboard.svg') }}" alt="" class="ks-stat-card__icon">
         <div>
-            <div class="ks-stat-card__value ks-stat-card__value--green">{{ $countSemua }}</div>
+            <div class="ks-stat-card__value ks-stat-card__value--green" id="stat-total-sapi">{{ $countSemua }}</div>
             <div class="ks-stat-card__label">Total Sapi</div>
             <div class="ks-stat-card__sub">Semua Sapi</div>
         </div>
@@ -915,27 +915,27 @@
     <div class="ks-stat-card">
         <img src="{{ asset('images/icons/hearthijau.png') }}" alt="" class="ks-stat-card__icon">
         <div>
-            <div class="ks-stat-card__value ks-stat-card__value--green">{{ $countNormal }}</div>
+            <div class="ks-stat-card__value ks-stat-card__value--green" id="stat-sapi-sehat">{{ $countNormal }}</div>
             <div class="ks-stat-card__label">Sapi Sehat</div>
-            <div class="ks-stat-card__sub ks-stat-card__sub--green">{{ $countSemua > 0 ? round(($countNormal / $countSemua) * 100) : 0 }}% dari keseluruhan</div>
+            <div class="ks-stat-card__sub ks-stat-card__sub--green" id="stat-sapi-sehat-sub">{{ $countSemua > 0 ? round(($countNormal / $countSemua) * 100) : 0 }}% dari keseluruhan</div>
         </div>
     </div>
 
     <div class="ks-stat-card">
         <img src="{{ asset('images/icons/heart kuning.png') }}" alt="" class="ks-stat-card__icon">
         <div>
-            <div class="ks-stat-card__value ks-stat-card__value--yellow">{{ $countPemantauan }}</div>
+            <div class="ks-stat-card__value ks-stat-card__value--yellow" id="stat-sapi-pemantauan">{{ $countPemantauan }}</div>
             <div class="ks-stat-card__label">Perlu Pemantauan</div>
-            <div class="ks-stat-card__sub ks-stat-card__sub--yellow">{{ $countSemua > 0 ? round(($countPemantauan / $countSemua) * 100) : 0 }}% dari keseluruhan</div>
+            <div class="ks-stat-card__sub ks-stat-card__sub--yellow" id="stat-sapi-pemantauan-sub">{{ $countSemua > 0 ? round(($countPemantauan / $countSemua) * 100) : 0 }}% dari keseluruhan</div>
         </div>
     </div>
 
     <div class="ks-stat-card">
         <img src="{{ asset('images/icons/heartmerah.png') }}" alt="" class="ks-stat-card__icon">
         <div>
-            <div class="ks-stat-card__value ks-stat-card__value--red">{{ $countTindakan }}</div>
+            <div class="ks-stat-card__value ks-stat-card__value--red" id="stat-sapi-tindakan">{{ $countTindakan }}</div>
             <div class="ks-stat-card__label">Perlu Tindakan</div>
-            <div class="ks-stat-card__sub ks-stat-card__sub--red">{{ $countSemua > 0 ? round(($countTindakan / $countSemua) * 100) : 0 }}% dari keseluruhan</div>
+            <div class="ks-stat-card__sub ks-stat-card__sub--red" id="stat-sapi-tindakan-sub">{{ $countSemua > 0 ? round(($countTindakan / $countSemua) * 100) : 0 }}% dari keseluruhan</div>
         </div>
     </div>
 
@@ -1021,7 +1021,7 @@
                             }
                         }
                     @endphp
-                    <tr class="ks-row" data-status="{{ $statusClass }}">
+                    <tr class="ks-row" data-status="{{ $statusClass }}" data-id="{{ $sapi->id }}" data-name="{{ $sapi->name }}" data-code="{{ $sapi->code }}">
                         <td>
                             <div class="ks-cow-cell">
                                 <img src="{{ asset('images/icons/icondatasapi.svg') }}" alt="" class="ks-cow-thumb-img">
@@ -1415,4 +1415,137 @@
 
 })();
 </script>
+
+{{-- ══ LIVE POLLING SCRIPT ══════════════════════════════════════ --}}
+<script>
+(function() {
+    const apiUrl = '{{ route("owner.api.kesehatan") }}';
+
+    /* ── Live badge ───────────────────────────────────────────── */
+    const liveBadge = document.createElement('span');
+    liveBadge.id    = 'live-badge-kesehatan';
+    liveBadge.innerHTML = '● Live';
+    liveBadge.style.cssText = [
+        'display:inline-flex', 'align-items:center', 'gap:4px',
+        'font-size:11px', 'font-weight:700', 'color:#10B981',
+        'background:#D1FAE5', 'border-radius:20px',
+        'padding:3px 10px', 'margin-left:10px',
+        'font-family:Manrope,sans-serif',
+        'animation:livePulse 2s infinite',
+        'vertical-align:middle'
+    ].join(';');
+
+    // Inject badge CSS
+    if (!document.getElementById('live-pulse-css')) {
+        const style = document.createElement('style');
+        style.id = 'live-pulse-css';
+        style.textContent = `
+            @keyframes livePulse {
+                0%,100%{opacity:1} 50%{opacity:.4}
+            }
+            @keyframes liveFlash {
+                0%{background:#D1FAE5} 30%{background:#6EE7B7} 100%{background:#D1FAE5}
+            }
+            .live-flash { animation: liveFlash 0.6s ease !important; }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Attach badge next to page title or page heading
+    const titleEl = document.querySelector('.kp-page-header__title, .ks-page-header__title, .ks-card__title, h2, h1');
+    if (titleEl) titleEl.appendChild(liveBadge);
+
+    function flashBadge() {
+        liveBadge.classList.remove('live-flash');
+        void liveBadge.offsetWidth; // reflow
+        liveBadge.classList.add('live-flash');
+    }
+
+    /* ── Poll function ────────────────────────────────────────── */
+    function pollKesehatan() {
+        fetch(apiUrl)
+            .then(r => r.json())
+            .then(data => {
+                flashBadge();
+
+                /* 1. Update each sapi row ──────────────────── */
+                const rows = document.querySelectorAll('#ks-tbody tr.ks-row');
+                rows.forEach(row => {
+                    const id = row.getAttribute('data-id');
+                    const sapiEntry = data.sapis.find(s => s.id == id);
+                    if (!sapiEntry) return;
+
+                    // Update data-status class for filter js
+                    const statusClass = sapiEntry.status === 'perlu_pemantauan' ? 'pemantauan' 
+                                      : sapiEntry.status === 'perlu_tindakan' ? 'tindakan' 
+                                      : 'normal';
+                    row.setAttribute('data-status', statusClass);
+
+                    const cells = row.querySelectorAll('td');
+
+                    // Update Last Observation Note (Column 3)
+                    if (cells[3]) {
+                        const noteDiv = cells[3].querySelector('.ks-catatan');
+                        if (noteDiv) {
+                            if (sapiEntry.catatan) {
+                                noteDiv.innerHTML = `
+                                    <span class="ks-catatan__date">${sapiEntry.catatan_date}</span>
+                                    ${sapiEntry.catatan}
+                                `;
+                            } else {
+                                noteDiv.innerHTML = `
+                                    <span class="ks-catatan__date">—</span>
+                                    Belum ada catatan
+                                `;
+                            }
+                        }
+                    }
+
+                    // Update Status (Column 4)
+                    if (cells[4]) {
+                        const statusSpan = cells[4].querySelector('span');
+                        if (statusSpan) {
+                            if (sapiEntry.status === 'normal') {
+                                statusSpan.textContent = 'Normal';
+                                statusSpan.style.color = '#124827';
+                            } else if (sapiEntry.status === 'perlu_pemantauan') {
+                                statusSpan.textContent = 'Perlu Pemantauan';
+                                statusSpan.style.color = '#C99C15';
+                            } else {
+                                statusSpan.textContent = 'Perlu Tindakan';
+                                statusSpan.style.color = '#EF0000';
+                            }
+                        }
+                    }
+                });
+
+                /* 2. Update stat cards ────────────────────── */
+                const setStat = (id, val) => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = val;
+                };
+                
+                setStat('stat-total-sapi',      data.stats.semua);
+                setStat('stat-sapi-sehat',      data.stats.normal);
+                setStat('stat-sapi-pemantauan',  data.stats.pemantauan);
+                setStat('stat-sapi-tindakan',    data.stats.tindakan);
+
+                const setSub = (id, percentage) => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = percentage + '% dari keseluruhan';
+                };
+
+                const all = data.stats.semua || 0;
+                setSub('stat-sapi-sehat-sub',      all > 0 ? Math.round((data.stats.normal / all) * 100) : 0);
+                setSub('stat-sapi-pemantauan-sub', all > 0 ? Math.round((data.stats.pemantauan / all) * 100) : 0);
+                setSub('stat-sapi-tindakan-sub',   all > 0 ? Math.round((data.stats.tindakan / all) * 100) : 0);
+            })
+            .catch(() => { /* silent fail */ });
+    }
+
+    /* ── Start polling every 30 seconds ──────────────────────── */
+    setInterval(pollKesehatan, 30000);
+})();
+</script>
 @endpush
+

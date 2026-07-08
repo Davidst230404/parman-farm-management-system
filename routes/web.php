@@ -73,6 +73,11 @@ Route::middleware(['auth', 'role:owner'])
 
         // Kelola Karyawan
         Route::resource('karyawan', \App\Http\Controllers\owner\KaryawanController::class);
+
+        // ── Live Data API (polling endpoints for auto-refresh) ──
+        Route::get('/api/produksi',        [ProduksiController::class,  'liveData'])->name('api.produksi');
+        Route::get('/api/kesehatan',       [KesehatanController::class, 'liveData'])->name('api.kesehatan');
+        Route::get('/api/dashboard-stats', [DashboardController::class, 'liveStats'])->name('api.dashboard');
     });
 
 // ============================================================

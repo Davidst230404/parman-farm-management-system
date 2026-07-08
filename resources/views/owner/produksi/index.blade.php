@@ -1084,4 +1084,134 @@
         }
     });
 })();</script>
+
+{{-- ══ LIVE POLLING SCRIPT ══════════════════════════════════════ --}}
+<script>
+(function() {
+    /* ── Determine the active tanggal from URL ────────────────── */
+    const urlParams  = new URLSearchParams(window.location.search);
+    const activeTgl  = urlParams.get('tanggal') || '{{ \Carbon\Carbon::today()->format("Y-m-d") }}';
+    const apiUrl     = '{{ route("owner.api.produksi") }}';
+
+    /* ── Live badge ───────────────────────────────────────────── */
+    const liveBadge = document.createElement('span');
+    liveBadge.id    = 'live-badge-produksi';
+    liveBadge.innerHTML = '● Live';
+    liveBadge.style.cssText = [
+        'display:inline-flex', 'align-items:center', 'gap:4px',
+        'font-size:11px', 'font-weight:700', 'color:#10B981',
+        'background:#D1FAE5', 'border-radius:20px',
+        'padding:3px 10px', 'margin-left:10px',
+        'font-family:Manrope,sans-serif',
+        'animation:livePulse 2s infinite',
+        'vertical-align:middle'
+    ].join(';');
+
+    // Inject badge CSS
+    if (!document.getElementById('live-pulse-css')) {
+        const style = document.createElement('style');
+        style.id = 'live-pulse-css';
+        style.textContent = `
+            @keyframes livePulse {
+                0%,100%{opacity:1} 50%{opacity:.4}
+            }
+            @keyframes liveFlash {
+                0%{background:#D1FAE5} 30%{background:#6EE7B7} 100%{background:#D1FAE5}
+            }
+            .live-flash { animation: liveFlash 0.6s ease !important; }
+        `;
+        document.head.appendChild(style);
+    }
+
+    // Attach badge next to page title
+    const titleEl = document.querySelector('.kp-page-header__title, .ps-page-header h2, h2, h1');
+    if (titleEl) titleEl.appendChild(liveBadge);
+
+    /* ── Helpers ──────────────────────────────────────────────── */
+    function fmt(val) {
+        if (val === null || val === '' || val === undefined) return '—';
+        const n = parseFloat(val);
+        return isNaN(n) ? '—' : n + ' L';
+    }
+    function flashBadge() {
+        liveBadge.classList.remove('live-flash');
+        void liveBadge.offsetWidth; // reflow
+        liveBadge.classList.add('live-flash');
+    }
+
+    /* ── Main poll function ───────────────────────────────────── */
+    function pollProduksi() {
+        fetch(apiUrl + '?tanggal=' + activeTgl)
+            .then(r => r.json())
+            .then(data => {
+                flashBadge();
+
+                /* 1. Update each sapi row ──────────────────── */
+                const rows = document.querySelectorAll('#ps-tbody tr.ps-row');
+                rows.forEach(row => {
+                    // Match row by sapi name+code from data-* attributes
+                    const rowName = row.dataset.name;
+                    const sapiEntry = data.sapis.find(s => s.name === rowName);
+                    if (!sapiEntry) return;
+
+                    const pagi  = sapiEntry.pagi  !== null ? sapiEntry.pagi  : null;
+                    const sore  = sapiEntry.sore  !== null ? sapiEntry.sore  : null;
+                    const total = sapiEntry.total  || 0;
+
+                    // Update data-* attrs (used by existing filter JS)
+                    row.dataset.session = sapiEntry.session;
+                    row.dataset.pagi    = pagi ?? '';
+                    row.dataset.sore    = sore ?? '';
+                    row.dataset.total   = total;
+
+                    // Update cell text (cols: name, pagi, sore, total, status, aksi)
+                    const cells = row.querySelectorAll('td');
+                    if (cells[1]) cells[1].querySelector('span') ? cells[1].querySelector('span').textContent = fmt(pagi) : null;
+                    if (cells[2]) cells[2].querySelector('span') ? cells[2].querySelector('span').textContent = fmt(sore) : null;
+                    if (cells[3]) cells[3].querySelector('span') ? cells[3].querySelector('span').textContent = total > 0 ? total + 'L' : '—' : null;
+
+                    // Status badge
+                    if (cells[4]) {
+                        const span = cells[4].querySelector('span');
+                        if (span) {
+                            const isDone = sapiEntry.status === 'Sudah';
+                            span.textContent = sapiEntry.status;
+                            span.className   = isDone ? 'ps-status--done' : 'ps-status--belum';
+                        }
+                    }
+
+                    // Update edit button onclick with fresh IDs
+                    if (cells[5]) {
+                        const btn = cells[5].querySelector('button.ps-edit-btn');
+                        if (btn) {
+                            btn.setAttribute('onclick',
+                                `openEditProduksiModal(${sapiEntry.id},'${pagi ?? ''}','${sore ?? ''}','${sapiEntry.pagi_id}','${sapiEntry.sore_id}')`
+                            );
+                        }
+                    }
+                });
+
+                /* 2. Update stat card: Sudah Diperah ─────────── */
+                const sdEl = document.getElementById('stat-sudah-diperah');
+                if (sdEl) sdEl.textContent = data.stats.sudah_diperah;
+                const sdPctEl = document.getElementById('stat-sudah-diperah-pct');
+                if (sdPctEl) sdPctEl.textContent = data.stats.persen_diperah + ' %';
+
+                /* 3. Update Ringkasan ─────────────────────────── */
+                const setRingkasan = (id, val) => {
+                    const el = document.getElementById(id);
+                    if (el) el.textContent = val;
+                };
+                setRingkasan('summary-total',   (data.stats.total_produksi || 0).toLocaleString('id-ID', {minimumFractionDigits:1, maximumFractionDigits:1}) + ' Liter');
+                setRingkasan('summary-avg',     (data.stats.rata_rata || 0).toLocaleString('id-ID', {minimumFractionDigits:1, maximumFractionDigits:1}) + ' Liter');
+                setRingkasan('summary-highest', data.stats.tertinggi_name || '—');
+                setRingkasan('summary-lowest',  data.stats.terendah_name  || '—');
+            })
+            .catch(() => { /* silent fail — no spam */ });
+    }
+
+    /* ── Start polling every 20 seconds ──────────────────────── */
+    setInterval(pollProduksi, 20000);
+})();
+</script>
 @endpush
