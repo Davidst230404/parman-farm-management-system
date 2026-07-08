@@ -947,20 +947,31 @@
     {{-- Header with actions --}}
     <div class="ks-data-header">
         <h2 class="ks-data-header__title">Data Sapi</h2>
-        <div class="ks-data-header__actions">
-            <button class="ks-btn-filter">
-                <img src="{{ asset('images/icons/iconfilter.svg') }}" alt="" class="ks-btn-filter__icon">
-                Filter
-            </button>
-        </div>
     </div>
 
-    {{-- Filter Tabs --}}
-    <div class="ks-tabs" role="tablist">
-        <button class="ks-tab ks-tab--active" id="tab-semua" role="tab" aria-selected="true" onclick="setTab(this,'semua')">Semua ({{ $countSemua }})</button>
-        <button class="ks-tab" id="tab-normal" role="tab" aria-selected="false" onclick="setTab(this,'normal')">Normal ({{ $countNormal }})</button>
-        <button class="ks-tab ks-tab--yellow" id="tab-pemantauan" role="tab" aria-selected="false" onclick="setTab(this,'pemantauan')">Perlu Pemantauan ({{ $countPemantauan }})</button>
-        <button class="ks-tab ks-tab--red" id="tab-tindakan" role="tab" aria-selected="false" onclick="setTab(this,'tindakan')">Perlu Tindakan ({{ $countTindakan }})</button>
+    {{-- Search and Filter Row --}}
+    <div class="ks-table-controls" style="display: flex; justify-content: space-between; align-items: center; padding: 16px 32px; border-bottom: 1px solid #E5E7EB; gap: 16px; flex-wrap: wrap;">
+        <!-- Left: Search input -->
+        <div style="position: relative; flex: 1; max-width: 320px; min-width: 200px;">
+            <span style="position: absolute; left: 14px; top: 50%; transform: translateY(-50%); display: flex; align-items: center; pointer-events: none;">
+                <svg viewBox="0 0 24 24" fill="none" stroke="#6B7280" stroke-width="2.5" width="16" height="16">
+                    <circle cx="11" cy="11" r="8"/>
+                    <line x1="21" y1="21" x2="16.65" y2="16.65"/>
+                </svg>
+            </span>
+            <input type="text" id="sapiSearchInput" placeholder="Cari Sapi (Nama atau ID)..." style="padding: 9px 14px 9px 40px; border: 1.5px solid #D1D5DB; border-radius: 8px; font-size: 13.5px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #111827; background: #FFFFFF; width: 100%; box-sizing: border-box; transition: border-color 0.15s; outline: none;" oninput="onSearchOrFilterChange()">
+        </div>
+        
+        <!-- Right: Status Dropdown -->
+        <div style="position: relative; min-width: 180px;">
+            <select id="sapiStatusFilter" onchange="onSearchOrFilterChange()" style="padding: 9px 36px 9px 14px; border: 1.5px solid #D1D5DB; border-radius: 8px; font-size: 13.5px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #374151; background: #FFFFFF; width: 100%; box-sizing: border-box; -webkit-appearance: none; -moz-appearance: none; appearance: none; cursor: pointer; transition: border-color 0.15s; outline: none;">
+                <option value="semua">Semua Status</option>
+                <option value="normal">Normal</option>
+                <option value="pemantauan">Perlu Pemantauan</option>
+                <option value="tindakan">Perlu Tindakan</option>
+            </select>
+            <svg viewBox="0 0 24 24" fill="none" stroke="#374151" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" style="right: 12px; width: 16px; height: 16px; pointer-events: none; position: absolute; top: 50%; transform: translateY(-50%);"><polyline points="6 9 12 15 18 9"></polyline></svg>
+        </div>
     </div>
 
     {{-- Data Table --}}
@@ -984,19 +995,30 @@
                         if ($sapi->status === 'perlu_pemantauan') $statusClass = 'pemantauan';
                         if ($sapi->status === 'perlu_tindakan') $statusClass = 'tindakan';
 
-                        // Dynamic realistic gender and age based on database id
-                        if ($sapi->id == 1) { $gender = 'Betina'; $umur = '3 Tahun 2 Bulan'; }
-                        elseif ($sapi->id == 2) { $gender = 'Jantan'; $umur = '4 Tahun 2 Bulan'; }
-                        elseif ($sapi->id == 3) { $gender = 'Betina'; $umur = '3 Tahun 2 Bulan'; }
-                        elseif ($sapi->id == 4) { $gender = 'Jantan'; $umur = '5 Tahun 1 Bulan'; }
-                        elseif ($sapi->id == 5) { $gender = 'Betina'; $umur = '3 Tahun 2 Bulan'; }
-                        elseif ($sapi->id == 6) { $gender = 'Betina'; $umur = '2 Tahun 2 Bulan'; }
-                        elseif ($sapi->id == 7) { $gender = 'Betina'; $umur = '3 Tahun 2 Bulan'; }
-                        else {
-                            $gender = ($sapi->id % 2 === 0) ? 'Jantan' : 'Betina';
-                            $years = ($sapi->id % 3) + 2;
-                            $months = ($sapi->id % 8) + 1;
-                            $umur = "{$years} Tahun {$months} Bulan";
+                        // Dynamic realistic gender and age based on database values
+                        $gender = $sapi->jenis_kelamin ? ucfirst($sapi->jenis_kelamin) : 'Betina';
+                        if ($sapi->tanggal_lahir) {
+                            $birth = \Carbon\Carbon::parse($sapi->tanggal_lahir);
+                            $diff = $birth->diff(\Carbon\Carbon::now());
+                            if ($diff->y > 0) {
+                                $umur = $diff->y . ' Tahun ' . $diff->m . ' Bulan';
+                            } else {
+                                $umur = $diff->m . ' Bulan';
+                            }
+                        } else {
+                            if ($sapi->id == 1) { $gender = 'Betina'; $umur = '3 Tahun 2 Bulan'; }
+                            elseif ($sapi->id == 2) { $gender = 'Jantan'; $umur = '4 Tahun 2 Bulan'; }
+                            elseif ($sapi->id == 3) { $gender = 'Betina'; $umur = '3 Tahun 2 Bulan'; }
+                            elseif ($sapi->id == 4) { $gender = 'Jantan'; $umur = '5 Tahun 1 Bulan'; }
+                            elseif ($sapi->id == 5) { $gender = 'Betina'; $umur = '3 Tahun 2 Bulan'; }
+                            elseif ($sapi->id == 6) { $gender = 'Betina'; $umur = '2 Tahun 2 Bulan'; }
+                            elseif ($sapi->id == 7) { $gender = 'Betina'; $umur = '3 Tahun 2 Bulan'; }
+                            else {
+                                $gender = ($sapi->id % 2 === 0) ? 'Jantan' : 'Betina';
+                                $years = ($sapi->id % 3) + 2;
+                                $months = ($sapi->id % 8) + 1;
+                                $umur = "{$years} Tahun {$months} Bulan";
+                            }
                         }
                     @endphp
                     <tr class="ks-row" data-status="{{ $statusClass }}">
@@ -1186,10 +1208,33 @@
     const infoEl    = document.getElementById('ks-pagination-info');
     const navEl     = document.getElementById('ks-pagination-nav');
 
-    /* ── Helpers ──────────────────────────────────────────────── */
     function getVisible() {
-        if (currentFilter === 'semua') return allRows;
-        return allRows.filter(r => r.dataset.status === currentFilter);
+        const searchInput = document.getElementById('sapiSearchInput');
+        const statusFilter = document.getElementById('sapiStatusFilter');
+        
+        const searchQuery = searchInput ? searchInput.value.toLowerCase().trim() : '';
+        const selectedStatus = statusFilter ? statusFilter.value : 'semua';
+
+        return allRows.filter(row => {
+            // Status filter
+            let normalizedRowStatus = row.dataset.status; // 'normal', 'pemantauan', 'tindakan'
+            const statusMatch = (selectedStatus === 'semua' || normalizedRowStatus === selectedStatus);
+
+            // Search query filter (checks name and code)
+            const nameEl = row.querySelector('.ks-cow-name');
+            const codeEl = row.querySelector('.ks-cow-id');
+            const name = nameEl ? nameEl.textContent.toLowerCase() : '';
+            const code = codeEl ? codeEl.textContent.toLowerCase() : '';
+            
+            const searchMatch = !searchQuery || name.includes(searchQuery) || code.includes(searchQuery);
+
+            return statusMatch && searchMatch;
+        });
+    }
+
+    function onSearchOrFilterChange() {
+        currentPage = 1;
+        render();
     }
 
     function render() {
@@ -1270,29 +1315,8 @@
         btn('\u203A', currentPage + 1, 'ks-page-btn--arrow', currentPage === totalPages || total === 0);
     }
 
-    /* ── Tab switching ────────────────────────────────────────── */
-    function setTab(el, filter) {
-        currentFilter = filter;
-        currentPage   = 1;
-
-        // Reset all tab styles
-        tabs.forEach(function (t) {
-            t.classList.remove('ks-tab--active');
-            if (t.id === 'tab-normal')     t.classList.add('ks-tab--normal');
-            if (t.id === 'tab-pemantauan') t.classList.add('ks-tab--warning');
-            if (t.id === 'tab-tindakan')   t.classList.add('ks-tab--danger');
-            t.setAttribute('aria-selected', 'false');
-        });
-
-        el.classList.add('ks-tab--active');
-        el.classList.remove('ks-tab--normal', 'ks-tab--warning', 'ks-tab--danger');
-        el.setAttribute('aria-selected', 'true');
-
-        render();
-    }
-
-    // Expose to inline onclick attributes
-    window.setTab = setTab;
+    // Expose window.onSearchOrFilterChange
+    window.onSearchOrFilterChange = onSearchOrFilterChange;
 
     /* ── Dropdown and Modal Handling ──────────────────────────── */
     function toggleDropdown(btn, event) {
