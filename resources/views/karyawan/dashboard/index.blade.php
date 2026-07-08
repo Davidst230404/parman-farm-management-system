@@ -5,11 +5,11 @@
 
 @section('topbar-right')
 <div class="o-user" style="display: flex; align-items: center; gap: 10px; font-family: 'Manrope', sans-serif;">
-    <div class="o-user__avatar" style="width: 40px; height: 40px; border-radius: 50%; background: #000000; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #FFFFFF; font-weight: 800; font-size: 16px;">
-        B
+    <div class="o-user__avatar" style="width: 40px; height: 40px; border-radius: 50%; background: #124827; display: flex; align-items: center; justify-content: center; flex-shrink: 0; color: #FFFFFF; font-weight: 800; font-size: 16px;">
+        {{ strtoupper(substr(auth()->user()->name ?? 'K', 0, 1)) }}
     </div>
     <div style="display: flex; flex-direction: column; align-items: flex-start; justify-content: center;">
-        <span class="o-user__name" style="font-size: 15px; font-weight: 800; color: #000000; line-height: 1.2; margin: 0;">{{ str_replace(' (Karyawan)', '', auth()->user()->name ?? 'Budi') }}</span>
+        <span class="o-user__name" style="font-size: 15px; font-weight: 800; color: #000000; line-height: 1.2; margin: 0;">{{ auth()->user()->name ?? 'Karyawan' }}</span>
         <span class="o-user__role" style="font-size: 13px; font-weight: 500; color: #7F7F7F; line-height: 1.2; margin: 2px 0 0 0;">Karyawan</span>
     </div>
 </div>

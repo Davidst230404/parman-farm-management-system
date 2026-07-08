@@ -37,11 +37,20 @@ class DashboardController extends Controller
         $soreCount = Produksi::whereDate('tanggal', $today)->where('sesi', 'sore')->count();
         $soreVol = (float) Produksi::whereDate('tanggal', $today)->where('sesi', 'sore')->sum('jumlah_susu');
 
-        // 3. Catatan Kesehatan Hari Ini
+        // 3. Catatan Kesehatan Hari Ini — show today's records, fallback to 3 most recent
         $latestActivities = Kesehatan::with('sapi')
+            ->whereDate('created_at', $today)
             ->orderByDesc('created_at')
             ->take(3)
             ->get();
+
+        // Fallback: if no records today, show 3 most recent from any date
+        if ($latestActivities->isEmpty()) {
+            $latestActivities = Kesehatan::with('sapi')
+                ->orderByDesc('created_at')
+                ->take(3)
+                ->get();
+        }
 
         return view('karyawan.dashboard.index', compact(
             'totalSapi',

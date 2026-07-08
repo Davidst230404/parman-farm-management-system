@@ -15,23 +15,26 @@ class ProduksiController extends Controller
         $sapis = Sapi::orderBy('name')->get();
         $totalSapi = Sapi::count();
 
-        // Calculate statistics
+        // Calculate statistics — only count Tersimpan records
         $today = Carbon::today();
         
         $weeklyProduction = Produksi::whereBetween('tanggal', [
             $today->copy()->subDays(6),
             $today
-        ])->sum('jumlah_susu');
+        ])->where('status', 'Tersimpan')->sum('jumlah_susu');
 
         $monthlyProduction = Produksi::whereBetween('tanggal', [
             $today->copy()->subDays(29),
             $today
-        ])->sum('jumlah_susu');
+        ])->where('status', 'Tersimpan')->sum('jumlah_susu');
 
-        $todayProduction = Produksi::where('tanggal', $today)->sum('jumlah_susu');
+        $todayProduction = Produksi::whereDate('tanggal', $today)
+            ->where('status', 'Tersimpan')
+            ->sum('jumlah_susu');
 
         // Fetch all production history for table list
         $produksis = Produksi::with('sapi')
+            ->where('status', 'Tersimpan')
             ->orderBy('tanggal', 'desc')
             ->orderBy('created_at', 'desc')
             ->get();
@@ -55,13 +58,17 @@ class ProduksiController extends Controller
             'tanggal'     => 'required|date',
         ]);
 
-        Produksi::create([
-            'sapi_id'     => $request->sapi_id,
-            'jumlah_susu' => $request->jumlah_susu,
-            'sesi'        => strtolower($request->sesi),
-            'tanggal'     => $request->tanggal,
-            'status'      => 'Tersimpan',
-        ]);
+        Produksi::updateOrCreate(
+            [
+                'sapi_id' => $request->sapi_id,
+                'sesi'    => strtolower($request->sesi),
+                'tanggal' => $request->tanggal,
+            ],
+            [
+                'jumlah_susu' => $request->jumlah_susu,
+                'status'      => 'Tersimpan',
+            ]
+        );
 
         return redirect()->route('karyawan.produksi.index')->with('success', 'Data produksi susu berhasil dicatat.');
     }
