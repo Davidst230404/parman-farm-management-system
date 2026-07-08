@@ -691,12 +691,7 @@
     const navEl   = document.getElementById('ps-pagination-nav');
 
     function getVisible() {
-        return allRows.filter(r => {
-            const s = r.dataset.session;
-            if (currentSession === 'pagi') return s === 'pagi' || s === 'both';
-            if (currentSession === 'sore') return s === 'sore' || s === 'both';
-            return true;
-        });
+        return allRows;
     }
 
     function updateProduksiStats() {
@@ -783,6 +778,18 @@
 
         allRows.forEach(r => r.style.display = 'none');
         visible.forEach((r, i) => r.style.display = (i >= start && i < end) ? '' : 'none');
+
+        // Update each row's status dynamically based on currentSession
+        visible.forEach(r => {
+            const pagi = parseFloat(r.dataset.pagi) || 0;
+            const sore = parseFloat(r.dataset.sore) || 0;
+            const statusSpan = r.querySelector('td:nth-child(5) span');
+            if (statusSpan) {
+                const isMilked = (currentSession === 'pagi' ? pagi > 0 : sore > 0);
+                statusSpan.textContent = isMilked ? 'Sudah' : 'Belum';
+                statusSpan.className = isMilked ? 'ps-status--done' : 'ps-status--belum';
+            }
+        });
 
         // Handle empty row
         const emptyRow = document.getElementById('ps-empty-row');
