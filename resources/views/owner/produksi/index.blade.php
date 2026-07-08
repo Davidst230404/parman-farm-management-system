@@ -1093,50 +1093,11 @@
     const activeTgl  = urlParams.get('tanggal') || '{{ \Carbon\Carbon::today()->format("Y-m-d") }}';
     const apiUrl     = '{{ route("owner.api.produksi") }}';
 
-    /* ── Live badge ───────────────────────────────────────────── */
-    const liveBadge = document.createElement('span');
-    liveBadge.id    = 'live-badge-produksi';
-    liveBadge.innerHTML = '● Live';
-    liveBadge.style.cssText = [
-        'display:inline-flex', 'align-items:center', 'gap:4px',
-        'font-size:11px', 'font-weight:700', 'color:#10B981',
-        'background:#D1FAE5', 'border-radius:20px',
-        'padding:3px 10px', 'margin-left:10px',
-        'font-family:Manrope,sans-serif',
-        'animation:livePulse 2s infinite',
-        'vertical-align:middle'
-    ].join(';');
-
-    // Inject badge CSS
-    if (!document.getElementById('live-pulse-css')) {
-        const style = document.createElement('style');
-        style.id = 'live-pulse-css';
-        style.textContent = `
-            @keyframes livePulse {
-                0%,100%{opacity:1} 50%{opacity:.4}
-            }
-            @keyframes liveFlash {
-                0%{background:#D1FAE5} 30%{background:#6EE7B7} 100%{background:#D1FAE5}
-            }
-            .live-flash { animation: liveFlash 0.6s ease !important; }
-        `;
-        document.head.appendChild(style);
-    }
-
-    // Attach badge next to page title
-    const titleEl = document.querySelector('.kp-page-header__title, .ps-page-header h2, h2, h1');
-    if (titleEl) titleEl.appendChild(liveBadge);
-
     /* ── Helpers ──────────────────────────────────────────────── */
     function fmt(val) {
         if (val === null || val === '' || val === undefined) return '—';
         const n = parseFloat(val);
         return isNaN(n) ? '—' : n + ' L';
-    }
-    function flashBadge() {
-        liveBadge.classList.remove('live-flash');
-        void liveBadge.offsetWidth; // reflow
-        liveBadge.classList.add('live-flash');
     }
 
     /* ── Main poll function ───────────────────────────────────── */
@@ -1144,7 +1105,6 @@
         fetch(apiUrl + '?tanggal=' + activeTgl)
             .then(r => r.json())
             .then(data => {
-                flashBadge();
 
                 /* 1. Update each sapi row ──────────────────── */
                 const rows = document.querySelectorAll('#ps-tbody tr.ps-row');
