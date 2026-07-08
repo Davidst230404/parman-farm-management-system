@@ -13,6 +13,9 @@ class Sapi extends Model
         'name',
         'code',
         'status',
+        'tanggal_lahir',
+        'jenis_kelamin',
+        'catatan',
     ];
 
     public function kesehatan(): HasMany

@@ -1072,7 +1072,7 @@
                                     </button>
                                 </form>
                             @endif
-                            <button type="button" class="ks-dropdown-item" style="border-top: 1px solid #F3F4F6;" onclick="openEditSapiModal({{ $sapi->id }}, '{{ trim($sapi->name) }}', '{{ trim($sapi->code) }}', '{{ $sapi->status }}')">
+                            <button type="button" class="ks-dropdown-item" style="border-top: 1px solid #F3F4F6;" onclick="openEditSapiModal({{ $sapi->id }}, '{{ trim($sapi->name) }}', '{{ trim($sapi->code) }}', '{{ $sapi->status }}', '{{ $sapi->tanggal_lahir }}', '{{ $sapi->jenis_kelamin }}', '{{ addslashes(trim($sapi->catatan)) }}')">
                                 <img src="{{ asset('images/icons/iconpensil.svg') }}" alt="" style="width:14px; height:14px; margin-right:8px; filter: grayscale(1);">
                                 Edit Sapi
                             </button>
@@ -1221,7 +1221,7 @@
 
 {{-- Modal Form Tambah & Edit Sapi --}}
 <div id="sapiModal" class="obs-modal-overlay" style="display: none;">
-    <div class="obs-modal-content" style="background: #E5E7EB; border: 1px solid #7F7F7F; border-radius: 12px; max-width: 400px; padding: 24px;">
+    <div class="obs-modal-content" style="background: #E5E7EB; border: 1px solid #7F7F7F; border-radius: 12px; max-width: 440px; width: 100%; padding: 24px;">
         <div class="obs-modal-header" style="margin-bottom: 16px; display: flex; align-items: center; justify-content: space-between;">
             <h3 class="obs-modal-title" style="font-size: 16.5px; font-weight: 800; color: #000000; display: flex; align-items: center; gap: 8px; margin: 0;">
                 <img src="{{ asset('images/icons/iconpensil2.svg') }}" style="width:16px; height:16px;" alt="">
@@ -1247,9 +1247,31 @@
                 </div>
             </div>
 
-            <div class="obs-form-group" style="margin-bottom: 12px;">
+            <div style="display: flex; gap: 16px; margin-bottom: 12px; align-items: flex-start;">
+                <div class="obs-form-group" style="flex: 1.1; margin: 0;">
+                    <label style="font-size: 13px; font-weight: 700; color: #000000; margin-bottom: 6px; display: block;">Tanggal Lahir <span style="color: #EF0000;">*</span></label>
+                    <div class="obs-input-wrapper" style="position: relative;">
+                        <input type="date" name="tanggal_lahir" id="sapiFormTanggalLahir" required style="padding: 10px 14px; border: 1.5px solid #7F7F7F; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #000000; background: #FFFFFF; width: 100%; box-sizing: border-box;">
+                    </div>
+                </div>
+                <div class="obs-form-group" style="flex: 0.9; margin: 0;">
+                    <label style="font-size: 13px; font-weight: 700; color: #000000; margin-bottom: 6px; display: block;">Jenis Kelamin <span style="color: #EF0000;">*</span></label>
+                    <div style="display: flex; gap: 12px; align-items: center; height: 42px;">
+                        <label style="display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; color: #000000; cursor: pointer;">
+                            <input type="radio" name="jenis_kelamin" id="sapiFormJKJantan" value="jantan" required style="accent-color: #124827; width: 16px; height: 16px;">
+                            Jantan
+                        </label>
+                        <label style="display: inline-flex; align-items: center; gap: 4px; font-size: 13px; font-weight: 600; color: #000000; cursor: pointer;">
+                            <input type="radio" name="jenis_kelamin" id="sapiFormJKBetina" value="betina" required style="accent-color: #124827; width: 16px; height: 16px;" checked>
+                            Betina
+                        </label>
+                    </div>
+                </div>
+            </div>
+
+            <div class="obs-form-group" style="margin-bottom: 12px; position: relative;">
                 <label style="font-size: 13px; font-weight: 700; color: #000000; margin-bottom: 6px; display: block;">Status <span style="color: #EF0000;">*</span></label>
-                <div class="obs-input-wrapper">
+                <div class="obs-input-wrapper" style="position: relative;">
                     <select name="status" id="sapiFormStatus" required style="padding: 10px 36px 10px 14px; border: 1.5px solid #7F7F7F; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #000000; background: #FFFFFF; width: 100%; box-sizing: border-box; -webkit-appearance: none; -moz-appearance: none; appearance: none;">
                         <option value="Normal" selected>Normal</option>
                         <option value="Perlu Pemantauan">Perlu Pemantauan</option>
@@ -1257,6 +1279,11 @@
                     </select>
                     <svg class="obs-chevron" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-linecap="round" stroke-linejoin="round" style="right: 12px; width: 16px; height: 16px; color: #000000; pointer-events: none; position: absolute; top: 50%; transform: translateY(-50%);"><polyline points="6 9 12 15 18 9"></polyline></svg>
                 </div>
+            </div>
+
+            <div class="obs-form-group" style="margin-bottom: 12px;">
+                <label style="font-size: 13px; font-weight: 700; color: #000000; margin-bottom: 6px; display: block;">Catatan (Opsional)</label>
+                <textarea name="catatan" id="sapiFormCatatan" placeholder="Masukkan catatan" rows="3" style="padding: 10px 14px; border: 1.5px solid #7F7F7F; border-radius: 8px; font-size: 14px; font-weight: 600; font-family: 'Manrope', sans-serif; color: #000000; background: #FFFFFF; width: 100%; box-sizing: border-box; resize: vertical;"></textarea>
             </div>
 
             <div class="obs-form-actions" style="margin-top: 20px; display: flex; gap: 12px;">
@@ -1518,10 +1545,16 @@
         btnSubmit.textContent = 'Simpan';
 
         document.getElementById('sapiFormCode').readOnly = false;
+        
+        // Reset/init fields
+        document.getElementById('sapiFormTanggalLahir').value = '';
+        document.getElementById('sapiFormJKBetina').checked = true;
+        document.getElementById('sapiFormCatatan').value = '';
+
         modal.style.display = 'flex';
     }
 
-    function openEditSapiModal(id, name, code, status) {
+    function openEditSapiModal(id, name, code, status, tanggalLahir, jenisKelamin, catatan) {
         const modal = document.getElementById('sapiModal');
         const form = document.getElementById('sapiForm');
         const titleText = document.getElementById('sapiModalTitleText');
@@ -1543,6 +1576,17 @@
         if (status === 'perlu_pemantauan') normalizedStatus = 'Perlu Pemantauan';
         if (status === 'perlu_tindakan') normalizedStatus = 'Perlu Tindakan';
         document.getElementById('sapiFormStatus').value = normalizedStatus;
+
+        // Prefill new fields
+        document.getElementById('sapiFormTanggalLahir').value = tanggalLahir || '';
+        
+        if (jenisKelamin === 'jantan') {
+            document.getElementById('sapiFormJKJantan').checked = true;
+        } else {
+            document.getElementById('sapiFormJKBetina').checked = true;
+        }
+
+        document.getElementById('sapiFormCatatan').value = catatan || '';
 
         modal.style.display = 'flex';
     }

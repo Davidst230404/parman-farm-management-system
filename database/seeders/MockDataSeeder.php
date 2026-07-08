@@ -37,9 +37,12 @@ class MockDataSeeder extends Seeder
                 $status = 'perlu_pemantauan';
             }
             Sapi::create([
-                'name'   => 'Sapi ' . $i,
-                'code'   => 'SP' . str_pad($i, 3, '0', STR_PAD_LEFT),
-                'status' => $status,
+                'name'          => 'Sapi ' . $i,
+                'code'          => 'SP' . str_pad($i, 3, '0', STR_PAD_LEFT),
+                'status'        => $status,
+                'tanggal_lahir' => now()->subYears(rand(2, 5))->subMonths(rand(0, 11))->format('Y-m-d'),
+                'jenis_kelamin' => 'betina', // majorly dairy cows are female
+                'catatan'       => 'Sapi unggulan peternakan.',
             ]);
         }
 

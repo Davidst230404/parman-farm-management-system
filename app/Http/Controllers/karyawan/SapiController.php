@@ -11,9 +11,12 @@ class SapiController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'name'   => 'required|string|max:20',
-            'code'   => 'required|string|max:10|unique:sapi,code',
-            'status' => 'required|string',
+            'name'          => 'required|string|max:20',
+            'code'          => 'required|string|max:10|unique:sapi,code',
+            'status'        => 'required|string',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:jantan,betina',
+            'catatan'       => 'nullable|string',
         ], [
             'code.unique' => 'Kode / ID Sapi ini sudah terdaftar di database.',
             'code.max' => 'Kode / ID Sapi tidak boleh lebih dari 10 karakter.',
@@ -25,9 +28,12 @@ class SapiController extends Controller
         if ($request->status === 'Perlu Tindakan') $dbStatus = 'perlu_tindakan';
 
         $sapi = Sapi::create([
-            'name'   => $request->name,
-            'code'   => $request->code,
-            'status' => $dbStatus,
+            'name'          => $request->name,
+            'code'          => $request->code,
+            'status'        => $dbStatus,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'catatan'       => $request->catatan,
         ]);
 
         if ($request->catatan) {
@@ -48,9 +54,12 @@ class SapiController extends Controller
         $sapi = Sapi::findOrFail($id);
 
         $request->validate([
-            'name'   => 'required|string|max:20',
-            'code'   => 'required|string|max:10|unique:sapi,code,' . $sapi->id,
-            'status' => 'required|string',
+            'name'          => 'required|string|max:20',
+            'code'          => 'required|string|max:10|unique:sapi,code,' . $sapi->id,
+            'status'        => 'required|string',
+            'tanggal_lahir' => 'required|date',
+            'jenis_kelamin' => 'required|in:jantan,betina',
+            'catatan'       => 'nullable|string',
         ], [
             'code.unique' => 'Kode / ID Sapi ini sudah terdaftar di database.',
             'code.max' => 'Kode / ID Sapi tidak boleh lebih dari 10 karakter.',
@@ -62,15 +71,21 @@ class SapiController extends Controller
         if ($request->status === 'Perlu Tindakan') $dbStatus = 'perlu_tindakan';
 
         $sapi->update([
-            'name'   => $request->name,
-            'code'   => $request->code,
-            'status' => $dbStatus,
+            'name'          => $request->name,
+            'code'          => $request->code,
+            'status'        => $dbStatus,
+            'tanggal_lahir' => $request->tanggal_lahir,
+            'jenis_kelamin' => $request->jenis_kelamin,
+            'catatan'       => $request->catatan,
         ]);
 
         // Update latest kesehatan status if it exists
         $latest = $sapi->kesehatan()->orderBy('created_at', 'desc')->first();
         if ($latest) {
-            $latest->update(['status' => $request->status]);
+            $latest->update([
+                'status' => $request->status,
+                'catatan' => $request->catatan,
+            ]);
         }
 
         return redirect()->route('karyawan.kesehatan.index')->with('success', 'Data sapi berhasil diperbarui.');
