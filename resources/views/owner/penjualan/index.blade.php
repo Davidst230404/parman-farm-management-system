@@ -579,6 +579,111 @@
     max-width: 680px;
 }
 
+/* Hybrid Search Dropdown (Kelola Mitra) */
+.mitra-hybrid-wrap {
+    position: relative;
+    flex: 1;
+}
+.mitra-hybrid-input-row {
+    display: flex;
+    align-items: center;
+    border: 1.5px solid #D1D5DB;
+    border-radius: 8px;
+    background: #FFFFFF;
+    overflow: visible;
+    transition: border-color 0.15s;
+    height: 40px;
+    padding: 0 10px;
+    gap: 6px;
+    box-sizing: border-box;
+}
+.mitra-hybrid-input-row:focus-within {
+    border-color: #124827;
+    box-shadow: 0 0 0 3px rgba(18,72,39,0.08);
+}
+.mitra-hybrid-icon {
+    flex-shrink: 0;
+    color: #9CA3AF;
+    display: flex;
+    align-items: center;
+}
+.mitra-hybrid-input {
+    flex: 1;
+    border: none;
+    outline: none;
+    font-size: 13.5px;
+    font-weight: 600;
+    font-family: 'Manrope', sans-serif;
+    color: #111827;
+    background: transparent;
+    height: 100%;
+}
+.mitra-hybrid-clear {
+    flex-shrink: 0;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 0;
+    color: #9CA3AF;
+    font-size: 16px;
+    line-height: 1;
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 18px;
+    height: 18px;
+}
+.mitra-hybrid-clear.visible { display: flex; }
+.mitra-hybrid-dropdown {
+    position: absolute;
+    top: calc(100% + 6px);
+    left: 0;
+    right: 0;
+    background: #FFFFFF;
+    border: 1.5px solid #E5E7EB;
+    border-radius: 10px;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.10);
+    z-index: 9999;
+    max-height: 224px;
+    overflow-y: auto;
+    display: none;
+}
+.mitra-hybrid-dropdown.open { display: block; }
+.mitra-hybrid-option {
+    padding: 10px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: 'Manrope', sans-serif;
+    color: #111827;
+    cursor: pointer;
+    border-bottom: 1px solid #F3F4F6;
+    transition: background 0.1s;
+}
+.mitra-hybrid-option:last-child { border-bottom: none; }
+.mitra-hybrid-option:hover, .mitra-hybrid-option.selected { background: #EEF5F0; color: #124827; }
+.mitra-hybrid-option .mitra-opt-label { font-weight: 700; }
+.mitra-hybrid-option .mitra-opt-sub { font-size: 11.5px; color: #6B7280; margin-top: 1px; font-weight: 500; }
+.mitra-hybrid-no-result {
+    padding: 14px;
+    text-align: center;
+    font-size: 13px;
+    color: #9CA3AF;
+    font-family: 'Manrope', sans-serif;
+}
+.mitra-hybrid-show-all {
+    padding: 9px 14px;
+    font-size: 12.5px;
+    color: #124827;
+    font-weight: 700;
+    cursor: pointer;
+    border-top: 1px solid #E5E7EB;
+    background: #F9FAFB;
+    text-align: center;
+    border-radius: 0 0 8px 8px;
+    transition: background 0.1s;
+}
+.mitra-hybrid-show-all:hover { background: #EEF5F0; }
+
 /* Table in Kelola Mitra */
 .pj-mitra-table-wrap {
     margin-top: 14px;
@@ -1011,9 +1116,19 @@
             <button class="pj-modal__close" onclick="closeModal('modal-kelola-mitra')" aria-label="Tutup">&times;</button>
         </div>
         <div class="pj-modal__body">
-            <div style="display: flex; gap: 10px; margin-bottom: 14px;">
-                <input type="text" class="pj-form-input" style="flex:1;" id="search-mitra-input" placeholder="Cari mitra...">
-                <button class="pj-btn pj-btn--primary" style="height: 40px;" id="btn-open-tambah-mitra-from-list">
+            <div style="display: flex; gap: 10px; margin-bottom: 14px; align-items: flex-start;">
+                {{-- Hybrid Search Dropdown --}}
+                <div class="mitra-hybrid-wrap" id="mitra-hybrid-wrap">
+                    <div class="mitra-hybrid-input-row">
+                        <span class="mitra-hybrid-icon">
+                            <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5" width="15" height="15"><circle cx="11" cy="11" r="8"/><line x1="21" y1="21" x2="16.65" y2="16.65"/></svg>
+                        </span>
+                        <input type="text" class="mitra-hybrid-input" id="search-mitra-input" placeholder="Cari nama, kontak, atau alamat mitra..." autocomplete="off">
+                        <button class="mitra-hybrid-clear" id="mitra-hybrid-clear" type="button" title="Hapus pencarian">&times;</button>
+                    </div>
+                    <div class="mitra-hybrid-dropdown" id="mitra-hybrid-dropdown"></div>
+                </div>
+                <button class="pj-btn pj-btn--primary" style="height: 40px; white-space: nowrap; flex-shrink:0;" id="btn-open-tambah-mitra-from-list">
                     + Tambah Mitra
                 </button>
             </div>
@@ -1880,12 +1995,123 @@
         openModal('modal-tambah-mitra');
     });
 
-    // Search mitra input keyup handler
-    document.getElementById('search-mitra-input').addEventListener('input', function(e) {
-        mitraSearchQuery = e.target.value;
-        mitraCurrentPage = 1;
-        renderMitraTable();
-    });
+    /* ============================================================
+       Hybrid Search Dropdown for Kelola Mitra
+       ============================================================ */
+    (function() {
+        const searchInput   = document.getElementById('search-mitra-input');
+        const dropdown      = document.getElementById('mitra-hybrid-dropdown');
+        const clearBtn      = document.getElementById('mitra-hybrid-clear');
+
+        function buildOptions(query) {
+            dropdown.innerHTML = '';
+            const q = query.toLowerCase().trim();
+
+            // "Tampilkan Semua" shortcut (always visible when dropdown opens)
+            if (q === '') {
+                const showAll = document.createElement('div');
+                showAll.className = 'mitra-hybrid-show-all';
+                showAll.textContent = 'Tampilkan semua mitra';
+                showAll.addEventListener('mousedown', function(e) {
+                    e.preventDefault();
+                    searchInput.value = '';
+                    clearBtn.classList.remove('visible');
+                    mitraSearchQuery = '';
+                    mitraCurrentPage = 1;
+                    renderMitraTable();
+                    closeDropdown();
+                });
+                dropdown.appendChild(showAll);
+            }
+
+            const filtered = mitras.filter(m =>
+                !q ||
+                m.nama.toLowerCase().includes(q) ||
+                (m.kontak && m.kontak.includes(q)) ||
+                (m.alamat && m.alamat.toLowerCase().includes(q))
+            );
+
+            if (filtered.length === 0 && q !== '') {
+                const noRes = document.createElement('div');
+                noRes.className = 'mitra-hybrid-no-result';
+                noRes.textContent = 'Tidak ada mitra ditemukan';
+                dropdown.appendChild(noRes);
+            } else {
+                filtered.forEach(m => {
+                    const item = document.createElement('div');
+                    item.className = 'mitra-hybrid-option';
+
+                    // Highlight matched text
+                    function highlight(text) {
+                        if (!q) return `<span class="mitra-opt-label">${text}</span>`;
+                        const idx = text.toLowerCase().indexOf(q);
+                        if (idx === -1) return `<span class="mitra-opt-label">${text}</span>`;
+                        return `<span class="mitra-opt-label">${text.slice(0, idx)}<mark style="background:#D1FAE5;color:#065F46;border-radius:2px;">${text.slice(idx, idx + q.length)}</mark>${text.slice(idx + q.length)}</span>`;
+                    }
+
+                    item.innerHTML = `
+                        ${highlight(m.nama)}
+                        <div class="mitra-opt-sub">${m.kontak}${m.alamat ? ' · ' + m.alamat : ''}</div>
+                    `;
+
+                    item.addEventListener('mousedown', function(e) {
+                        e.preventDefault(); // Prevent input blur before click fires
+                        searchInput.value = m.nama;
+                        clearBtn.classList.add('visible');
+                        mitraSearchQuery = m.nama;
+                        mitraCurrentPage = 1;
+                        renderMitraTable();
+                        closeDropdown();
+                    });
+
+                    dropdown.appendChild(item);
+                });
+            }
+        }
+
+        function openDropdown() {
+            buildOptions(searchInput.value);
+            dropdown.classList.add('open');
+        }
+
+        function closeDropdown() {
+            dropdown.classList.remove('open');
+        }
+
+        searchInput.addEventListener('focus', function() {
+            openDropdown();
+        });
+
+        searchInput.addEventListener('input', function(e) {
+            const val = e.target.value;
+            clearBtn.classList.toggle('visible', val.length > 0);
+            mitraSearchQuery = val;
+            mitraCurrentPage = 1;
+            renderMitraTable();
+            buildOptions(val);
+            dropdown.classList.add('open');
+        });
+
+        clearBtn.addEventListener('mousedown', function(e) {
+            e.preventDefault();
+            searchInput.value = '';
+            clearBtn.classList.remove('visible');
+            mitraSearchQuery = '';
+            mitraCurrentPage = 1;
+            renderMitraTable();
+            buildOptions('');
+            dropdown.classList.add('open');
+            searchInput.focus();
+        });
+
+        // Close dropdown when clicking outside
+        document.addEventListener('click', function(e) {
+            const wrap = document.getElementById('mitra-hybrid-wrap');
+            if (wrap && !wrap.contains(e.target)) {
+                closeDropdown();
+            }
+        });
+    }());
 
     // Filter Apply Trigger
     document.getElementById('btn-apply-filters').addEventListener('click', function() {
