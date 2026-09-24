@@ -12,7 +12,7 @@ WORKDIR /app
 COPY composer*.json ./
 RUN composer install --no-dev --no-scripts --no-autoloader --prefer-dist --ignore-platform-reqs
 COPY . .
-RUN composer dump-autoload --no-dev --optimize --ignore-platform-reqs
+RUN composer dump-autoload --no-dev --optimize --no-scripts --ignore-platform-reqs
 
 # Stage 3: Runtime
 FROM php:8.3-apache
